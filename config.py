@@ -52,7 +52,10 @@ DOLLAR_VOLUME_LOOKBACK: Final[int] = 20
 STOCK_EMA_PERIOD: Final[int] = 21
 STOCK_SMA_PERIOD: Final[int] = 50
 PYRAMID_MAX_ADDS: Final[int] = 3
-INITIAL_LEG_SIZE_PCT: Final[float] = 0.25
+# Per-leg sizing as a fraction of CURRENT CASH (not portfolio value).
+# 5% of cash per leg keeps total deployed capital well under available cash even
+# when MAX_POSITIONS_OPEN positions are stacked with full pyramid adds.
+INITIAL_LEG_SIZE_PCT: Final[float] = 0.05
 
 
 # ==============================================================================

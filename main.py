@@ -154,7 +154,8 @@ class PowerTrendAlgorithm(QCAlgorithm):
         if not self._risk.is_new_entry_allowed():
             return
 
-        portfolio_value = float(self.portfolio.total_portfolio_value)
+        # Per-leg sizing uses CURRENT CASH (not total portfolio value).
+        # Re-read each loop iteration so each new order shrinks the next.
         regime_str = config.REGIME_SYMBOL
 
         for symbol in list(self._universe.active_symbols):
@@ -174,7 +175,8 @@ class PowerTrendAlgorithm(QCAlgorithm):
             if signal is None:
                 continue
 
-            qty = self._pyramiding.size_leg(indicators["close"], portfolio_value)
+            cash_value = float(self.portfolio.cash)
+            qty = self._pyramiding.size_leg(indicators["close"], cash_value)
             if qty <= 0:
                 continue
 
