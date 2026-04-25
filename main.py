@@ -1,338 +1,211 @@
 """
-main.py — Platform Orchestrator (ONLY file importing LEAN SDK)
+main.py — Power Trend Algo 1 orchestrator (ONLY file importing LEAN SDK).
 
-Responsibility:
-  - Wire all handlers together
-  - Implement platform lifecycle callbacks (initialize, on_data, on_order_event)
-  - Schedule daily pipeline (scan → entry trigger → exit checks)
-  - Handle async order events and fill reconciliation
-  - Delegate ALL business logic to handlers (handlers are pure Python)
-
-Architecture Rules:
-  - No business logic here — only orchestration
-  - All strategy parameters are in config.py
-  - Dependency injection: each handler receives 'self' (algorithm reference)
-  - Handlers are reusable and testable without LEAN SDK
-
-TODO: Rename this class, configure dates/cash, and implement pipeline logic.
+Daily lifecycle (DAILY_EVAL_TIME, anchored on QQQ):
+  1. Update QQQ regime (rolling counters, state machine)
+  2. Update risk manager (HWM equity)
+  3. For each open position: check exit_engine; close if rule fires
+  4. If regime allows entries AND risk allows entries:
+       For each universe symbol (excluding QQQ):
+         - get indicators
+         - entry_engine.evaluate -> INITIAL/ADD/None
+         - submit market order, route fills via on_order_event
 """
 
 from AlgorithmImports import *
-from datetime import datetime, timedelta
 
-from config import *
-from handlers.universe_filter import UniverseFilter
+import config
+from handlers.universe_filter import DynamicUniverseSelector
 from handlers.data_handler import DataHandler
-from handlers.technical_validator import TechnicalValidator
-from handlers.setup_checker import SetupChecker
-from handlers.instrument_selector import InstrumentSelector
+from handlers.regime_filter import RegimeFilter
 from handlers.position_manager import PositionManager
-from handlers.option_analytics import OptionAnalytics
-
-# TODO: Import additional handlers as you build them:
-# from handlers.event_calendar import EventCalendar
+from handlers.pyramiding_manager import PyramidingManager
+from handlers.entry_engine import EntryEngine, EntrySignal
+from handlers.exit_engine import ExitEngine
+from handlers.risk_manager import RiskManager
 
 
 def _parse_time(time_str: str):
-    """Parse 'HH:MM' string into (hour, minute) integer tuple."""
-    hour, minute = time_str.split(":")
-    return int(hour), int(minute)
+    h, m = time_str.split(":")
+    return int(h), int(m)
 
 
-class StrategyAlgorithm(QCAlgorithm):
-    """
-    QuantConnect / LEAN Strategy Template
-
-    TODO: Rename this class to match your strategy (e.g., MomentumBreakoutAlgorithm).
-    """
+class PowerTrendAlgorithm(QCAlgorithm):
 
     def initialize(self):
-        """
-        Initialize algorithm:
-          - Platform setup (dates, cash, benchmark, warm-up)
-          - Instantiate all handlers in dependency order
-          - Schedule daily pipeline (scan → entry trigger → exit checks)
-          - Initialize internal state dicts
-        """
         # ---- Platform setup ----
-        # TODO: Set your backtest date range and starting capital
-        self.set_start_date(2020, 1, 1)
-        self.set_end_date(2024, 12, 31)
+        self.set_start_date(2003, 1, 1)
+        self.set_end_date(2020, 12, 31)
         self.set_cash(100_000)
         self.set_benchmark("SPY")
-        self.set_warm_up(SMA_LONG_PERIOD + 20)
+        self.set_warm_up(config.REGIME_SMA_PERIOD + 30)
 
-        # ---- Handler instantiation (dependency order) ----
-        self._universe_filter = UniverseFilter(self)
-        self._data_handler = DataHandler(self)
-        self._technical_validator = TechnicalValidator(self)
-        self._option_analytics = OptionAnalytics(self)
-        self._instrument_selector = InstrumentSelector(self)
-        self._position_manager = PositionManager(self)
-        self._setup_checker = SetupChecker(
-            self,
-            self._data_handler,
-            technical_validator=self._technical_validator,
-            instrument_selector=self._instrument_selector,
-            option_analytics=self._option_analytics,
+        self.universe_settings.resolution = Resolution.DAILY
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.ADJUSTED
+
+        # ---- Regime symbol (always subscribed, anchors scheduling) ----
+        self._regime_symbol = self.add_equity(
+            config.REGIME_SYMBOL, Resolution.DAILY
+        ).symbol
+
+        # ---- Handlers ----
+        self._universe = DynamicUniverseSelector(self)
+        self._data = DataHandler(self)
+        self._regime = RegimeFilter(self)
+        self._positions = PositionManager(self)
+        self._pyramiding = PyramidingManager(self)
+        self._risk = RiskManager(self)
+        self._entries = EntryEngine(
+            self, self._regime, self._risk, self._positions, self._pyramiding
         )
+        self._exits = ExitEngine(self, self._risk)
 
-        # TODO: Add event-driven handlers if your strategy is event-based:
-        # self._event_calendar = EventCalendar(self)
+        # ---- Universe (coarse callback) ----
+        self.add_universe(self._universe.select_coarse)
 
-        # ---- Internal state ----
-        # Signals queued by Phase 1 scan, consumed by Phase 2 entry trigger
-        self._pending_entry_signals = {}  # {symbol_str: signal_dict}
-        # Orders awaiting fill confirmation from on_order_event()
-        self._pending_orders = {}  # {order_id: order_metadata_dict}
-        # Option chain subscriptions (if trading options)
-        self._option_symbols = {}  # {equity_symbol_str: canonical_option_symbol}
+        # ---- Pending order tracking ----
+        self._pending_orders: dict = {}  # {order_id: {symbol, type}}
 
-        # ---- Data normalization (required for options compatibility) ----
-        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
-
-        # ---- SPY subscription — anchors scheduling date/time rules ----
-        spy_symbol = self.add_equity("SPY", Resolution.DAILY).symbol
-
-        # ---- Schedule: Phase 1 — universe scan ----
-        scan_hour, scan_minute = _parse_time(SCAN_SCHEDULE_TIME)
+        # ---- Daily evaluation schedule ----
+        eval_h, eval_m = _parse_time(config.DAILY_EVAL_TIME)
         self.schedule.on(
-            self.date_rules.every_day(spy_symbol),
-            self.time_rules.at(scan_hour, scan_minute),
-            self._scan_universe,
+            self.date_rules.every_day(self._regime_symbol),
+            self.time_rules.at(eval_h, eval_m),
+            self._evaluate,
         )
 
-        # ---- Schedule: Phase 2 — entry trigger ----
-        entry_hour, entry_minute = _parse_time(ENTRY_TRIGGER_TIME)
-        self.schedule.on(
-            self.date_rules.every_day(spy_symbol),
-            self.time_rules.at(entry_hour, entry_minute),
-            self._check_entry_triggers,
-        )
-
-        # ---- Schedule: Phase 3 — exit checks (multiple intraday times) ----
-        for exit_time in EXIT_CHECK_TIMES:
-            exit_hour, exit_minute = _parse_time(exit_time)
-            self.schedule.on(
-                self.date_rules.every_day(spy_symbol),
-                self.time_rules.at(exit_hour, exit_minute),
-                self._check_exit_conditions,
-            )
-
-        # ---- Universe selection ----
-        tickers = self._universe_filter.get_universe()
-        self.add_universe_selection(
-            ManualUniverseSelectionModel(
-                [Symbol.Create(t, SecurityType.Equity, Market.USA) for t in tickers]
-            )
-        )
-
-    # ========================================================================
-    # PLATFORM CALLBACKS
-    # ========================================================================
-
+    # ------------------------------------------------------------------
+    # Platform callbacks
+    # ------------------------------------------------------------------
     def on_data(self, slice):
-        """
-        Called on every data bar.
-
-        TODO: Add logic for:
-          - Caching option chains from slice.option_chains
-          - Updating last_known_price for open positions
-          - Any intraday signal detection
-        """
         if self.is_warming_up:
             return
-
-        # Update last_known_price for all open positions
-        for instrument_symbol, trade in self._position_manager.active_trades.items():
-            security = self.securities.get(instrument_symbol)
-            if security is not None and security.price > 0:
-                trade.last_known_price = security.price
+        for sym, trade in self._positions.active_trades.items():
+            sec = self.securities.get(sym)
+            if sec is not None and sec.price > 0:
+                trade.last_known_price = sec.price
 
     def on_order_event(self, order_event):
-        """
-        Async callback: order filled/rejected/cancelled.
-
-        Pattern:
-          - On FILLED BUY  → position_manager.add_trade()
-          - On FILLED SELL → position_manager.close_trade()
-        """
         if order_event.status != OrderStatus.FILLED:
             return
-
-        order_id = order_event.order_id
-        pending = self._pending_orders.pop(order_id, None)
-        if pending is None:
+        meta = self._pending_orders.pop(order_event.order_id, None)
+        if meta is None:
             return
 
-        fill_price = order_event.fill_price
-        fill_qty = abs(order_event.fill_quantity)
-        symbol = pending["symbol"]
-        instrument = pending["instrument"]
+        symbol = meta["symbol"]
+        fill_price = float(order_event.fill_price)
+        fill_qty = abs(int(order_event.fill_quantity))
 
-        if pending["type"] == "entry":
-            self._position_manager.add_trade(
+        if meta["type"] in (EntrySignal.INITIAL, EntrySignal.ADD):
+            self._positions.add_leg(
                 symbol=symbol,
-                instrument_symbol=instrument,
                 fill_price=fill_price,
                 quantity=fill_qty,
-                trade_type="SETUP",
-                entry_date=self.time.date(),
-                target_delta=TARGET_DELTA,
+                fill_date=self.time.date(),
             )
-            self.log(f"[ENTRY FILLED] {instrument} qty={fill_qty} @ {fill_price:.2f}")
-
-        elif pending["type"] == "exit":
-            result = self._position_manager.close_trade(
-                instrument_symbol=instrument,
+            self.log(
+                f"[FILL ENTRY/{meta['type']}] {symbol} qty={fill_qty} @ {fill_price:.2f}"
+            )
+        elif meta["type"] == "EXIT":
+            result = self._positions.close_trade(
+                symbol=symbol,
                 exit_price=fill_price,
-                reason=pending.get("reason", EXIT_REASON_MANUAL),
+                reason=meta.get("reason", config.EXIT_REASON_MANUAL),
             )
             if result:
                 self.log(
-                    f"[EXIT FILLED] {instrument} qty={fill_qty} @ {fill_price:.2f} "
-                    f"P&L={result.get('pnl', 0):.2f} reason={result.get('reason')}"
+                    f"[FILL EXIT] {symbol} qty={fill_qty} @ {fill_price:.2f} "
+                    f"P&L={result['pnl']:.2f} reason={result['reason']}"
                 )
 
-    def on_securities_changed(self, changes):
-        """
-        Fires when universe composition changes.
-        Override if you need to handle additions/removals.
-        """
-        pass
-
-    # ========================================================================
-    # DAILY PIPELINE (Scheduled Events)
-    # ========================================================================
-
-    def _scan_universe(self):
-        """
-        Phase 1: Universe Scan — scheduled at SCAN_SCHEDULE_TIME.
-
-        TODO: Implement your scan logic:
-          1. Reset caches
-          2. Get candidates from universe filter (+ optional event filter)
-          3. For each candidate: validate technicals, setup, instrument
-          4. Queue passing symbols in _pending_entry_signals
-        """
+    # ------------------------------------------------------------------
+    # Daily evaluation
+    # ------------------------------------------------------------------
+    def _evaluate(self):
         if self.is_warming_up:
             return
 
-        self._pending_entry_signals.clear()
-        self._data_handler.clear_cache()
+        self._data.clear_cache()
+        self._risk.update(float(self.portfolio.total_portfolio_value))
 
-        universe = set(self._universe_filter.get_universe())
-        self.debug(f"[SCAN] Universe size={len(universe)}")
+        # 1. Refresh QQQ regime
+        qqq_indicators = self._data.get_indicators(self._regime_symbol)
+        if qqq_indicators:
+            self._regime.update(qqq_indicators)
+        self.debug(
+            f"[REGIME] {self.time.date()} state={self._regime.current_state} "
+            f"low_above={self._regime.days_low_above_ema21} "
+            f"ema_above={self._regime.days_ema21_above_sma50}"
+        )
 
-        for sym_str in universe:
-            try:
-                security = self.securities.get(sym_str)
-                if security is None or security.price <= 0:
-                    continue
+        # 2. Per-position exits
+        for symbol in list(self._positions.active_trades.keys()):
+            trade = self._positions.get_trade(symbol)
+            if trade is None:
+                continue
+            indicators = self._data.get_indicators(symbol)
+            should_exit, reason = self._exits.check(trade, indicators)
+            if should_exit:
+                self._submit_exit(symbol, trade.total_quantity, reason)
 
-                current_price = security.price
-                symbol = security.symbol
-
-                indicators = self._data_handler.get_indicators(symbol)
-                if not indicators:
-                    continue
-
-                # TODO: Add your validation gates here:
-                # tech = self._technical_validator.validate_daily_technicals(...)
-                # setup = self._setup_checker.validate_setup(...)
-                # instrument = self._instrument_selector.select_instrument(...)
-
-                # TODO: Queue passing signals:
-                # self._pending_entry_signals[sym_str] = {
-                #     "symbol": symbol,
-                #     "instrument": instrument,
-                # }
-
-            except Exception as ex:
-                self.error(f"[SCAN] Error processing {sym_str}: {ex}")
-
-        self.debug(f"[SCAN] Done — {len(self._pending_entry_signals)} signal(s) queued")
-
-    def _check_entry_triggers(self):
-        """
-        Phase 2: Entry Trigger — scheduled at ENTRY_TRIGGER_TIME.
-
-        TODO: Implement your entry logic:
-          1. For each pending signal, re-validate Phase 2 conditions
-          2. Check position capacity and no duplicate underlying
-          3. Place order (MarketOrder or LimitOrder)
-        """
-        if self.is_warming_up:
+        # 3. Entries (skip if regime/risk gates closed)
+        if not self._regime.entries_allowed():
+            return
+        if not self._risk.is_new_entry_allowed():
             return
 
-        self.debug(f"[ENTRY] Checking {len(self._pending_entry_signals)} pending signal(s)")
+        portfolio_value = float(self.portfolio.total_portfolio_value)
+        regime_str = config.REGIME_SYMBOL
 
-        for sym_str, signal in list(self._pending_entry_signals.items()):
-            try:
-                if not self._position_manager.can_add_position():
-                    self.debug(f"[ENTRY] At max capacity ({MAX_POSITIONS_OPEN}) — stopping")
-                    break
+        for symbol in list(self._universe.active_symbols):
+            sym_str = str(symbol)
+            if sym_str.split()[0].upper() == regime_str:
+                continue
 
-                if self._position_manager.has_position_for_underlying(sym_str):
-                    continue
+            sec = self.securities.get(symbol)
+            if sec is None or sec.price <= 0:
+                continue
 
-                # TODO: Re-validate entry conditions
-                # TODO: Place order and track in _pending_orders:
-                # ticket = self.market_order(instrument_symbol, FIXED_CONTRACTS)
-                # self._pending_orders[ticket.order_id] = {
-                #     "type": "entry",
-                #     "symbol": sym_str,
-                #     "instrument": str(instrument_symbol),
-                # }
+            indicators = self._data.get_indicators(symbol)
+            if not indicators:
+                continue
 
-            except Exception as ex:
-                self.error(f"[ENTRY] Error processing {sym_str}: {ex}")
+            signal = self._entries.evaluate(sym_str, indicators)
+            if signal is None:
+                continue
 
-    def _check_exit_conditions(self):
-        """
-        Phase 3: Exit Check — scheduled at EXIT_CHECK_TIMES.
+            qty = self._pyramiding.size_leg(indicators["close"], portfolio_value)
+            if qty <= 0:
+                continue
 
-        TODO: Implement your exit logic:
-          1. For each active position, evaluate exit conditions
-          2. On exit signal, place sell order via _execute_exit()
-        """
-        if self.is_warming_up:
+            self._submit_entry(symbol, sym_str, qty, signal)
+
+            if not self._positions.can_add_position():
+                break
+
+    # ------------------------------------------------------------------
+    def _submit_entry(self, symbol, sym_str: str, qty: int, signal: str) -> None:
+        ticket = self.market_order(symbol, qty)
+        if ticket is None:
             return
-
-        for instrument_symbol, trade in list(self._position_manager.active_trades.items()):
-            try:
-                current_price = trade.last_known_price
-
-                should_exit, reason = self._position_manager.check_exit_conditions(
-                    instrument_symbol, current_price
-                )
-                if should_exit:
-                    self._execute_exit(instrument_symbol, reason)
-
-            except Exception as ex:
-                self.error(f"[EXIT CHECK] Error on {instrument_symbol}: {ex}")
-
-    # ========================================================================
-    # HELPER METHODS
-    # ========================================================================
-
-    def _execute_exit(self, instrument_symbol: str, reason: str):
-        """
-        Place a sell order to close a position.
-
-        Args:
-            instrument_symbol: The option/equity symbol to sell
-            reason: Exit reason constant from config.py
-        """
-        trade = self._position_manager.active_trades.get(instrument_symbol)
-        if trade is None:
-            return
-
-        ticket = self.market_order(instrument_symbol, -trade.quantity)
         self._pending_orders[ticket.order_id] = {
-            "type": "exit",
-            "symbol": trade.symbol,
-            "instrument": instrument_symbol,
+            "symbol": sym_str,
+            "type": signal,
+        }
+
+    def _submit_exit(self, symbol_str: str, qty: int, reason: str) -> None:
+        sec = None
+        for s in self.securities.keys:
+            if str(s) == symbol_str:
+                sec = s
+                break
+        if sec is None:
+            return
+        ticket = self.market_order(sec, -qty)
+        if ticket is None:
+            return
+        self._pending_orders[ticket.order_id] = {
+            "symbol": symbol_str,
+            "type": "EXIT",
             "reason": reason,
         }
-        self.log(f"[EXIT ORDER] {instrument_symbol} reason={reason}")

@@ -1,64 +1,52 @@
-"""
-tests/unit/test_position_manager.py — Position Manager Tests
-"""
+"""Unit tests for handlers.position_manager.PositionManager."""
 
 from datetime import date
 
-from handlers.position_manager import PositionManager, TradeRecord
+import config
+from handlers.position_manager import PositionManager
 
 
-class TestPositionManager:
-    """Tests for PositionManager."""
+def test_add_initial_leg(algo):
+    pm = PositionManager(algo)
+    trade = pm.add_leg("AAPL", fill_price=100.0, quantity=10, fill_date=date(2024, 1, 1))
+    assert trade.leg_count == 1
+    assert trade.total_quantity == 10
+    assert trade.avg_entry_price == 100.0
+    assert trade.entry_date == date(2024, 1, 1)
+    assert pm.has_position_for_underlying("AAPL")
 
-    def test_position_manager__can_add_position__under_limit(self, mock_algorithm):
-        """can_add_position() returns True when under MAX_POSITIONS_OPEN."""
-        pm = PositionManager(mock_algorithm)
-        assert pm.can_add_position() is True
 
-    def test_position_manager__add_trade__tracks_position(self, mock_algorithm):
-        """add_trade() creates a TradeRecord in active_trades."""
-        pm = PositionManager(mock_algorithm)
-        trade = pm.add_trade(
-            symbol="AAPL",
-            instrument_symbol="AAPL_C_150",
-            fill_price=5.0,
-            quantity=10,
-            trade_type="SETUP",
-            entry_date=date(2025, 1, 15),
-            target_delta=0.30,
-        )
-        assert "AAPL_C_150" in pm.active_trades
-        assert trade.entry_price == 5.0
-        assert trade.status == "OPEN"
+def test_add_multiple_legs_avg_cost(algo):
+    pm = PositionManager(algo)
+    pm.add_leg("AAPL", 100.0, 10, date(2024, 1, 1))
+    pm.add_leg("AAPL", 110.0, 10, date(2024, 1, 5))
+    trade = pm.get_trade("AAPL")
+    assert trade.leg_count == 2
+    assert trade.total_quantity == 20
+    assert trade.avg_entry_price == 105.0
+    assert trade.last_leg_date == date(2024, 1, 5)
 
-    def test_position_manager__close_trade__returns_pnl(self, mock_algorithm):
-        """close_trade() returns summary dict with P&L."""
-        pm = PositionManager(mock_algorithm)
-        pm.add_trade(
-            symbol="AAPL",
-            instrument_symbol="AAPL_C_150",
-            fill_price=5.0,
-            quantity=10,
-            trade_type="SETUP",
-            entry_date=date(2025, 1, 15),
-        )
-        result = pm.close_trade("AAPL_C_150", exit_price=7.0, reason="PROFIT_TARGET")
-        assert result is not None
-        assert result["pnl"] == (7.0 - 5.0) * 10 * 100
-        assert "AAPL_C_150" not in pm.active_trades
 
-    def test_position_manager__has_position_for_underlying__detects_duplicate(
-        self, mock_algorithm
-    ):
-        """has_position_for_underlying() returns True if position exists."""
-        pm = PositionManager(mock_algorithm)
-        pm.add_trade(
-            symbol="AAPL",
-            instrument_symbol="AAPL_C_150",
-            fill_price=5.0,
-            quantity=10,
-            trade_type="SETUP",
-            entry_date=date(2025, 1, 15),
-        )
-        assert pm.has_position_for_underlying("AAPL") is True
-        assert pm.has_position_for_underlying("MSFT") is False
+def test_can_add_position_capacity(algo):
+    pm = PositionManager(algo)
+    for i in range(config.MAX_POSITIONS_OPEN):
+        pm.add_leg(f"S{i}", 50.0, 1, date(2024, 1, 1))
+    assert pm.can_add_position() is False
+
+
+def test_close_trade_share_pnl(algo):
+    pm = PositionManager(algo)
+    pm.add_leg("X", 100.0, 10, date(2024, 1, 1))
+    pm.add_leg("X", 110.0, 10, date(2024, 1, 5))
+    algo.time = algo.time.replace(year=2024, month=1, day=20)
+    result = pm.close_trade("X", exit_price=120.0, reason=config.EXIT_REASON_MANUAL)
+    assert result is not None
+    # avg = 105, qty = 20, pnl = (120 - 105) * 20 = 300
+    assert result["pnl"] == 300.0
+    assert result["total_quantity"] == 20
+    assert "X" not in pm.active_trades
+
+
+def test_close_unknown_trade_returns_none(algo):
+    pm = PositionManager(algo)
+    assert pm.close_trade("NOPE", 100.0, "X") is None
