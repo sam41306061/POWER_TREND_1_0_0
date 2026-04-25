@@ -1,0 +1,27 @@
+# lean-algo-template
+__pycache__/
+*.pyc
+*.pyo
+.mypy_cache/
+htmlcov/
+.coverage
+*.egg-info/
+dist/
+build/
+docs/
+
+# RAG — crawled data (regenerate with: poetry run python rag/pipelines/ingest_pipeline.py)
+rag/data/raw/
+rag/data/doc_store.json
+rag/data/bm25_corpus.json
+
+# Generated RAG context (regenerate with: poetry run python rag/inject_context.py)
+docs/RAG_CONTEXT.md
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
