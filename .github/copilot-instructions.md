@@ -2,10 +2,17 @@
 
 ## Project Overview
 
-<!-- TODO: Replace with your strategy description -->
-This is a QuantConnect LEAN algorithm template for building modular,
-testable trading strategies. Replace this section with your strategy's
-core thesis, instrument type, and holding period.
+**Power Trend Algo 1** — a daily, long-only trend-following strategy on US
+equities. **QQQ acts as the regime gate** (Mike Webster–style Power Trend
+classifier on rolling EMA21 / SMA50 counters); new entries are allowed
+only while QQQ is in `TREND_UP`. Tradable universe is the **dynamic
+top-200 US equities by 20-day average dollar volume**, refreshed monthly.
+Per-stock entries use a simplified pullback-continuation trigger
+(`price > EMA21 > SMA50` + EMA21 pullback + higher close), with **equal-
+size pyramid adds** capped at `PYRAMID_MAX_ADDS`. Holding period is
+open-ended; positions exit on per-stock breakdown rules. See
+[docs/STRATEGY_OVERVIEW.md](../docs/STRATEGY_OVERVIEW.md) for the full
+spec and Gherkin contract.
 
 ---
 
@@ -46,17 +53,17 @@ Describes the metadata schema, chunking rules, and retrieval workflow for the RA
 
 ## Handler Responsibilities (quick reference)
 
-<!-- TODO: Update this table as you build handlers -->
-
 | Handler | Responsibility |
 |---|---|
-| `universe_filter.py` | Return static symbol list from `universe/candidates.csv` |
-| `data_handler.py` | Compute + cache indicators by `(symbol, date)` |
-| `technical_validator.py` | Technical filter validation (SMA, EMA, ATR) |
-| `setup_checker.py` | Two-phase validation: scan-time (Phase 1) + entry-time (Phase 2) |
-| `instrument_selector.py` | Select optimal contract/instrument for entry |
-| `position_manager.py` | Entry/exit state, P&L tracking, exit logic |
-| `option_analytics.py` | IV, delta, theta, Greeks tracking (options strategies only) |
+| `universe_filter.py` (→ `DynamicUniverseSelector`) | QC coarse-filter callback: liquidity floor → top-200 by 20d $-vol → monthly cache. Force-includes QQQ. |
+| `data_handler.py` | Compute + cache per `(symbol, date)`: `close`, `open`, `low`, `prior_close`, `prior_low`, `EMA21`, `SMA50`, `prior_EMA21`, `prior_SMA50`, `dollar_volume_20d` |
+| `regime_filter.py` *(new)* | Power Trend rolling-counter state machine on QQQ only; exposes `entries_allowed()` and `current_state` |
+| `entry_engine.py` *(new)* | Per-stock initial + add-on (pyramid) entry rules; gated by `regime.entries_allowed()` |
+| `pyramiding_manager.py` *(new)* | Equal-size leg sizing; caps adds at `PYRAMID_MAX_ADDS` |
+| `exit_engine.py` *(new)* | Priority-ordered per-stock exits: SMA breakdown, EMA cross, weakness, stop loss, account drawdown |
+| `risk_manager.py` *(new)* | High-water-mark equity tracking; account drawdown gate (suspends new entries) |
+| `position_manager.py` | Multi-leg avg-cost position state; entry/exit P&L tracking |
+| ~~`technical_validator.py`~~, ~~`setup_checker.py`~~, ~~`instrument_selector.py`~~, ~~`option_analytics.py`~~ | **Deleted** — not used by Power Trend |
 
 ---
 
@@ -72,13 +79,16 @@ Describes the metadata schema, chunking rules, and retrieval workflow for the RA
 
 ## Key Config Thresholds
 
-<!-- TODO: Update this table with your strategy's parameters -->
-
 | Parameter | Value | Constant |
 |---|---|---|
-| Event window | 7–30 days | `MIN/MAX_DAYS_TO_EVENT` |
-| Target delta | 0.30 | `TARGET_DELTA` |
+| Regime symbol | QQQ | `REGIME_SYMBOL` |
+| Regime EMA / SMA | 21 / 50 | `REGIME_EMA_PERIOD` / `REGIME_SMA_PERIOD` |
+| Power Trend activation | low > EMA21 for 10d AND EMA21 > SMA50 for 5d AND SMA50 rising | `LOW_ABOVE_EMA_DAYS` / `EMA_ABOVE_SMA_DAYS` |
+| Universe size / cadence | top 200, monthly | `UNIVERSE_TOP_N` / `UNIVERSE_REFRESH_CADENCE` |
+| Liquidity floor | price ≥ $20, 20d $-vol ≥ $50M | `MIN_PRICE` / `MIN_DOLLAR_VOLUME` |
+| Pyramid cap | 3 adds | `PYRAMID_MAX_ADDS` |
+| Per-leg sizing | 25% of portfolio | `INITIAL_LEG_SIZE_PCT` |
 | Max positions | 10 | `MAX_POSITIONS_OPEN` |
-| Contracts per position | 10 fixed | `FIXED_CONTRACTS` |
-| Stop loss | 50% | `STOP_LOSS_PCT` |
-| Market regime filter | EMA(21) > SMA(50) | `MARKET_REGIME_EMA` / `MARKET_REGIME_SMA` |
+| Stop loss (per position) | 7% | `STOP_LOSS_PCT` |
+| Account DD gate | 15% | `MAX_ACCOUNT_DRAWDOWN_PCT` |
+| Daily evaluation | 09:35 ET | `DAILY_EVAL_TIME` |
