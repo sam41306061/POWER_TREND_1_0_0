@@ -270,9 +270,23 @@ class PositionManager:
             trade.exit_price = exit_price
             trade.exit_date = self._algo.time.date()
             trade.exit_reason = reason
+            total_pnl = sum(
+                ((l.exit_price or 0.0) - l.fill_price)
+                * l.quantity
+                * config.OPTION_CONTRACT_MULTIPLIER
+                for l in trade.legs
+            )
+            holding_days = (
+                (trade.exit_date - trade.entry_date).days if trade.entry_date else 0
+            )
             self._trades.pop(underlying, None)
             self._drop_sid_index(underlying)
             self._closed_trades.append(trade)
+            self._algo.debug(
+                f"[TRADE-CLOSED] {underlying} reason={reason} "
+                f"path=close_leg legs={trade.leg_count} "
+                f"pnl={total_pnl:.0f} hold_days={holding_days}"
+            )
         return result
 
     def close_trade(
@@ -305,6 +319,14 @@ class PositionManager:
         self._trades.pop(symbol, None)
         self._drop_sid_index(symbol)
         self._closed_trades.append(trade)
+        holding_days = (
+            (trade.exit_date - trade.entry_date).days if trade.entry_date else 0
+        )
+        self._algo.debug(
+            f"[TRADE-CLOSED] {symbol} reason={reason} "
+            f"path=close_trade legs={trade.leg_count} "
+            f"pnl={total_pnl:.0f} hold_days={holding_days}"
+        )
         all_legs_qty = sum(l.quantity for l in trade.legs)
         avg_premium = (
             sum(l.fill_price * l.quantity for l in trade.legs) / all_legs_qty

@@ -41,13 +41,15 @@ def test_no_exit_when_all_clear(algo):
     assert decisions == []
 
 
-def test_drawdown_exit_takes_priority(algo):
+def test_drawdown_gate_disabled(algo):
+    """DD circuit-breaker is removed; deep drawdown should NOT trigger an exit
+    if SMA/EMA conditions are healthy."""
     eng, risk = _eng(algo)
     risk.update(100_000 * (1 - config.MAX_ACCOUNT_DRAWDOWN_PCT - 0.01))
     decisions = eng.check(
         _trade(algo), _ind(close=50, ema=40, sma=30), today=date(2024, 1, 15)
     )
-    assert decisions == [(None, config.EXIT_REASON_DRAWDOWN)]
+    assert decisions == []
 
 
 def test_sma_breakdown_trade_wide(algo):
@@ -150,8 +152,9 @@ def test_risk_manager_tracks_hwm(algo):
     assert risk.is_new_entry_allowed() is True
 
 
-def test_risk_manager_blocks_at_threshold(algo):
+def test_risk_manager_always_allows_entries(algo):
+    """DD gate is disabled — entries should always be allowed regardless of equity."""
     risk = RiskManager(algo)
     risk.update(100_000)
     risk.update(100_000 * (1 - config.MAX_ACCOUNT_DRAWDOWN_PCT))
-    assert risk.is_new_entry_allowed() is False
+    assert risk.is_new_entry_allowed() is True

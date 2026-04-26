@@ -63,6 +63,11 @@ INITIAL_LEG_SIZE_PCT: Final[float] = 0.05
 # ==============================================================================
 
 MAX_POSITIONS_OPEN: Final[int] = 10
+# Cap on new INITIAL entries fired in any rolling 7-day window. ADD (pyramid)
+# signals are exempt — those are governed by PYRAMID_MAX_ADDS. Throttle is
+# cleared whenever the account-drawdown gate releases so re-entries can resume
+# immediately after recovery.
+MAX_NEW_INITIAL_ENTRIES_PER_WEEK: Final[int] = 3
 # Deprecated: previously used as underlying-price stop for equities.
 # The strategy now trades long calls; exits use OPTION_PREMIUM_STOP_LOSS_PCT instead.
 STOP_LOSS_PCT: Final[float] = 0.07
@@ -144,6 +149,7 @@ def validate_config() -> None:
     assert 0.0 < INITIAL_LEG_SIZE_PCT <= 1.0
     assert PYRAMID_MAX_ADDS >= 0
     assert MAX_POSITIONS_OPEN > 0
+    assert MAX_NEW_INITIAL_ENTRIES_PER_WEEK > 0
     assert 0.0 < STOP_LOSS_PCT < 1.0
     assert 0.0 < MAX_ACCOUNT_DRAWDOWN_PCT < 1.0
     # Options

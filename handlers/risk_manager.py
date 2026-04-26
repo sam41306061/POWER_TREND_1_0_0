@@ -1,8 +1,10 @@
 """
-handlers/risk_manager.py — Account drawdown gate.
+handlers/risk_manager.py — Equity tracker (drawdown gate DISABLED).
 
-Tracks high-water-mark equity. Blocks new entries (initial + adds) when
-drawdown from HWM >= MAX_ACCOUNT_DRAWDOWN_PCT.
+Tracks high-water-mark equity for diagnostics. The 15% drawdown
+circuit-breaker has been removed; `is_new_entry_allowed()` always returns
+True. We're keeping the class so the orchestrator and exit engine can
+still query `drawdown` for logging.
 """
 
 import config
@@ -26,4 +28,5 @@ class RiskManager:
         return (self.hwm - self.current_equity) / self.hwm
 
     def is_new_entry_allowed(self) -> bool:
-        return self.drawdown < config.MAX_ACCOUNT_DRAWDOWN_PCT
+        # Drawdown gate disabled — always allow new entries.
+        return True

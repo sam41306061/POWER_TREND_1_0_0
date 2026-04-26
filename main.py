@@ -42,7 +42,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
         # ---- Platform setup ----
         # Options data starts in Jan 2012 on QC; restrict the backtest to the
         # window where both equities AND options data are present.
-        self.set_start_date(2012, 1, 1)
+        self.set_start_date(2024, 1, 1)
         self.set_end_date(2025, 12, 31)
         self.set_cash(100_000)
         self.set_benchmark("SPY")
@@ -91,6 +91,12 @@ class PowerTrendAlgorithm(QCAlgorithm):
         # Estimated cash committed to in-flight entry orders not yet filled,
         # so we don't over-commit while DAILY MOO orders are pending.
         self._reserved_cash: float = 0.0
+        # Day-over-day book size tracking for [BOOK-HEALTH] delta.
+        self._prev_trade_count: int = 0
+        # Rolling-window throttle on new INITIAL entries. Stores fill_dates
+        # of recently-queued INITIAL signals; pruned to the trailing 7 calendar
+        # days each evaluation.
+        self._initial_entry_history: list = []
         # _subscribed_options: SID-string -> option canonical Symbol.
         # SID-keyed (not bare-ticker) so a mapfile rename (BEL -> VZ) reuses
         # the existing chain subscription instead of creating a duplicate
@@ -353,16 +359,21 @@ class PowerTrendAlgorithm(QCAlgorithm):
         # is leaked state — discard so the underlying isn't blocked forever.
         self._sweep_stale_pending_entries()
 
-        # 3. Entries (skip if regime/risk gates closed)
+        # 3. Entries (regime gate only — drawdown gate disabled)
         if not self._regime.entries_allowed():
             return
-        if not self._risk.is_new_entry_allowed():
-            return
+
+        # Prune throttle history to the trailing 7 calendar days.
+        today = self.time.date()
+        self._initial_entry_history = [
+            d for d in self._initial_entry_history if (today - d).days < 7
+        ]
 
         regime_str = config.REGIME_SYMBOL
         signals_fired = 0
         skipped_pending = 0
         skipped_full = 0
+        skipped_throttle = 0
 
         # Projected open count = filled positions + queued/in-flight INITIAL
         # entries whose ticker isn't already in the position book.
@@ -412,6 +423,15 @@ class PowerTrendAlgorithm(QCAlgorithm):
             if signal is None:
                 continue
 
+            # Weekly INITIAL-entry throttle. ADDs are exempt (already capped
+            # by PYRAMID_MAX_ADDS and require an existing position).
+            if signal == EntrySignal.INITIAL and (
+                len(self._initial_entry_history)
+                >= config.MAX_NEW_INITIAL_ENTRIES_PER_WEEK
+            ):
+                skipped_throttle += 1
+                continue
+
             signals_fired += 1
 
             # Lazy-load the option chain on the first signal for this underlying.
@@ -432,6 +452,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
             self._pending_entry_first_seen.setdefault(key, self.time.date())
 
             if signal == EntrySignal.INITIAL:
+                self._initial_entry_history.append(today)
                 projected_open += 1
                 if projected_open >= config.MAX_POSITIONS_OPEN:
                     skipped_full += 1
@@ -441,6 +462,8 @@ class PowerTrendAlgorithm(QCAlgorithm):
             self.debug(
                 f"[EVAL] {self.time.date()} signals={signals_fired} "
                 f"skip_pending={skipped_pending} skip_full={skipped_full} "
+                f"skip_throttle={skipped_throttle} "
+                f"throttle_history={len(self._initial_entry_history)}/{config.MAX_NEW_INITIAL_ENTRIES_PER_WEEK} "
                 f"pending_entries={len(self._pending_entries)} "
                 f"pending_orders={len(self._pending_orders)} "
                 f"pending_underlyings={len(self._pending_entry_underlyings)} "
@@ -462,15 +485,20 @@ class PowerTrendAlgorithm(QCAlgorithm):
             if k not in active_keys
             and not any(m.get("underlying") == k for m in self._pending_orders.values())
         )
+        current_trade_count = len(self._positions.active_trades)
+        delta = current_trade_count - self._prev_trade_count
+        delta_str = f"+{delta}" if delta >= 0 else f"{delta}"
         self.debug(
             f"[BOOK-HEALTH] {self.time.date()} "
-            f"trades={len(self._positions.active_trades)} "
+            f"trades={current_trade_count} "
+            f"delta={delta_str} "
             f"orphans={orphans} "
             f"pending_underlyings={len(self._pending_entry_underlyings)} "
             f"stale_pending={stale_pending_keys} "
             f"subs={len(self._subscribed_options)} "
             f"sid_idx={len(getattr(self._positions, '_trades_by_sid', {}))}"
         )
+        self._prev_trade_count = current_trade_count
 
         # Phantom-state detector: dump book contents whenever it grows past the
         # configured cap or pending orders accumulate. Fires on any day, not

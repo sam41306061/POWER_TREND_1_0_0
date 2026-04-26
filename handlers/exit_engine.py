@@ -10,9 +10,11 @@ Priority (per-leg rules evaluated first, in this order):
   2. PREMIUM_STOP_LOSS — current option mid <= leg.fill_price * (1 - X)
 
 Trade-wide rules (any one fires, the entire TradeRecord unwinds):
-  3. ACCOUNT_DRAWDOWN  — risk.drawdown >= MAX_ACCOUNT_DRAWDOWN_PCT
-  4. SMA_BREAKDOWN     — underlying close < SMA50
-  5. EMA_CROSS         — EMA21 < SMA50
+  3. SMA_BREAKDOWN     — underlying close < SMA50
+  4. EMA_CROSS         — EMA21 < SMA50
+
+Note: the ACCOUNT_DRAWDOWN trade-wide rule has been removed — the 15%
+drawdown circuit-breaker is disabled at the strategy level.
 
 The engine itself stays LEAN-free; current option premia must be supplied
 via an injected `premium_lookup(contract_symbol) -> float` callable.
@@ -50,9 +52,7 @@ class ExitEngine:
             today = self._algo.time.date()
 
         # ---------- Trade-wide rules (highest precedence) ----------
-        if self._risk.drawdown >= config.MAX_ACCOUNT_DRAWDOWN_PCT:
-            return [(None, config.EXIT_REASON_DRAWDOWN)]
-
+        # ACCOUNT_DRAWDOWN gate disabled.
         if indicators:
             close = indicators.get("close")
             ema = indicators.get("EMA21")
