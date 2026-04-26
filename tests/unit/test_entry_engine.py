@@ -109,3 +109,37 @@ def test_add_blocked_same_day_as_last_leg(algo):
     pm.add_leg("AAPL", 100.0, 10, fill_date=algo.time.date())
     eng, _ = _engine(algo, _RegimeOn(), _RiskOk(), pm=pm)
     assert eng.evaluate("AAPL", _ind()) is None
+
+
+def test_projected_open_count_blocks_initial_when_at_cap(algo):
+    """When the orchestrator reports projected_open_count >= cap, INITIAL
+    signals must be refused even though active_trades < cap (the gap is
+    in-flight pending entries)."""
+    pm = PositionManager(algo)
+    eng, _ = _engine(algo, _RegimeOn(), _RiskOk(), pm=pm)
+    # Empty book, but caller signals the cap is already saturated by pending.
+    result = eng.evaluate(
+        "AAPL", _ind(), projected_open_count=config.MAX_POSITIONS_OPEN
+    )
+    assert result is None
+
+
+def test_projected_open_count_allows_initial_below_cap(algo):
+    pm = PositionManager(algo)
+    eng, _ = _engine(algo, _RegimeOn(), _RiskOk(), pm=pm)
+    result = eng.evaluate(
+        "AAPL", _ind(), projected_open_count=config.MAX_POSITIONS_OPEN - 1
+    )
+    assert result == EntrySignal.INITIAL
+
+
+def test_projected_open_count_does_not_block_add_signals(algo):
+    """ADD signals don't grow the trade count, so projected_open_count must
+    not gate them."""
+    pm = PositionManager(algo)
+    pm.add_leg("AAPL", 100.0, 10, fill_date=date(2024, 1, 1))
+    eng, _ = _engine(algo, _RegimeOn(), _RiskOk(), pm=pm)
+    result = eng.evaluate(
+        "AAPL", _ind(), projected_open_count=config.MAX_POSITIONS_OPEN + 5
+    )
+    assert result == EntrySignal.ADD

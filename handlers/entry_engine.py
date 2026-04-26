@@ -34,8 +34,19 @@ class EntryEngine:
         self._positions = position_manager
         self._pyramiding = pyramiding
 
-    def evaluate(self, symbol: str, indicators: dict) -> Optional[str]:
-        """Return EntrySignal.INITIAL, EntrySignal.ADD, or None."""
+    def evaluate(
+        self,
+        symbol: str,
+        indicators: dict,
+        projected_open_count: Optional[int] = None,
+    ) -> Optional[str]:
+        """Return EntrySignal.INITIAL, EntrySignal.ADD, or None.
+
+        ``projected_open_count`` overrides the live ``can_add_position()``
+        check so the orchestrator can include in-flight pending entries in
+        the cap accounting (DAILY-resolution market orders fill on the next
+        session, so multiple INITIAL signals can otherwise queue past the cap).
+        """
         if not indicators:
             return None
         if not self._regime.entries_allowed():
@@ -61,7 +72,11 @@ class EntryEngine:
 
         trade = self._positions.get_trade(symbol)
         if trade is None:
-            if not self._positions.can_add_position():
+            import config as _config  # local import keeps handler LEAN-free
+            if projected_open_count is not None:
+                if projected_open_count >= _config.MAX_POSITIONS_OPEN:
+                    return None
+            elif not self._positions.can_add_position():
                 return None
             return EntrySignal.INITIAL
 

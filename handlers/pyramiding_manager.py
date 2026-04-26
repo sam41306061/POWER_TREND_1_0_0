@@ -1,7 +1,8 @@
 """
-handlers/pyramiding_manager.py — Equal-size leg sizing.
+handlers/pyramiding_manager.py — Equal-size leg sizing for option contracts.
 
-shares_per_leg = floor(INITIAL_LEG_SIZE_PCT * cash_value / price)
+contracts_per_leg = floor(OPTION_PREMIUM_LEG_BUDGET_PCT * cash_value /
+                          (mid_premium * OPTION_CONTRACT_MULTIPLIER))
 
 `cash_value` is the account's CURRENT free cash at the moment of sizing.
 Using cash (not total portfolio value) means each new order organically
@@ -19,11 +20,15 @@ class PyramidingManager:
     def __init__(self, algorithm):
         self._algo = algorithm
 
-    def size_leg(self, price: float, cash_value: float) -> int:
-        if price <= 0 or cash_value <= 0:
+    def size_leg(self, mid_premium: float, cash_value: float) -> int:
+        """Return number of CONTRACTS to buy for a single leg."""
+        if mid_premium <= 0 or cash_value <= 0:
             return 0
-        notional = config.INITIAL_LEG_SIZE_PCT * cash_value
-        return int(math.floor(notional / price))
+        budget = config.OPTION_PREMIUM_LEG_BUDGET_PCT * cash_value
+        cost_per_contract = mid_premium * config.OPTION_CONTRACT_MULTIPLIER
+        if cost_per_contract <= 0:
+            return 0
+        return int(math.floor(budget / cost_per_contract))
 
     def can_add_more(self, leg_count: int) -> bool:
         # leg_count includes initial leg; PYRAMID_MAX_ADDS is the number of *adds*

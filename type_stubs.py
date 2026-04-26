@@ -30,15 +30,44 @@ from datetime import datetime, date as _date
 # SYMBOL (Singleton Cache)
 # ============================================================================
 
+class _SecurityIdentifier:
+    """Stub for QC's SecurityIdentifier; only `to_string()` is needed."""
+
+    def __init__(self, sid: str):
+        self._sid = sid
+
+    def to_string(self) -> str:
+        return self._sid
+
+    # PascalCase alias so handler code that probes `.ToString()` also works.
+    def ToString(self) -> str:  # noqa: N802 — match QC API
+        return self._sid
+
+    def __str__(self):
+        return self._sid
+
+
 class Symbol:
-    """Singleton Symbol cache — each unique symbol string has one Symbol object."""
+    """Singleton Symbol cache — each unique symbol string has one Symbol object.
+
+    Optionally accepts a `sid` argument so tests can simulate ticker renames
+    where two distinct Symbols (different display tickers) share the same SID.
+    """
     _cache = {}
 
-    def __new__(cls, value: str):
+    def __new__(cls, value: str, sid: str = None):
         if value not in cls._cache:
             instance = super().__new__(cls)
             instance.value = value
+            instance.id = _SecurityIdentifier(sid if sid is not None else value)
+            # PascalCase alias for handler code that uses `.ID`.
+            instance.ID = instance.id
             cls._cache[value] = instance
+        elif sid is not None:
+            # Allow tests to retroactively bind a SID on first explicit set.
+            cached = cls._cache[value]
+            cached.id = _SecurityIdentifier(sid)
+            cached.ID = cached.id
         return cls._cache[value]
 
     def __str__(self):

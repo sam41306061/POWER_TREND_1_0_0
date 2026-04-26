@@ -63,8 +63,42 @@ INITIAL_LEG_SIZE_PCT: Final[float] = 0.05
 # ==============================================================================
 
 MAX_POSITIONS_OPEN: Final[int] = 10
+# Deprecated: previously used as underlying-price stop for equities.
+# The strategy now trades long calls; exits use OPTION_PREMIUM_STOP_LOSS_PCT instead.
 STOP_LOSS_PCT: Final[float] = 0.07
 MAX_ACCOUNT_DRAWDOWN_PCT: Final[float] = 0.15
+
+
+# ==============================================================================
+# OPTIONS (long-dated calls)
+# ==============================================================================
+
+# Days-to-expiry window for contract selection
+OPTION_DTE_MIN: Final[int] = 90
+OPTION_DTE_MAX: Final[int] = 270
+
+# Delta band for selection. Lower bound 0.70 = deep ITM; upper 0.95 excludes
+# effectively-delta-1 contracts that behave like the underlying.
+OPTION_TARGET_DELTA: Final[float] = 0.70
+OPTION_DELTA_MIN: Final[float] = 0.70
+OPTION_DELTA_MAX: Final[float] = 0.95
+
+# Force close any leg whose contract expires within this many calendar days.
+OPTION_FORCE_EXIT_DAYS_BEFORE_EXPIRY: Final[int] = 14
+
+# Liquidity / spread gates for selection
+OPTION_MIN_OPEN_INTEREST: Final[int] = 100
+OPTION_MAX_BID_ASK_SPREAD_PCT: Final[float] = 0.10  # (ask-bid)/mid
+
+# Premium-loss stop per leg: exit a leg if current mid <= fill_premium * (1 - X)
+OPTION_PREMIUM_STOP_LOSS_PCT: Final[float] = 0.50
+
+# Per-leg premium budget as a fraction of CURRENT CASH
+# (mirrors INITIAL_LEG_SIZE_PCT semantics, applied to option premium spend).
+OPTION_PREMIUM_LEG_BUDGET_PCT: Final[float] = 0.05
+
+# Standard listed equity option contract multiplier (shares per contract).
+OPTION_CONTRACT_MULTIPLIER: Final[int] = 100
 
 
 # ==============================================================================
@@ -90,6 +124,8 @@ REGIME_TREND_END: Final[str] = "TREND_END"
 
 EXIT_REASON_DRAWDOWN: Final[str] = "ACCOUNT_DRAWDOWN"
 EXIT_REASON_STOP_LOSS: Final[str] = "STOP_LOSS"
+EXIT_REASON_PREMIUM_STOP: Final[str] = "PREMIUM_STOP_LOSS"
+EXIT_REASON_DTE_FORCE: Final[str] = "DTE_FORCE_CLOSE"
 EXIT_REASON_SMA_BREAKDOWN: Final[str] = "SMA_BREAKDOWN"
 EXIT_REASON_EMA_CROSS: Final[str] = "EMA_CROSS"
 EXIT_REASON_MANUAL: Final[str] = "MANUAL"
@@ -110,6 +146,15 @@ def validate_config() -> None:
     assert MAX_POSITIONS_OPEN > 0
     assert 0.0 < STOP_LOSS_PCT < 1.0
     assert 0.0 < MAX_ACCOUNT_DRAWDOWN_PCT < 1.0
+    # Options
+    assert 0 < OPTION_DTE_MIN < OPTION_DTE_MAX
+    assert 0.0 < OPTION_DELTA_MIN <= OPTION_TARGET_DELTA <= OPTION_DELTA_MAX < 1.0
+    assert 0 < OPTION_FORCE_EXIT_DAYS_BEFORE_EXPIRY < OPTION_DTE_MIN
+    assert OPTION_MIN_OPEN_INTEREST >= 0
+    assert 0.0 < OPTION_MAX_BID_ASK_SPREAD_PCT < 1.0
+    assert 0.0 < OPTION_PREMIUM_STOP_LOSS_PCT < 1.0
+    assert 0.0 < OPTION_PREMIUM_LEG_BUDGET_PCT <= 1.0
+    assert OPTION_CONTRACT_MULTIPLIER > 0
 
 
 validate_config()
