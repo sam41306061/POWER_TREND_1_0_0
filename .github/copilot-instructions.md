@@ -2,15 +2,19 @@
 
 ## Project Overview
 
-**Power Trend Algo 1** — a daily, long-only trend-following strategy on US
-equities. **QQQ acts as the regime gate** (Mike Webster–style Power Trend
-classifier on rolling EMA21 / SMA50 counters); new entries are allowed
-only while QQQ is in `TREND_UP`. Tradable universe is the **dynamic
-top-200 US equities by 20-day average dollar volume**, refreshed monthly.
-Per-stock entries use a simplified pullback-continuation trigger
-(`price > EMA21 > SMA50` + EMA21 pullback + higher close), with **equal-
-size pyramid adds** capped at `PYRAMID_MAX_ADDS`. Holding period is
-open-ended; positions exit on per-stock breakdown rules. See
+**Power Trend Algo 1** — a daily, long-only trend-following strategy that
+trades **long-dated CALL options** on US equities. **QQQ acts as the
+regime gate** (Mike Webster–style Power Trend classifier on rolling
+EMA21 / SMA50 counters); new entries are allowed only while QQQ is in
+`TREND_UP`. Tradable universe is the **dynamic top-200 US equities by
+20-day average dollar volume**, refreshed monthly. Per-stock entries
+use a simplified pullback-continuation trigger
+(`price > EMA21 > SMA50` + EMA21 pullback + higher close); each fired
+signal is converted into a long call (90–270 DTE, delta 0.70–0.95) via
+`InstrumentSelector`. **Equal-size pyramid adds** are capped at
+`PYRAMID_MAX_ADDS`. Holding period is open-ended; per-leg exits fire
+on DTE force-close (≤14 days) and 50% premium loss; trade-wide exits
+fire on SMA breakdown, EMA cross, and account drawdown. See
 [docs/STRATEGY_OVERVIEW.md](../docs/STRATEGY_OVERVIEW.md) for the full
 spec and Gherkin contract.
 
@@ -57,13 +61,14 @@ Describes the metadata schema, chunking rules, and retrieval workflow for the RA
 |---|---|
 | `universe_filter.py` (→ `DynamicUniverseSelector`) | QC coarse-filter callback: liquidity floor → top-200 by 20d $-vol → monthly cache. Force-includes QQQ. |
 | `data_handler.py` | Compute + cache per `(symbol, date)`: `close`, `open`, `low`, `prior_close`, `prior_low`, `EMA21`, `SMA50`, `prior_EMA21`, `prior_SMA50`, `dollar_volume_20d` |
-| `regime_filter.py` *(new)* | Power Trend rolling-counter state machine on QQQ only; exposes `entries_allowed()` and `current_state` |
-| `entry_engine.py` *(new)* | Per-stock initial + add-on (pyramid) entry rules; gated by `regime.entries_allowed()` |
-| `pyramiding_manager.py` *(new)* | Equal-size leg sizing; caps adds at `PYRAMID_MAX_ADDS` |
-| `exit_engine.py` *(new)* | Priority-ordered per-stock exits: SMA breakdown, EMA cross, weakness, stop loss, account drawdown |
-| `risk_manager.py` *(new)* | High-water-mark equity tracking; account drawdown gate (suspends new entries) |
-| `position_manager.py` | Multi-leg avg-cost position state; entry/exit P&L tracking |
-| ~~`technical_validator.py`~~, ~~`setup_checker.py`~~, ~~`instrument_selector.py`~~, ~~`option_analytics.py`~~ | **Deleted** — not used by Power Trend |
+| `regime_filter.py` | Power Trend rolling-counter state machine on QQQ only; exposes `entries_allowed()` and `current_state` |
+| `entry_engine.py` | Per-stock initial + add-on (pyramid) entry rules on the underlying; gated by `regime.entries_allowed()` |
+| `instrument_selector.py` | Picks one long call per signal: calls-only, DTE 90–270, delta 0.70–0.95, OI/spread gates, ranks by closest to `OPTION_TARGET_DELTA` |
+| `pyramiding_manager.py` | Premium-budget contract sizing; caps adds at `PYRAMID_MAX_ADDS` |
+| `exit_engine.py` | Returns `list[(leg|None, reason)]`. Per-leg: `DTE_FORCE_CLOSE`, `PREMIUM_STOP_LOSS`. Trade-wide: `ACCOUNT_DRAWDOWN`, `SMA_BREAKDOWN`, `EMA_CROSS` |
+| `risk_manager.py` | High-water-mark equity tracking; account drawdown gate (suspends new entries) |
+| `position_manager.py` | Multi-leg position state keyed by underlying; legs carry contract metadata; `add_leg`, `close_leg`, `close_trade` |
+| ~~`option_analytics.py`~~, ~~`technical_validator.py`~~, ~~`setup_checker.py`~~ | **Deleted** — not used by Power Trend |
 
 ---
 
@@ -87,8 +92,11 @@ Describes the metadata schema, chunking rules, and retrieval workflow for the RA
 | Universe size / cadence | top 200, monthly | `UNIVERSE_TOP_N` / `UNIVERSE_REFRESH_CADENCE` |
 | Liquidity floor | price ≥ $20, 20d $-vol ≥ $50M | `MIN_PRICE` / `MIN_DOLLAR_VOLUME` |
 | Pyramid cap | 3 adds | `PYRAMID_MAX_ADDS` |
-| Per-leg sizing | 25% of portfolio | `INITIAL_LEG_SIZE_PCT` |
+| Per-leg sizing (premium budget) | 5% of cash | `OPTION_PREMIUM_LEG_BUDGET_PCT` |
 | Max positions | 10 | `MAX_POSITIONS_OPEN` |
-| Stop loss (per position) | 7% | `STOP_LOSS_PCT` |
+| Option DTE band | 90–270 days | `OPTION_DTE_MIN` / `OPTION_DTE_MAX` |
+| Option delta band | 0.70–0.95 (target 0.70) | `OPTION_DELTA_MIN` / `OPTION_DELTA_MAX` / `OPTION_TARGET_DELTA` |
+| DTE force-close | ≤14 days to expiry | `OPTION_FORCE_EXIT_DAYS_BEFORE_EXPIRY` |
+| Premium stop loss (per leg) | 50% of paid premium | `OPTION_PREMIUM_STOP_LOSS_PCT` |
 | Account DD gate | 15% | `MAX_ACCOUNT_DRAWDOWN_PCT` |
 | Daily evaluation | 09:35 ET | `DAILY_EVAL_TIME` |
