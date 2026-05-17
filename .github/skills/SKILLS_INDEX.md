@@ -35,12 +35,11 @@ that tests enforce. Consult them before modifying any handler.
 
 ## trading/
 
-<!-- TODO: Add strategy-specific trading skill files -->
-
 | File | Status | Description |
 |---|---|---|
-| | 📋 Stub | Create files for your strategy's validation rules |
-| | 📋 Stub | Create files for your position management state machine |
+| [webby_rsi.md](trading/webby_rsi.md) | ✅ Populated | Webby RSI 2.0: three components (`atr_stretch_low`, `high_vs_ema21`, `high_vs_sma10`), ATR windows, stretch/trim rule |
+| [power_trend.md](trading/power_trend.md) | ✅ Populated | Power Trend state machine (4-rule strict vs lite), state table, re-activation policy, Webby RSI during trend |
+| [order_management.md](trading/order_management.md) | ✅ Populated | Exit priority waterfall (Priority 0 stretch-trim through Priority 4), sizing rules, re-entry checklist |
 
 ## debugging/
 
@@ -57,6 +56,12 @@ that tests enforce. Consult them before modifying any handler.
 | [overfitting_prevention.md](backtesting/overfitting_prevention.md) | ✅ Populated | Hypothesis-driven research, parameter detection, backtest count limits |
 | [deployment_constraints.md](backtesting/deployment_constraints.md) | ✅ Populated | Node specs, RAM/log/order/chart quotas, runtime limits |
 | [debugging_backtests.md](backtesting/debugging_backtests.md) | ✅ Populated | QC debugger workflow, breakpoints, variable inspection |
+
+## bugs_and_lessons/
+
+| File | Status | Description |
+|---|---|---|
+| [silent_position_exit_failure.md](bugs_and_lessons/silent_position_exit_failure.md) | ✅ Populated | Two-gate silent exit failure: history fetch + security lookup. Stop loss bypassed for delisted/dropped symbols. Cascade: position lock-up → cap full → zero new entries → Sharpe 0.038. Log tags: `[DATA CRITICAL]`, `[EXIT CRITICAL]`, `[EXIT WARN]`, `[EXIT SIGNAL]`, `[REGIME TRANSITION]` |
 
 ## performant_software/
 

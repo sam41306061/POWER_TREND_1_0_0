@@ -2,15 +2,18 @@
 handlers/data_handler.py — Indicator Computation & Caching
 
 Computes per-(symbol, date):
-  close, open, low, prior_close, prior_low,
-  EMA21, SMA50, prior_EMA21, prior_SMA50,
-  dollar_volume_20d, atr_14, atr_stretch_low, is_blue_bar
+  close, open, high, low, prior_close, prior_low,
+  EMA21, SMA50, SMA10, prior_EMA21, prior_SMA50,
+  dollar_volume_20d, atr_14, atr_50,
+  atr_stretch_low, high_vs_ema21, high_vs_sma10, is_blue_bar
 
 Cache key: (str(symbol), algo.time.date()).
 Test injection: callers may pass `history=` to bypass the LEAN history API.
 """
 
 from typing import Optional
+
+import numpy as np
 
 import config
 
@@ -27,6 +30,7 @@ class DataHandler:
             config.REGIME_SMA_PERIOD,
             config.DOLLAR_VOLUME_LOOKBACK,
             config.ATR_PERIOD,
+            config.WEBBY_RSI_ATR_PERIOD,
         ) + 30
 
     def clear_cache(self) -> None:
@@ -42,6 +46,9 @@ class DataHandler:
 
         bars = history if history is not None else self._fetch_history(symbol)
         indicators = self._compute(bars)
+        if indicators is None and bars is not None:
+            n = len(bars) if hasattr(bars, "__len__") else "?"
+            self._algo.debug(f"[DATA WARN] insufficient bars for {sym_str} ({n} bars) — indicators not computed")
         if indicators is not None and history is None:
             self._cache[cache_key] = indicators
         return indicators
@@ -51,7 +58,8 @@ class DataHandler:
         try:
             from AlgorithmImports import Resolution  # type: ignore
             return self._algo.history(symbol, self._lookback, Resolution.DAILY)
-        except Exception:
+        except Exception as e:
+            self._algo.log(f"[DATA CRITICAL] history fetch failed for {symbol}: {e}")
             return None
 
     def _compute(self, bars) -> Optional[dict]:
@@ -70,12 +78,14 @@ class DataHandler:
             config.REGIME_SMA_PERIOD,
             config.DOLLAR_VOLUME_LOOKBACK,
             config.ATR_PERIOD,
+            config.WEBBY_RSI_ATR_PERIOD,
         ) + 1
         if n < min_required:
             return None
 
         close = float(closes[-1])
         open_ = float(opens[-1])
+        high = float(highs[-1])
         low = float(lows[-1])
         prior_close = float(closes[-2])
         prior_low = float(lows[-2])
@@ -87,9 +97,13 @@ class DataHandler:
         ema_prior = self._ema(closes[:-1], ema_period)
         sma_today = sum(closes[-sma_period:]) / sma_period
         sma_prior = sum(closes[-sma_period - 1:-1]) / sma_period
+        sma10 = sum(closes[-config.STOCK_SMA10_PERIOD:]) / config.STOCK_SMA10_PERIOD
 
         atr_14 = self._atr(highs, lows, closes, config.ATR_PERIOD)
-        atr_stretch_low = (low - ema_today) / atr_14 if atr_14 > 0 else 0.0
+        atr_50 = self._atr(highs, lows, closes, config.WEBBY_RSI_ATR_PERIOD)
+        atr_stretch_low = (low - ema_today) / atr_50 if atr_50 > 0 else 0.0
+        high_vs_ema21 = (ema_today - high) / atr_50 if atr_50 > 0 else 0.0
+        high_vs_sma10 = (high - sma10) / atr_50 if atr_50 > 0 else 0.0
         is_blue_bar = close >= open_
 
         dv_lookback = config.DOLLAR_VOLUME_LOOKBACK
@@ -100,43 +114,48 @@ class DataHandler:
         return {
             "close": close,
             "open": open_,
+            "high": high,
             "low": low,
             "prior_close": prior_close,
             "prior_low": prior_low,
             "EMA21": ema_today,
             "SMA50": sma_today,
+            "SMA10": sma10,
             "prior_EMA21": ema_prior,
             "prior_SMA50": sma_prior,
             "dollar_volume_20d": dollar_volume_20d,
             "atr_14": atr_14,
+            "atr_50": atr_50,
             "atr_stretch_low": atr_stretch_low,
+            "high_vs_ema21": high_vs_ema21,
+            "high_vs_sma10": high_vs_sma10,
             "is_blue_bar": is_blue_bar,
         }
 
     # ------------------------------------------------------------------
     @staticmethod
     def _ema(values, period: int) -> float:
-        """Standard EMA seeded from SMA of first `period` closes."""
-        if len(values) < period:
+        """Standard EMA seeded from SMA of first `period` closes. NumPy-backed seed."""
+        arr = np.asarray(values, dtype=np.float64)
+        n = len(arr)
+        if n < period:
             return float("nan")
-        seed = sum(values[:period]) / period
         alpha = 2.0 / (period + 1)
-        ema = seed
-        for v in values[period:]:
-            ema = alpha * float(v) + (1 - alpha) * ema
-        return float(ema)
+        ema = float(np.mean(arr[:period]))
+        for v in arr[period:]:
+            ema = alpha * v + (1.0 - alpha) * ema
+        return ema
 
     @staticmethod
     def _atr(highs, lows, closes, period: int) -> float:
         n = len(closes)
         if n < period + 1:
             return 0.0
-        trs = []
-        for i in range(n - period, n):
-            hi, lo, prev_close = float(highs[i]), float(lows[i]), float(closes[i - 1])
-            tr = max(hi - lo, abs(hi - prev_close), abs(lo - prev_close))
-            trs.append(tr)
-        return sum(trs) / period
+        hi = np.asarray(highs[-(period + 1):], dtype=np.float64)
+        lo = np.asarray(lows[-(period + 1):], dtype=np.float64)
+        pc = np.asarray(closes[-(period + 1):], dtype=np.float64)
+        tr = np.maximum(hi[1:] - lo[1:], np.maximum(np.abs(hi[1:] - pc[:-1]), np.abs(lo[1:] - pc[:-1])))
+        return float(np.mean(tr))
 
     @staticmethod
     def _extract(bars, column: str) -> list:

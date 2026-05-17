@@ -34,15 +34,23 @@ def test_returns_none_when_history_too_short(algo):
     assert out is None
 
 
+def test_returns_none_when_history_below_atr50(algo):
+    """Fewer than WEBBY_RSI_ATR_PERIOD+1 bars must return None."""
+    dh = DataHandler(algo)
+    out = dh.get_indicators("X", history=_trend_bars(n=config.WEBBY_RSI_ATR_PERIOD))
+    assert out is None
+
+
 def test_computes_all_required_fields(algo):
     dh = DataHandler(algo)
     bars = _trend_bars(n=120)
     ind = dh.get_indicators("X", history=bars)
     assert ind is not None
     expected = {
-        "close", "open", "low", "prior_close", "prior_low",
-        "EMA21", "SMA50", "prior_EMA21", "prior_SMA50",
-        "dollar_volume_20d", "atr_14", "atr_stretch_low", "is_blue_bar",
+        "close", "open", "high", "low", "prior_close", "prior_low",
+        "EMA21", "SMA50", "SMA10", "prior_EMA21", "prior_SMA50",
+        "dollar_volume_20d", "atr_14", "atr_50",
+        "atr_stretch_low", "high_vs_ema21", "high_vs_sma10", "is_blue_bar",
     }
     assert expected <= set(ind.keys())
 

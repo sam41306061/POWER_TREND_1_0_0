@@ -104,6 +104,25 @@ class PositionManager:
         )
         return trade
 
+    def reduce_position(self, symbol: str, qty_sold: int) -> None:
+        """Remove qty_sold shares LIFO — newest legs consumed first (partial trim)."""
+        trade = self._trades.get(symbol)
+        if trade is None:
+            return
+        remaining = qty_sold
+        while remaining > 0 and trade.legs:
+            last_leg = trade.legs[-1]
+            if last_leg.quantity <= remaining:
+                remaining -= last_leg.quantity
+                trade.legs.pop()
+            else:
+                last_leg.quantity -= remaining
+                remaining = 0
+        self._algo.debug(
+            f"[POSITION] {symbol} partial trim {qty_sold} shares, "
+            f"remaining {trade.total_quantity}"
+        )
+
     def close_trade(
         self, symbol: str, exit_price: float, reason: str
     ) -> Optional[dict]:

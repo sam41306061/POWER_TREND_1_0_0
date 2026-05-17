@@ -32,6 +32,8 @@ ENABLE_TREND_PRESSURE: Final[bool] = True
 # ==============================================================================
 
 ATR_PERIOD: Final[int] = 14
+WEBBY_RSI_ATR_PERIOD: Final[int] = 50
+WEBBY_RSI_STRETCH_LEVEL: Final[float] = 3.0
 
 
 # ==============================================================================
@@ -51,6 +53,7 @@ DOLLAR_VOLUME_LOOKBACK: Final[int] = 20
 
 STOCK_EMA_PERIOD: Final[int] = 21
 STOCK_SMA_PERIOD: Final[int] = 50
+STOCK_SMA10_PERIOD: Final[int] = 10
 PYRAMID_MAX_ADDS: Final[int] = 3
 # Per-leg sizing as a fraction of CURRENT CASH (not portfolio value).
 # 5% of cash per leg keeps total deployed capital well under available cash even
@@ -65,6 +68,7 @@ INITIAL_LEG_SIZE_PCT: Final[float] = 0.05
 MAX_POSITIONS_OPEN: Final[int] = 10
 STOP_LOSS_PCT: Final[float] = 0.07
 MAX_ACCOUNT_DRAWDOWN_PCT: Final[float] = 0.15
+PARTIAL_EXIT_TRIM_FRACTION: Final[float] = 0.50
 
 
 # ==============================================================================
@@ -92,6 +96,7 @@ EXIT_REASON_DRAWDOWN: Final[str] = "ACCOUNT_DRAWDOWN"
 EXIT_REASON_STOP_LOSS: Final[str] = "STOP_LOSS"
 EXIT_REASON_SMA_BREAKDOWN: Final[str] = "SMA_BREAKDOWN"
 EXIT_REASON_EMA_CROSS: Final[str] = "EMA_CROSS"
+EXIT_REASON_STRETCH_TRIM: Final[str] = "STRETCH_TRIM"
 EXIT_REASON_MANUAL: Final[str] = "MANUAL"
 
 
@@ -110,6 +115,9 @@ def validate_config() -> None:
     assert MAX_POSITIONS_OPEN > 0
     assert 0.0 < STOP_LOSS_PCT < 1.0
     assert 0.0 < MAX_ACCOUNT_DRAWDOWN_PCT < 1.0
+    assert WEBBY_RSI_ATR_PERIOD > ATR_PERIOD
+    assert WEBBY_RSI_STRETCH_LEVEL > 0.0
+    assert 0.0 < PARTIAL_EXIT_TRIM_FRACTION < 1.0
 
 
 validate_config()

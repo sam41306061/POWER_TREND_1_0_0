@@ -106,6 +106,12 @@ class PowerTrendAlgorithm(QCAlgorithm):
             self.log(
                 f"[FILL ENTRY/{meta['type']}] {symbol} qty={fill_qty} @ {fill_price:.2f}"
             )
+        elif meta["type"] == "PARTIAL_EXIT":
+            self._positions.reduce_position(symbol=symbol, qty_sold=fill_qty)
+            self.log(
+                f"[FILL PARTIAL EXIT] {symbol} trimmed {fill_qty} @ {fill_price:.2f} "
+                f"reason={meta.get('reason', config.EXIT_REASON_STRETCH_TRIM)}"
+            )
         elif meta["type"] == "EXIT":
             result = self._positions.close_trade(
                 symbol=symbol,
@@ -144,14 +150,42 @@ class PowerTrendAlgorithm(QCAlgorithm):
             if trade is None:
                 continue
             indicators = self._data.get_indicators(symbol)
+
+            if not indicators:
+                self.debug(
+                    f"[EXIT WARN] {symbol}: no indicators — stop loss cannot evaluate, "
+                    f"last_known_price={trade.last_known_price:.2f}"
+                )
+
+            # 2a. Stretch-trim partial exit (Priority 0 — fires before full-exit check)
+            should_trim, trim_reason = self._exits.check_partial(trade, indicators)
+            if should_trim:
+                trim_qty = max(1, int(trade.total_quantity * config.PARTIAL_EXIT_TRIM_FRACTION))
+                self.debug(
+                    f"[TRIM SIGNAL] {symbol} reason={trim_reason} trim_qty={trim_qty} "
+                    f"of total={trade.total_quantity}"
+                )
+                self._submit_partial_exit(symbol, trim_qty, trim_reason)
+                continue  # skip full-exit rules this bar
+
+            # 2b. Full exit (Priorities 1-4)
             should_exit, reason = self._exits.check(trade, indicators)
             if should_exit:
+                self.debug(
+                    f"[EXIT SIGNAL] {symbol} reason={reason} qty={trade.total_quantity} "
+                    f"avg_entry={trade.avg_entry_price:.2f}"
+                )
                 self._submit_exit(symbol, trade.total_quantity, reason)
 
         # 3. Entries (skip if regime/risk gates closed)
         if not self._regime.entries_allowed():
+            self.debug(f"[ENTRY GATE] entries blocked — regime={self._regime.current_state}")
             return
         if not self._risk.is_new_entry_allowed():
+            self.debug(
+                f"[ENTRY GATE] entries blocked — drawdown={self._risk.drawdown:.1%} "
+                f">= {config.MAX_ACCOUNT_DRAWDOWN_PCT:.0%}"
+            )
             return
 
         # Per-leg sizing uses CURRENT CASH (not total portfolio value).
@@ -178,11 +212,19 @@ class PowerTrendAlgorithm(QCAlgorithm):
             cash_value = float(self.portfolio.cash)
             qty = self._pyramiding.size_leg(indicators["close"], cash_value)
             if qty <= 0:
+                self.debug(
+                    f"[ENTRY SKIP] {sym_str}: qty=0 at close={indicators['close']:.2f} "
+                    f"cash={cash_value:.0f}"
+                )
                 continue
 
             self._submit_entry(symbol, sym_str, qty, signal)
 
             if not self._positions.can_add_position():
+                self.debug(
+                    f"[ENTRY GATE] position cap reached — "
+                    f"{len(self._positions.active_trades)}/{config.MAX_POSITIONS_OPEN} slots used"
+                )
                 break
 
     # ------------------------------------------------------------------
@@ -195,16 +237,49 @@ class PowerTrendAlgorithm(QCAlgorithm):
             "type": signal,
         }
 
-    def _submit_exit(self, symbol_str: str, qty: int, reason: str) -> None:
+    def _submit_partial_exit(self, symbol_str: str, qty: int, reason: str) -> None:
         sec = None
-        for s in self.securities.keys:
-            if str(s) == symbol_str:
-                sec = s
+        for security in self.securities.values():
+            if str(security.symbol) == symbol_str:
+                sec = security.symbol
                 break
         if sec is None:
+            self.log(
+                f"[EXIT CRITICAL] {symbol_str}: not in securities — "
+                f"{qty} shares cannot be partially exited (reason={reason})"
+            )
             return
         ticket = self.market_order(sec, -qty)
         if ticket is None:
+            self.log(
+                f"[EXIT CRITICAL] {symbol_str}: market_order returned None — "
+                f"partial exit order rejected (reason={reason})"
+            )
+            return
+        self._pending_orders[ticket.order_id] = {
+            "symbol": symbol_str,
+            "type": "PARTIAL_EXIT",
+            "reason": reason,
+        }
+
+    def _submit_exit(self, symbol_str: str, qty: int, reason: str) -> None:
+        sec = None
+        for security in self.securities.values():
+            if str(security.symbol) == symbol_str:
+                sec = security.symbol
+                break
+        if sec is None:
+            self.log(
+                f"[EXIT CRITICAL] {symbol_str}: not in securities — "
+                f"{qty} shares cannot be exited (reason={reason})"
+            )
+            return
+        ticket = self.market_order(sec, -qty)
+        if ticket is None:
+            self.log(
+                f"[EXIT CRITICAL] {symbol_str}: market_order returned None — "
+                f"exit order rejected (reason={reason})"
+            )
             return
         self._pending_orders[ticket.order_id] = {
             "symbol": symbol_str,

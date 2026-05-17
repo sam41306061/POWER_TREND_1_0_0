@@ -8,8 +8,8 @@ from handlers.position_manager import PositionManager
 from handlers.risk_manager import RiskManager
 
 
-def _ind(close=110, ema=105, sma=100):
-    return {"close": close, "EMA21": ema, "SMA50": sma}
+def _ind(close=110, ema=105, sma=100, high_vs_sma10=0.0):
+    return {"close": close, "EMA21": ema, "SMA50": sma, "high_vs_sma10": high_vs_sma10}
 
 
 def _trade(algo, avg_price=100.0, qty=10):
@@ -67,6 +67,44 @@ def test_ema_cross_exit(algo):
 
 
 # ----------------------------------------------------------------------
+# check_partial tests
+# ----------------------------------------------------------------------
+
+
+def test_partial_trim_fires_at_stretch_level(algo):
+    risk = RiskManager(algo)
+    risk.update(100_000)
+    eng = ExitEngine(algo, risk)
+    should_trim, reason = eng.check_partial(
+        _trade(algo), _ind(high_vs_sma10=config.WEBBY_RSI_STRETCH_LEVEL)
+    )
+    assert should_trim is True
+    assert reason == config.EXIT_REASON_STRETCH_TRIM
+
+
+def test_partial_trim_does_not_fire_below_stretch_level(algo):
+    risk = RiskManager(algo)
+    risk.update(100_000)
+    eng = ExitEngine(algo, risk)
+    should_trim, reason = eng.check_partial(
+        _trade(algo), _ind(high_vs_sma10=config.WEBBY_RSI_STRETCH_LEVEL - 0.01)
+    )
+    assert should_trim is False
+    assert reason is None
+
+
+def test_partial_trim_returns_false_on_empty_indicators(algo):
+    risk = RiskManager(algo)
+    risk.update(100_000)
+    eng = ExitEngine(algo, risk)
+    should_trim, reason = eng.check_partial(_trade(algo), {})
+    assert should_trim is False
+    assert reason is None
+
+
+# ----------------------------------------------------------------------
+
+
 def test_risk_manager_tracks_hwm(algo):
     risk = RiskManager(algo)
     risk.update(100_000)

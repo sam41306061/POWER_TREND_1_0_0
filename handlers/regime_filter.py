@@ -47,6 +47,7 @@ class RegimeFilter:
     # ------------------------------------------------------------------
     def _transition(self, qqq: dict) -> None:
         state = self.current_state
+        prior_state = self.current_state
 
         if state == config.REGIME_TREND_END:
             # Terminal label exists for one bar; reset to NO_TREND, allow same-bar re-arm
@@ -56,12 +57,14 @@ class RegimeFilter:
             # Deactivation: EMA21 cross-back below SMA50
             if qqq["EMA21"] < qqq["SMA50"]:
                 self.current_state = config.REGIME_TREND_END
+                self._algo.debug(f"[REGIME TRANSITION] {prior_state} → {config.REGIME_TREND_END}")
                 return
 
         if state == config.REGIME_TREND_UP:
             if config.ENABLE_TREND_PRESSURE:
                 if qqq["close"] < qqq["SMA50"] and qqq["EMA21"] > qqq["SMA50"]:
                     self.current_state = config.REGIME_TREND_PRESSURE
+                    self._algo.debug(f"[REGIME TRANSITION] {prior_state} → {config.REGIME_TREND_PRESSURE}")
                     return
             self.current_state = config.REGIME_TREND_UP
             return
@@ -69,6 +72,7 @@ class RegimeFilter:
         if state == config.REGIME_TREND_PRESSURE:
             if qqq["close"] > qqq["EMA21"] and qqq["EMA21"] > qqq["SMA50"]:
                 self.current_state = config.REGIME_TREND_UP
+                self._algo.debug(f"[REGIME TRANSITION] {prior_state} → {config.REGIME_TREND_UP}")
                 return
             self.current_state = config.REGIME_TREND_PRESSURE
             return
@@ -76,6 +80,7 @@ class RegimeFilter:
         # state == NO_TREND: check activation
         if self._activation_met(qqq):
             self.current_state = config.REGIME_TREND_UP
+            self._algo.debug(f"[REGIME TRANSITION] {prior_state} → {config.REGIME_TREND_UP} (activation met)")
         else:
             self.current_state = config.REGIME_NO_TREND
 
