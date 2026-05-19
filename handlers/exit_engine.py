@@ -28,12 +28,23 @@ class ExitEngine:
         return False, None
 
     def check(self, trade, indicators: dict) -> Tuple[bool, Optional[str]]:
-        """Return (should_exit, reason)."""
+        """Return (should_exit, reason).
+
+        When indicators is None (symbol dropped from universe / history unavailable),
+        the stop loss is still evaluated using trade.last_known_price as a fallback.
+        SMA-breakdown (P3) and EMA-cross (P4) rules require indicator data and cannot
+        fire without it.
+        """
         # 1. Account drawdown
         if self._risk.drawdown >= config.MAX_ACCOUNT_DRAWDOWN_PCT:
             return True, config.EXIT_REASON_DRAWDOWN
 
         if not indicators:
+            # Fallback stop-loss: use last known price when indicator data is unavailable.
+            last_price = trade.last_known_price
+            avg = trade.avg_entry_price
+            if last_price > 0 and avg > 0 and last_price <= avg * (1 - config.STOP_LOSS_PCT):
+                return True, config.EXIT_REASON_STOP_LOSS
             return False, None
 
         close = indicators["close"]

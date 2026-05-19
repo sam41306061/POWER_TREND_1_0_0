@@ -34,8 +34,8 @@ class PowerTrendAlgorithm(QCAlgorithm):
 
     def initialize(self):
         # ---- Platform setup ----
-        self.set_start_date(2003, 1, 1)
-        self.set_end_date(2020, 12, 31)
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2024, 12, 31)
         self.set_cash(100_000)
         self.set_benchmark("SPY")
         self.set_warm_up(config.REGIME_SMA_PERIOD + 30)
@@ -143,6 +143,14 @@ class PowerTrendAlgorithm(QCAlgorithm):
             f"low_above={self._regime.days_low_above_ema21} "
             f"ema_above={self._regime.days_ema21_above_sma50}"
         )
+        _pv = float(self.portfolio.total_portfolio_value)
+        _cash = float(self.portfolio.cash)
+        _leg_sz = config.INITIAL_LEG_SIZE_PCT * _pv
+        self.debug(
+            f"[HOLDINGS] {self.time.date()} "
+            f"positions={len(self._positions.active_trades)}/{config.MAX_POSITIONS_OPEN} "
+            f"cash={_cash:.0f} portfolio={_pv:.0f} leg_size={_leg_sz:.0f}"
+        )
 
         # 2. Per-position exits
         for symbol in list(self._positions.active_trades.keys()):
@@ -188,9 +196,13 @@ class PowerTrendAlgorithm(QCAlgorithm):
             )
             return
 
-        # Per-leg sizing uses CURRENT CASH (not total portfolio value).
-        # Re-read each loop iteration so each new order shrinks the next.
+        # active_trades is only updated on fill (on_order_event), so can_add_position()
+        # returns stale data during this loop. _initial_pending tracks how many INITIAL
+        # orders have been submitted this bar (but not yet filled) so the position cap
+        # is enforced correctly without waiting for fills.
         regime_str = config.REGIME_SYMBOL
+        _initial_pending = 0
+        _slots_available = config.MAX_POSITIONS_OPEN - len(self._positions.active_trades)
 
         for symbol in list(self._universe.active_symbols):
             sym_str = str(symbol)
@@ -209,23 +221,42 @@ class PowerTrendAlgorithm(QCAlgorithm):
             if signal is None:
                 continue
 
-            cash_value = float(self.portfolio.cash)
-            qty = self._pyramiding.size_leg(indicators["close"], cash_value)
+            # Gate INITIAL entries against pending-but-unfilled submissions this bar.
+            # ADD signals on existing positions are still allowed past this gate.
+            if signal == EntrySignal.INITIAL and _initial_pending >= _slots_available:
+                continue
+
+            portfolio_value = float(self.portfolio.total_portfolio_value)
+            price = indicators["close"]
+            qty = self._pyramiding.size_leg(price, portfolio_value)
+            # Cap by available cash so we never submit an order we can't fill.
+            available_cash = float(self.portfolio.cash)
+            if available_cash < price:
+                # Can't afford even 1 share — skip without penalising qty calc.
+                self.debug(
+                    f"[ENTRY SKIP] {sym_str}: insufficient cash ({available_cash:.0f}) "
+                    f"for close={price:.2f} portfolio={portfolio_value:.0f}"
+                )
+                continue
+            qty = min(qty, int(available_cash // price))
             if qty <= 0:
                 self.debug(
-                    f"[ENTRY SKIP] {sym_str}: qty=0 at close={indicators['close']:.2f} "
-                    f"cash={cash_value:.0f}"
+                    f"[ENTRY SKIP] {sym_str}: qty=0 at close={price:.2f} "
+                    f"cash={available_cash:.0f} portfolio={portfolio_value:.0f}"
                 )
                 continue
 
             self._submit_entry(symbol, sym_str, qty, signal)
 
-            if not self._positions.can_add_position():
-                self.debug(
-                    f"[ENTRY GATE] position cap reached — "
-                    f"{len(self._positions.active_trades)}/{config.MAX_POSITIONS_OPEN} slots used"
-                )
-                break
+            if signal == EntrySignal.INITIAL:
+                _initial_pending += 1
+                if _initial_pending >= _slots_available:
+                    self.debug(
+                        f"[ENTRY GATE] INITIAL cap reached — "
+                        f"{len(self._positions.active_trades)} filled "
+                        f"+ {_initial_pending} pending "
+                        f"= {config.MAX_POSITIONS_OPEN}; continuing for ADD signals"
+                    )
 
     # ------------------------------------------------------------------
     def _submit_entry(self, symbol, sym_str: str, qty: int, signal: str) -> None:
@@ -244,8 +275,14 @@ class PowerTrendAlgorithm(QCAlgorithm):
                 sec = security.symbol
                 break
         if sec is None:
+            # Security dropped from active universe — fall back to portfolio holdings.
+            for sym in self.portfolio.keys():
+                if str(sym) == symbol_str:
+                    sec = sym
+                    break
+        if sec is None:
             self.log(
-                f"[EXIT CRITICAL] {symbol_str}: not in securities — "
+                f"[EXIT CRITICAL] {symbol_str}: not in securities or portfolio — "
                 f"{qty} shares cannot be partially exited (reason={reason})"
             )
             return
@@ -269,8 +306,14 @@ class PowerTrendAlgorithm(QCAlgorithm):
                 sec = security.symbol
                 break
         if sec is None:
+            # Security dropped from active universe — fall back to portfolio holdings.
+            for sym in self.portfolio.keys():
+                if str(sym) == symbol_str:
+                    sec = sym
+                    break
+        if sec is None:
             self.log(
-                f"[EXIT CRITICAL] {symbol_str}: not in securities — "
+                f"[EXIT CRITICAL] {symbol_str}: not in securities or portfolio — "
                 f"{qty} shares cannot be exited (reason={reason})"
             )
             return

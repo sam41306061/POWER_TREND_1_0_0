@@ -105,6 +105,38 @@ def test_partial_trim_returns_false_on_empty_indicators(algo):
 # ----------------------------------------------------------------------
 
 
+# ----------------------------------------------------------------------
+# Fallback stop-loss tests (indicators unavailable)
+# ----------------------------------------------------------------------
+
+
+def test_stop_loss_fires_via_last_known_price_when_no_indicators(algo):
+    """Stop loss must fire using last_known_price when indicator data is unavailable."""
+    risk = RiskManager(algo)
+    risk.update(100_000)
+    eng = ExitEngine(algo, risk)
+    trade = _trade(algo, avg_price=100.0)
+    trade.last_known_price = 100.0 * (1 - config.STOP_LOSS_PCT) - 0.01  # just below stop
+    out, reason = eng.check(trade, None)
+    assert out is True
+    assert reason == config.EXIT_REASON_STOP_LOSS
+
+
+def test_no_exit_via_last_known_price_when_above_stop(algo):
+    """No exit when last_known_price is above the stop threshold and indicators are None."""
+    risk = RiskManager(algo)
+    risk.update(100_000)
+    eng = ExitEngine(algo, risk)
+    trade = _trade(algo, avg_price=100.0)
+    trade.last_known_price = 100.0 * (1 - config.STOP_LOSS_PCT) + 1.0  # comfortably above stop
+    out, reason = eng.check(trade, None)
+    assert out is False
+    assert reason is None
+
+
+# ----------------------------------------------------------------------
+
+
 def test_risk_manager_tracks_hwm(algo):
     risk = RiskManager(algo)
     risk.update(100_000)

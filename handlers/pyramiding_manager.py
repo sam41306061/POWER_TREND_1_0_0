@@ -1,11 +1,12 @@
 """
 handlers/pyramiding_manager.py — Equal-size leg sizing.
 
-shares_per_leg = floor(INITIAL_LEG_SIZE_PCT * cash_value / price)
+shares_per_leg = floor(INITIAL_LEG_SIZE_PCT * portfolio_value / price)
 
-`cash_value` is the account's CURRENT free cash at the moment of sizing.
-Using cash (not total portfolio value) means each new order organically
-shrinks the next leg's size, preventing over-leveraging into the universe.
+`portfolio_value` is total_portfolio_value (equity + cash) at the moment of
+sizing, so leg size stays proportional to account size regardless of how
+much capital is currently deployed.  A separate cash-sufficiency guard in
+main.py prevents orders that exceed available free cash.
 
 Adds capped at PYRAMID_MAX_ADDS (i.e., max legs = 1 + PYRAMID_MAX_ADDS).
 """
@@ -19,10 +20,10 @@ class PyramidingManager:
     def __init__(self, algorithm):
         self._algo = algorithm
 
-    def size_leg(self, price: float, cash_value: float) -> int:
-        if price <= 0 or cash_value <= 0:
+    def size_leg(self, price: float, portfolio_value: float) -> int:
+        if price <= 0 or portfolio_value <= 0:
             return 0
-        notional = config.INITIAL_LEG_SIZE_PCT * cash_value
+        notional = config.INITIAL_LEG_SIZE_PCT * portfolio_value
         return int(math.floor(notional / price))
 
     def can_add_more(self, leg_count: int) -> bool:

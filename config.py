@@ -40,7 +40,7 @@ WEBBY_RSI_STRETCH_LEVEL: Final[float] = 3.0
 # UNIVERSE
 # ==============================================================================
 
-UNIVERSE_TOP_N: Final[int] = 200
+UNIVERSE_TOP_N: Final[int] = 800
 UNIVERSE_REFRESH_DAYS: Final[int] = 14
 MIN_PRICE: Final[float] = 20.0
 MIN_DOLLAR_VOLUME: Final[float] = 50_000_000
@@ -55,10 +55,11 @@ STOCK_EMA_PERIOD: Final[int] = 21
 STOCK_SMA_PERIOD: Final[int] = 50
 STOCK_SMA10_PERIOD: Final[int] = 10
 PYRAMID_MAX_ADDS: Final[int] = 3
-# Per-leg sizing as a fraction of CURRENT CASH (not portfolio value).
-# 5% of cash per leg keeps total deployed capital well under available cash even
-# when MAX_POSITIONS_OPEN positions are stacked with full pyramid adds.
-INITIAL_LEG_SIZE_PCT: Final[float] = 0.05
+# Per-leg sizing as a fraction of total portfolio value (equity + cash).
+# Max theoretical deployment = MAX_POSITIONS_OPEN × (1 + PYRAMID_MAX_ADDS) × INITIAL_LEG_SIZE_PCT
+#   = 10 × 4 × 2% = 80% — leaves ~20% cash buffer for ongoing entries.
+# A cash-sufficiency guard in main.py prevents orders that exceed available free cash.
+INITIAL_LEG_SIZE_PCT: Final[float] = 0.02
 
 
 # ==============================================================================
