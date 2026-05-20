@@ -63,9 +63,6 @@ class PowerTrendAlgorithm(QCAlgorithm):
         # ---- Universe (coarse callback) ----
         self.add_universe(self._universe.select_coarse)
 
-        # ---- Pending order tracking ----
-        self._pending_orders: dict = {}  # {order_id: {symbol, type}}
-
         # ---- Daily evaluation schedule ----
         eval_h, eval_m = _parse_time(config.DAILY_EVAL_TIME)
         self.schedule.on(
@@ -88,35 +85,40 @@ class PowerTrendAlgorithm(QCAlgorithm):
     def on_order_event(self, order_event):
         if order_event.status != OrderStatus.FILLED:
             return
-        meta = self._pending_orders.pop(order_event.order_id, None)
-        if meta is None:
+        ticket = self.transactions.get_order_ticket(order_event.order_id)
+        if ticket is None:
+            return
+        tag = str(ticket.tag)
+        if not tag:
             return
 
-        symbol = meta["symbol"]
+        parts = tag.split("|", 2)
+        order_type = parts[0]
+        symbol = parts[1] if len(parts) > 1 else ""
+        reason = parts[2] if len(parts) > 2 else ""
+
         fill_price = float(order_event.fill_price)
         fill_qty = abs(int(order_event.fill_quantity))
 
-        if meta["type"] in (EntrySignal.INITIAL, EntrySignal.ADD):
+        if order_type in (EntrySignal.INITIAL, EntrySignal.ADD):
             self._positions.add_leg(
                 symbol=symbol,
                 fill_price=fill_price,
                 quantity=fill_qty,
                 fill_date=self.time.date(),
             )
-            self.log(
-                f"[FILL ENTRY/{meta['type']}] {symbol} qty={fill_qty} @ {fill_price:.2f}"
-            )
-        elif meta["type"] == "PARTIAL_EXIT":
+            self.log(f"[FILL ENTRY/{order_type}] {symbol} qty={fill_qty} @ {fill_price:.2f}")
+        elif order_type == "PARTIAL_EXIT":
             self._positions.reduce_position(symbol=symbol, qty_sold=fill_qty)
             self.log(
                 f"[FILL PARTIAL EXIT] {symbol} trimmed {fill_qty} @ {fill_price:.2f} "
-                f"reason={meta.get('reason', config.EXIT_REASON_STRETCH_TRIM)}"
+                f"reason={reason or config.EXIT_REASON_STRETCH_TRIM}"
             )
-        elif meta["type"] == "EXIT":
+        elif order_type == "EXIT":
             result = self._positions.close_trade(
                 symbol=symbol,
                 exit_price=fill_price,
-                reason=meta.get("reason", config.EXIT_REASON_MANUAL),
+                reason=reason or config.EXIT_REASON_MANUAL,
             )
             if result:
                 self.log(
@@ -153,6 +155,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
         )
 
         # 2. Per-position exits
+        _exited_this_bar: set = set()
         for symbol in list(self._positions.active_trades.keys()):
             trade = self._positions.get_trade(symbol)
             if trade is None:
@@ -174,6 +177,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
                     f"of total={trade.total_quantity}"
                 )
                 self._submit_partial_exit(symbol, trim_qty, trim_reason)
+                _exited_this_bar.add(symbol)
                 continue  # skip full-exit rules this bar
 
             # 2b. Full exit (Priorities 1-4)
@@ -184,6 +188,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
                     f"avg_entry={trade.avg_entry_price:.2f}"
                 )
                 self._submit_exit(symbol, trade.total_quantity, reason)
+                _exited_this_bar.add(symbol)
 
         # 3. Entries (skip if regime/risk gates closed)
         if not self._regime.entries_allowed():
@@ -219,6 +224,8 @@ class PowerTrendAlgorithm(QCAlgorithm):
 
             signal = self._entries.evaluate(sym_str, indicators)
             if signal is None:
+                continue
+            if sym_str in _exited_this_bar:
                 continue
 
             # Gate INITIAL entries against pending-but-unfilled submissions this bar.
@@ -260,13 +267,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
 
     # ------------------------------------------------------------------
     def _submit_entry(self, symbol, sym_str: str, qty: int, signal: str) -> None:
-        ticket = self.market_order(symbol, qty)
-        if ticket is None:
-            return
-        self._pending_orders[ticket.order_id] = {
-            "symbol": sym_str,
-            "type": signal,
-        }
+        self.market_order(symbol, qty, tag=f"{signal}|{sym_str}")
 
     def _submit_partial_exit(self, symbol_str: str, qty: int, reason: str) -> None:
         sec = None
@@ -286,18 +287,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
                 f"{qty} shares cannot be partially exited (reason={reason})"
             )
             return
-        ticket = self.market_order(sec, -qty)
-        if ticket is None:
-            self.log(
-                f"[EXIT CRITICAL] {symbol_str}: market_order returned None — "
-                f"partial exit order rejected (reason={reason})"
-            )
-            return
-        self._pending_orders[ticket.order_id] = {
-            "symbol": symbol_str,
-            "type": "PARTIAL_EXIT",
-            "reason": reason,
-        }
+        self.market_order(sec, -qty, tag=f"PARTIAL_EXIT|{symbol_str}|{reason}")
 
     def _submit_exit(self, symbol_str: str, qty: int, reason: str) -> None:
         sec = None
@@ -317,15 +307,4 @@ class PowerTrendAlgorithm(QCAlgorithm):
                 f"{qty} shares cannot be exited (reason={reason})"
             )
             return
-        ticket = self.market_order(sec, -qty)
-        if ticket is None:
-            self.log(
-                f"[EXIT CRITICAL] {symbol_str}: market_order returned None — "
-                f"exit order rejected (reason={reason})"
-            )
-            return
-        self._pending_orders[ticket.order_id] = {
-            "symbol": symbol_str,
-            "type": "EXIT",
-            "reason": reason,
-        }
+        self.market_order(sec, -qty, tag=f"EXIT|{symbol_str}|{reason}")

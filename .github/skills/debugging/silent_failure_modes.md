@@ -157,3 +157,56 @@ for option_universe in self.option_chain(symbol):
 - If a custom history object has different column names (e.g., from a third-party dataset),
   `closes` will be empty → `get_indicators()` returns `{}` → silent skip
 - Always verify history DataFrame has standard OHLCV columns before passing to `DataHandler`
+
+---
+
+## Synchronous on_order_event — _pending_orders Race Condition
+
+In LEAN's **daily-resolution backtest**, `market_order()` fills at the current bar price
+synchronously. `on_order_event()` fires **inside** `market_order()` before the call
+returns, so any dict populated after the call is always too late:
+
+```python
+# BUG — on_order_event fires during market_order(), before line B executes
+ticket = self.market_order(symbol, qty)              # line A — event fires here
+self._pending_orders[ticket.order_id] = meta         # line B — unreachable in time
+```
+
+**Symptom:** `[HOLDINGS] positions=0/10 cash=-0 portfolio=$108k` for every bar.
+LEAN holds the equity; `active_trades` stays permanently empty because `add_leg()` is
+never called. `can_add_position()` always returns `True`, entries re-submit every bar
+until cash hits zero, then the algorithm is frozen.
+
+**Fix — use order tags (embedded at creation, always accessible):**
+
+```python
+# Entry submit — tag travels with the order:
+self.market_order(symbol, qty, tag=f"{signal}|{sym_str}")
+# e.g. tag = "INITIAL|AAPL R735QTJ8XC9X"
+
+# Exit submit:
+self.market_order(sec, -qty, tag=f"EXIT|{symbol_str}|{reason}")
+self.market_order(sec, -qty, tag=f"PARTIAL_EXIT|{symbol_str}|{reason}")
+
+# on_order_event — retrieve from ticket, no dict needed:
+def on_order_event(self, order_event):
+    if order_event.status != OrderStatus.FILLED:
+        return
+    ticket = self.transactions.get_order_ticket(order_event.order_id)
+    if ticket is None:
+        return
+    tag = str(ticket.tag)
+    if not tag:
+        return
+    parts = tag.split("|", 2)
+    order_type, symbol = parts[0], parts[1] if len(parts) > 1 else ""
+    reason = parts[2] if len(parts) > 2 else ""
+    ...
+```
+
+**Do not use** temporary placeholder string keys — `on_order_event` uses the real integer
+`order_event.order_id`, which will never match a string temp key.
+
+**Related:** stale `active_trades` during the entry loop (filled asynchronously from the
+algorithm's perspective despite LEAN's synchronous firing) — use an `_initial_pending`
+integer counter to track submitted-but-not-yet-reflected INITIAL orders within the bar.
