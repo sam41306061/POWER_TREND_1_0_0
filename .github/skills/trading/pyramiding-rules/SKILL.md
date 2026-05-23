@@ -12,8 +12,10 @@ argument-hint: "Current position leg count and portfolio value, or describe the 
 ## Philosophy
 
 Pyramid adds use equal-size legs. Each leg (initial entry or add-on) is sized at
-`INITIAL_LEG_SIZE_PCT` (25%) of current portfolio value. This creates a balanced position
+`INITIAL_LEG_SIZE_PCT` (2%) of current portfolio value. This creates a balanced position
 build-up that does not over-commit capital at entry and rewards continuation.
+Max theoretical deployment = `MAX_POSITIONS_OPEN × (1 + PYRAMID_MAX_ADDS) × INITIAL_LEG_SIZE_PCT`
+= 10 × 4 × 2% = 80%, leaving a ~20% cash buffer.
 
 **Hard boundaries:**
 - All legs must be equal size — no scaling into positions with larger or smaller adds
@@ -27,7 +29,7 @@ build-up that does not over-commit capital at entry and rewards continuation.
 ## Sizing Formula
 
 ```
-order_value = current_portfolio_value × INITIAL_LEG_SIZE_PCT   # 25%
+order_value = current_portfolio_value × INITIAL_LEG_SIZE_PCT   # 2%
 shares      = floor(order_value / current_close_price)
 ```
 
@@ -57,32 +59,28 @@ Any full exit → leg_count = 0   (remove_position() called by ExitEngine)
 class PyramidingManager:
     def __init__(self, algorithm) -> None: ...
 
-    def can_add(self, symbol: str) -> bool:
-        """Returns True if symbol's leg_count < (PYRAMID_MAX_ADDS + 1)."""
+    def can_add_more(self, leg_count: int) -> bool:
+        """Returns True if leg_count < (1 + PYRAMID_MAX_ADDS)."""
         ...
 
-    def calculate_order_shares(self, symbol: str, close: float) -> int:
-        """Returns number of shares for one leg at current portfolio value."""
-        ...
-
-    def record_leg(self, symbol: str) -> None:
-        """Increments leg count by 1 after an order fills."""
-        ...
-
-    def remove_position(self, symbol: str) -> None:
-        """Resets leg count to 0 on full exit."""
+    def size_leg(self, price: float, portfolio_value: float) -> int:
+        """Returns number of shares for one leg: floor(INITIAL_LEG_SIZE_PCT * portfolio_value / price)."""
         ...
 ```
+
+**Note:** Leg-count tracking (`add_leg`, `remove_position`) is owned by `PositionManager`,
+not `PyramidingManager`. Call `PositionManager.add_leg()` after a fill is confirmed.
+`PyramidingManager` is a pure sizing/cap utility with no internal state.
 
 ---
 
 ## Test Invariants
 
-- `can_add()` returns `True` at `leg_count = 3`, `False` at `leg_count = 4`
-- `calculate_order_shares()` uses `current_portfolio_value × INITIAL_LEG_SIZE_PCT / close`
-- `calculate_order_shares()` returns an integer (floor division)
-- `record_leg()` increments leg count by exactly 1
-- `remove_position()` resets leg count to 0; subsequent `can_add()` returns `True`
+- `can_add_more(3)` returns `True`; `can_add_more(4)` returns `False`
+- `size_leg()` uses `floor(INITIAL_LEG_SIZE_PCT * portfolio_value / price)`
+- `size_leg()` returns an integer (floor division, never fractional shares)
+- `size_leg()` returns 0 if price <= 0 or portfolio_value <= 0
+- Leg-count state is tracked by `PositionManager.add_leg()`, not by `PyramidingManager`
 
 ---
 

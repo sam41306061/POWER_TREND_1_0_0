@@ -25,28 +25,36 @@ may be opened — regardless of per-stock signals.
 
 ## State Machine
 
-**States:** `TREND_UP` | `TREND_DOWN` | `NEUTRAL`
+**States:** `NO_TREND` | `TREND_UP` | `TREND_PRESSURE` | `TREND_END`
 
 ### Activation → TREND_UP
 
-All three conditions must be met **simultaneously** on QQQ:
+All four conditions must be met **simultaneously** on QQQ:
 
 | Condition | Threshold | Config Constant |
 |---|---|---|
 | QQQ `low > EMA21` for N consecutive days | 10 days | `LOW_ABOVE_EMA_DAYS` |
 | QQQ `EMA21 > SMA50` for N consecutive days | 5 days | `EMA_ABOVE_SMA_DAYS` |
-| QQQ SMA50 is rising (today > yesterday) | 1 day | *(implicit: `SMA50 > prior_SMA50`)* |
+| QQQ SMA50 is rising (today > yesterday) | 1 day | `REQUIRE_SMA50_RISING` (toggle) |
+| Blue bar: QQQ `close >= open` on activation day | 1 day | `REQUIRE_ACTIVATION_UPDAY` (toggle) |
 
 Counters increment daily at `DAILY_EVAL_TIME` (09:35 ET). If any condition breaks, that
-counter resets to 0. State remains `NEUTRAL` until all counters simultaneously reach threshold.
+counter resets to 0. State remains `NO_TREND` until all counters simultaneously reach threshold.
+
+### TREND_PRESSURE (sub-state of bullish regime)
+
+Fires when `ENABLE_TREND_PRESSURE = True` and QQQ `close < SMA50` while `EMA21 > SMA50`.
+Entries are **blocked** in `TREND_PRESSURE` (same as `NO_TREND`). The state recovers to
+`TREND_UP` when `close > EMA21` and `EMA21 > SMA50` both return True.
 
 ### Deactivation
 
 | Trigger | New State |
 |---|---|
-| `EMA21 < SMA50` (EMA crosses below SMA50) | `TREND_DOWN` |
-| `low < EMA21` (daily low breaches EMA21) | `NEUTRAL` |
+| `EMA21 < SMA50` (EMA crosses below SMA50) | `TREND_END` |
 
+`TREND_END` is a one-bar label. On the next bar the state machine resets to `NO_TREND` and
+counters must re-accumulate from scratch before a new `TREND_UP` can be declared.
 On deactivation: all counters reset to 0. `entries_allowed()` returns `False`.
 
 ---
@@ -59,8 +67,9 @@ On deactivation: all counters reset to 0. `entries_allowed()` returns `False`.
 class RegimeFilter:
     def __init__(self, algorithm) -> None: ...
 
-    def update(self, qqq_data: dict) -> None:
-        """Called daily with QQQ indicator values. Updates counters and state."""
+    def update(self, qqq_data: dict) -> str:
+        """Called daily with QQQ indicator values. Updates counters and state.
+        Returns the new current_state string."""
         ...
 
     def entries_allowed(self) -> bool:
@@ -69,22 +78,25 @@ class RegimeFilter:
 
     @property
     def current_state(self) -> str:
-        """Returns 'TREND_UP', 'TREND_DOWN', or 'NEUTRAL'."""
+        """Returns 'NO_TREND', 'TREND_UP', 'TREND_PRESSURE', or 'TREND_END'."""
         ...
 ```
 
 `qqq_data` is the dict from `DataHandler.get_indicators(REGIME_SYMBOL, today)`.
-Required keys: `close`, `EMA21`, `SMA50`, `low`, `prior_SMA50`
+Required keys: `close`, `open`, `EMA21`, `SMA50`, `low`, `prior_SMA50`, `is_blue_bar`
 
 ---
 
 ## Test Invariants
 
-- Counter reaches `LOW_ABOVE_EMA_DAYS` (10) on day 10 → state becomes `TREND_UP` *(if other conditions met)*
-- Counter resets to 0 if `low < EMA21` on day 9 → state stays `NEUTRAL`
+- Counter reaches `LOW_ABOVE_EMA_DAYS` (10) on day 10 → state becomes `TREND_UP` *(if all other conditions met)*
+- Counter resets to 0 if `low < EMA21` on day 9 → state stays `NO_TREND`
 - `entries_allowed()` returns `False` when `current_state != 'TREND_UP'`
-- SMA50 declining on activation day → state stays `NEUTRAL` regardless of counters
-- After deactivation → all counters are 0, must re-accumulate from scratch
+- SMA50 declining on activation day → state stays `NO_TREND` regardless of counters (when `REQUIRE_SMA50_RISING = True`)
+- Blue bar not met on activation day → state stays `NO_TREND` (when `REQUIRE_ACTIVATION_UPDAY = True`)
+- After `TREND_END` → state resets to `NO_TREND` next bar; counters are 0 and must re-accumulate
+- `TREND_PRESSURE`: `close < SMA50` while `EMA21 > SMA50` → state becomes `TREND_PRESSURE`; `entries_allowed()` returns `False`
+- Recovery from `TREND_PRESSURE`: `close > EMA21` and `EMA21 > SMA50` → state returns to `TREND_UP`
 
 ---
 

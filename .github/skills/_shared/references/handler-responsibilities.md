@@ -39,9 +39,10 @@ main.py (scheduled @ DAILY_EVAL_TIME)
   → DataHandler.get_indicators(symbol, today)       # cache per (symbol, date)
   → RegimeFilter.update(qqq_data)                   # QQQ only
   → if RegimeFilter.entries_allowed():
-      → EntryEngine.evaluate(symbol, data)           # per stock in universe
-          → PyramidingManager.can_add(symbol)        # leg cap check
-          → PyramidingManager.calculate_order_shares()
-  → ExitEngine.evaluate(symbol, data, position)     # per open position
-  → RiskManager.update(portfolio_value)             # account-level gate
+      → EntryEngine.evaluate(symbol, indicators)      # per stock in universe
+          → PyramidingManager.can_add_more(leg_count)  # leg cap check
+          → PyramidingManager.size_leg(price, portfolio_value)
+  → ExitEngine.check_partial(trade, indicators)     # P0 stretch-trim (per open position)
+  → ExitEngine.check(trade, indicators)             # P1–P4 full exit (per open position)
+  → RiskManager.update(equity)                      # account-level gate
 ```

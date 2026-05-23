@@ -72,7 +72,6 @@ Consumed JIT by multiple skills — not direct invocation targets. Say the trigg
 | Domain | Reason |
 |---|---|
 | `options/` — option_chain_filtering.md | Power Trend is equity-only; file is a template carryover |
-| `lifecycle/`, `indicators/`, `data/`, `backtesting/` | Referenced in prior version of this index but files do not exist on disk — create if needed for future work |
 
 ---
 

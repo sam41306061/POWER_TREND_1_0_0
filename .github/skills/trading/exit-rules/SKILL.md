@@ -30,14 +30,15 @@ Evaluate in this exact order for each open position:
 
 | Priority | Exit Type | Trigger | Config Constant |
 |---|---|---|---|
-| 1 (highest) | **Account drawdown gate** | `RiskManager.entries_suspended == True` → liquidate all positions | `MAX_ACCOUNT_DRAWDOWN_PCT` (15%) |
-| 2 | **Stop loss** | `close < avg_cost × (1 - STOP_LOSS_PCT)` | `STOP_LOSS_PCT` (7%) |
+| 0 (pre-check) | **Stretch-trim partial** | `high_vs_sma10 >= WEBBY_RSI_STRETCH_LEVEL` (3.0 ATR) → sell `PARTIAL_EXIT_TRIM_FRACTION` (50%) | `WEBBY_RSI_STRETCH_LEVEL`, `PARTIAL_EXIT_TRIM_FRACTION` |
+| 1 (highest) | **Account drawdown gate** | `risk.drawdown >= MAX_ACCOUNT_DRAWDOWN_PCT` (15%) → liquidate all positions | `MAX_ACCOUNT_DRAWDOWN_PCT` |
+| 2 | **Stop loss** | `close <= avg_entry_price × (1 - STOP_LOSS_PCT)` | `STOP_LOSS_PCT` (7%) |
 | 3 | **SMA50 breakdown** | `close < SMA50` | — |
-| 4 | **EMA21 cross** | `EMA21 < SMA50` (bullish stack broken) | — |
-| 5 (lowest) | **Weakness** | `close < prior_close` AND `close < EMA21` | — |
+| 4 (lowest) | **EMA21 cross** | `EMA21 < SMA50` (bullish stack broken) | — |
 
+- P0 (stretch-trim) is a **partial** exit: sells 50% of shares via `reduce_position()`, does not close the trade
 - If Priority 1 fires → liquidate **all open positions** immediately
-- If Priority 2–5 fires → exit **this symbol only**
+- If Priority 2–4 fires → exit **this symbol only** (full liquidation)
 - If no priority fires → hold; re-evaluate next day
 
 ---
@@ -48,30 +49,40 @@ Evaluate in this exact order for each open position:
 
 ```python
 class ExitEngine:
-    def __init__(self, algorithm, risk_manager, position_manager) -> None: ...
+    def __init__(self, algorithm, risk) -> None: ...
 
-    def evaluate(self, symbol: str, data: dict, position: dict) -> str | None:
+    def check_partial(self, trade, indicators: dict) -> tuple[bool, str | None]:
         """
-        Returns exit reason if triggered, else None.
-        Caller places the liquidation order.
-        data keys: close, EMA21, SMA50, prior_close
-        position keys: avg_cost, leg_count
+        Returns (should_trim, reason) for the P0 stretch-trim partial exit.
+        reason is EXIT_REASON_STRETCH_TRIM when should_trim is True, else None.
+        """
+        ...
+
+    def check(self, trade, indicators: dict) -> tuple[bool, str | None]:
+        """
+        Returns (should_exit, reason) for full-exit priorities P1–P4.
+        indicators may be None when symbol falls out of universe;
+        P1 (drawdown) still evaluates; P2 (stop loss) uses trade.last_known_price as fallback.
         """
         ...
 ```
 
-Return values: `"ACCOUNT_DD"`, `"STOP_LOSS"`, `"SMA_BREAKDOWN"`, `"EMA_CROSS"`, `"WEAKNESS"`, `None`
+Return reason values: `EXIT_REASON_DRAWDOWN`, `EXIT_REASON_STOP_LOSS`,
+`EXIT_REASON_SMA_BREAKDOWN`, `EXIT_REASON_EMA_CROSS`, `EXIT_REASON_STRETCH_TRIM`
 
 ---
 
 ## Test Invariants
 
-- Account drawdown gate active → returns `"ACCOUNT_DD"` for any symbol regardless of price
-- `close < avg_cost × 0.93` → returns `"STOP_LOSS"` even if close is also below SMA50
-- `close < SMA50` but stop loss not triggered → returns `"SMA_BREAKDOWN"`
-- `EMA21 < SMA50` but close above SMA50 → returns `"EMA_CROSS"`, not `"SMA_BREAKDOWN"`
-- All exit conditions False → returns `None`
-- Priority order is respected: a stop loss overrides an SMA breakdown trigger
+- `check_partial()`: `high_vs_sma10 >= 3.0` → returns `(True, EXIT_REASON_STRETCH_TRIM)`
+- `check_partial()`: `high_vs_sma10 < 3.0` → returns `(False, None)`
+- `check()`: `risk.drawdown >= 0.15` → returns `(True, EXIT_REASON_DRAWDOWN)` for any symbol regardless of price
+- `check()`: `close <= avg_entry_price × 0.93` → returns `(True, EXIT_REASON_STOP_LOSS)` even if close is also below SMA50
+- `check()`: `close < SMA50` but stop loss not triggered → returns `(True, EXIT_REASON_SMA_BREAKDOWN)`
+- `check()`: `EMA21 < SMA50` but close above SMA50 → returns `(True, EXIT_REASON_EMA_CROSS)`, not `SMA_BREAKDOWN`
+- `check()`: all exit conditions False → returns `(False, None)`
+- `check()`: `indicators=None` → P1 (drawdown) still fires; P2 uses `trade.last_known_price` fallback; P3/P4 cannot fire
+- Priority order is respected: stop loss overrides SMA breakdown trigger
 
 ---
 

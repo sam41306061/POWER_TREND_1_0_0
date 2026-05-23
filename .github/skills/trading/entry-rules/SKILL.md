@@ -23,31 +23,33 @@ chasing breakouts and enters on low-risk pullback points within established tren
 
 ---
 
-## Initial Entry Conditions (all 5 must be True)
+## Initial Entry Conditions (all 6 must be True)
 
 | # | Condition | Values Used | Config Constant |
 |---|---|---|---|
-| 1 | Price above EMA21 | `close > EMA21` | — |
-| 2 | EMA21 above SMA50 | `EMA21 > SMA50` | — |
-| 3 | Pullback: prior close at or below EMA21 | `prior_close <= prior_EMA21` | — |
-| 4 | Higher close today | `close > prior_close` | — |
-| 5 | Regime gate open | `regime.entries_allowed() == True` | `REGIME_SYMBOL` |
+| 1 | Regime gate open | `regime.entries_allowed() == True` | `REGIME_SYMBOL` |
+| 2 | Risk gate open | `risk.is_new_entry_allowed() == True` | `MAX_ACCOUNT_DRAWDOWN_PCT` |
+| 3 | Blue bar today | `close >= open` (`is_blue_bar`) | — |
+| 4 | Price above EMA21, EMA21 above SMA50 | `close > EMA21 > SMA50` | — |
+| 5 | Pullback: prior low at or below prior EMA21 | `prior_low <= prior_EMA21` | — |
+| 6 | Position limit not reached | `positions.can_add_position() == True` | `MAX_POSITIONS_OPEN` |
 
-**All 5 conditions must be True simultaneously.** If any one fails, no entry is placed for
+**All 6 conditions must be True simultaneously.** If any one fails, no entry is placed for
 this symbol on this day.
 
 ---
 
 ## Pyramid Add-On Conditions
 
-Same 5 conditions as initial entry, plus two additional guards:
+Same 6 conditions as initial entry, except condition 6 is replaced by two add-on guards:
 
 | # | Additional Condition | Config Constant |
 |---|---|---|
-| 6 | Existing position in this symbol (leg_count ≥ 1) | — |
-| 7 | Position not yet at max legs | `PYRAMID_MAX_ADDS` (3 adds, so max leg_count = 4) |
+| 6a | Existing position in this symbol (leg_count ≥ 1) | — |
+| 6b | Position not yet at max legs | `PYRAMID_MAX_ADDS` (3 adds, so max leg_count = 4) |
+| 6c | New pullback is on a different day than the last leg fill date | `last_leg_date` on `TradeRecord` |
 
-Add-on entries use the same `INITIAL_LEG_SIZE_PCT` (25%) per leg — equal-size adds only.
+Add-on entries use the same `INITIAL_LEG_SIZE_PCT` (2%) per leg — equal-size adds only.
 
 ---
 
@@ -57,28 +59,31 @@ Add-on entries use the same `INITIAL_LEG_SIZE_PCT` (25%) per leg — equal-size 
 
 ```python
 class EntryEngine:
-    def __init__(self, algorithm, regime, pyramiding_manager, position_manager) -> None: ...
+    def __init__(self, algorithm, regime, risk, position_manager, pyramiding) -> None: ...
 
-    def evaluate(self, symbol: str, data: dict) -> bool:
+    def evaluate(self, symbol: str, indicators: dict) -> str | None:
         """
-        Returns True and places an order if all entry conditions are met.
-        data keys required: close, EMA21, SMA50, prior_close, prior_EMA21
+        Returns EntrySignal.INITIAL, EntrySignal.ADD, or None.
+        indicators keys required: close, open, EMA21, SMA50, prior_low, prior_EMA21, is_blue_bar
         """
         ...
 ```
 
-`data` is the dict from `DataHandler.get_indicators(symbol, today)`.
+`indicators` is the dict from `DataHandler.get_indicators(symbol, today)`.
 
 ---
 
 ## Test Invariants
 
-- All 5 conditions True → `evaluate()` returns `True`, order placed
-- Condition 4 False (lower close today) → `evaluate()` returns `False`, no order
-- Regime gate closed → `evaluate()` returns `False` even if conditions 1–4 are True
-- Position count at `MAX_POSITIONS_OPEN` → `evaluate()` returns `False`
-- Leg count at `PYRAMID_MAX_ADDS + 1` → add-on returns `False`
-- No existing position → add-on conditions are not evaluated (falls through to initial entry)
+- All 6 conditions True → `evaluate()` returns `EntrySignal.INITIAL`
+- `is_blue_bar` False → `evaluate()` returns `None`, no order
+- `prior_low > prior_EMA21` (no pullback) → `evaluate()` returns `None`
+- Regime gate closed → `evaluate()` returns `None` even if conditions 3–6 are True
+- Risk gate closed (drawdown ≥ 15%) → `evaluate()` returns `None`
+- Position count at `MAX_POSITIONS_OPEN` → `evaluate()` returns `None`
+- Leg count at `PYRAMID_MAX_ADDS + 1` (4) → add-on returns `None`
+- Existing position, all conditions met, leg < 4 → returns `EntrySignal.ADD`
+- Add-on attempted on same day as last leg fill → returns `None` (date guard)
 
 ---
 

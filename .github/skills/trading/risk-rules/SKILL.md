@@ -39,11 +39,11 @@ entries_suspended = drawdown >= MAX_ACCOUNT_DRAWDOWN_PCT   # 0.15
 
 ## Suspension Behavior
 
-| State | `entries_suspended` | Effect |
+| State | `is_new_entry_allowed()` | Effect |
 |---|---|---|
-| Drawdown < 15% | `False` | Normal operation — entries evaluated per day |
-| Drawdown ≥ 15% | `True` | `EntryEngine.evaluate()` returns `False`; `ExitEngine` Priority 1 fires → liquidate all |
-| Equity recovers above HWM gate | `False` again | Entries resume automatically next evaluation |
+| Drawdown < 15% | `True` | Normal operation — entries evaluated per day |
+| Drawdown ≥ 15% | `False` | `EntryEngine.evaluate()` returns `None`; `ExitEngine.check()` Priority 1 fires → liquidate all |
+| Equity recovers above HWM gate | `True` again | Entries resume automatically next evaluation |
 
 **Note:** HWM is not reset when entries resume. The same HWM peak is maintained across the
 full backtest/live session.
@@ -58,17 +58,16 @@ full backtest/live session.
 class RiskManager:
     def __init__(self, algorithm) -> None: ...
 
-    def update(self, portfolio_value: float) -> None:
+    def update(self, equity: float) -> None:
         """Called daily. Updates HWM and recomputes drawdown."""
         ...
 
-    @property
-    def entries_suspended(self) -> bool:
-        """True when current drawdown >= MAX_ACCOUNT_DRAWDOWN_PCT."""
+    def is_new_entry_allowed(self) -> bool:
+        """Returns True when current drawdown < MAX_ACCOUNT_DRAWDOWN_PCT (i.e., entries are open)."""
         ...
 
     @property
-    def current_drawdown(self) -> float:
+    def drawdown(self) -> float:
         """Current drawdown as a fraction (e.g., 0.12 for 12%)."""
         ...
 ```
@@ -79,9 +78,10 @@ class RiskManager:
 
 - Portfolio value rises → HWM updates to new peak
 - Portfolio value falls → HWM holds at the prior peak (monotonically non-decreasing)
-- `current_drawdown >= 0.15` → `entries_suspended == True`
-- `current_drawdown < 0.15` → `entries_suspended == False`
+- `drawdown >= 0.15` → `is_new_entry_allowed() == False`
+- `drawdown < 0.15` → `is_new_entry_allowed() == True`
 - HWM never decreases between two consecutive `update()` calls
+- `hwm == 0` → `drawdown` returns `0.0` (no division by zero)
 
 ---
 
