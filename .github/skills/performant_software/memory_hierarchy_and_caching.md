@@ -1,3 +1,12 @@
+---
+name: memory-caching
+description: |
+  Multiplier 4 — cache tiers, sequential access, struct-of-arrays, chunking.
+  Trigger phrases: "cache efficiency", "memory hierarchy", "L1/L2 cache", "Multiplier 4",
+  "cache miss", "memory bandwidth"
+argument-hint: "Describe the data structure or access pattern you want to make cache-friendly"
+---
+
 # Memory Hierarchy and Caching — Multiplier 4
 
 **Source:** Computer Enhance Course — Prologue  
@@ -136,3 +145,14 @@ This is also the mechanism behind multithreading's **super-linear** speedup: spl
 ## Key Takeaway
 
 Cache behavior can wipe out a 10× SIMD win with no code change — just a larger input. Always estimate the working set tier **before** spending time on IPC or SIMD optimizations. If the data doesn't fit in L1/L2, fix that first.
+
+---
+
+## Handoff Menu
+
+| Next Step | Trigger | Skill |
+|---|---|---|
+| Now apply SIMD on cache-friendly data (Multiplier 3) | "SIMD", "vectorize" | [simd_vectorization.md](simd_vectorization.md) |
+| Add multithreading (Multiplier 5) | "multithreading", "parallel" | [multithreading.md](multithreading.md) |
+| Measure working set size | "bandwidth ceiling", "benchmark" | [measuring_performance.md](measuring_performance.md) |
+| Apply the fix to a handler | "implement handler" | `lifecycle-workflows/implement-handler` |

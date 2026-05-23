@@ -1,3 +1,12 @@
+---
+name: simd-vectorization
+description: |
+  Multiplier 3 — SIMD lanes, NumPy as on-ramp, what kills vectorization.
+  Trigger phrases: "SIMD", "vectorize", "NumPy optimization", "Multiplier 3",
+  "vectorization", "typed arrays"
+argument-hint: "Describe the numeric operation or paste the array computation to vectorize"
+---
+
 # SIMD — Multiplier 3: Single Instruction, Multiple Data
 
 **Source:** Computer Enhance Course — Prologue  
@@ -118,3 +127,14 @@ Operations that are harder:
 ## Key Takeaway
 
 SIMD delivers up to 7–16× on top of clean scalar code. In Python, NumPy is the standard on-ramp — but it only activates when the data is typed and the operation is a standard bulk numeric one. Pure Python loops over numbers, or object-dtype arrays, completely forfeit the SIMD multiplier.
+
+---
+
+## Handoff Menu
+
+| Next Step | Trigger | Skill |
+|---|---|---|
+| Check if cache is limiting SIMD gains (Multiplier 4) | "cache miss", "memory hierarchy" | [memory_hierarchy_and_caching.md](memory_hierarchy_and_caching.md) |
+| Add cores on top of SIMD (Multiplier 5) | "multithreading", "parallel" | [multithreading.md](multithreading.md) |
+| Measure the actual throughput | "bandwidth ceiling", "benchmark" | [measuring_performance.md](measuring_performance.md) |
+| Apply the fix to a handler | "implement handler" | `lifecycle-workflows/implement-handler` |

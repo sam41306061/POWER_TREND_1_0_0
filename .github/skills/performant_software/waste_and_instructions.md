@@ -1,3 +1,12 @@
+---
+name: waste-and-instructions
+description: |
+  Multiplier 1 — eliminating unnecessary instructions; Python interpreter overhead; builtins and typed arrays.
+  Trigger phrases: "reduce instructions", "eliminate waste", "Python overhead", "Multiplier 1",
+  "unnecessary instructions", "pure Python loop slow"
+argument-hint: "Paste the hot-path function or describe the computation you want to reduce"
+---
+
 # Waste — Multiplier 1: Eliminating Unnecessary Instructions
 
 **Source:** Computer Enhance Course — Prologue  
@@ -120,3 +129,14 @@ typed = array.array('I', data)   # 'I' = unsigned 32-bit int — raw C buffer
 ## Key Takeaway
 
 Eliminating waste requires **no algorithmic cleverness**. The 130× speedup above came from zero algorithmic change — only from removing interpreter overhead. This is also why language choice matters more for performance-critical code than almost any micro-optimization within the language.
+
+---
+
+## Handoff Menu
+
+| Next Step | Trigger | Skill |
+|---|---|---|
+| Split dependency chains (Multiplier 2) | "dependency chains", "IPC" | [ipc_dependency_chains.md](ipc_dependency_chains.md) |
+| Vectorize with NumPy (Multiplier 3) | "SIMD", "vectorize" | [simd_vectorization.md](simd_vectorization.md) |
+| Measure the improvement | "benchmark", "measure" | [measuring_performance.md](measuring_performance.md) |
+| Apply the fix to a handler | "implement handler" | `lifecycle-workflows/implement-handler` |

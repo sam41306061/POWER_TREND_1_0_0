@@ -1,3 +1,12 @@
+---
+name: measuring-performance
+description: |
+  Cross-cutting — latency vs throughput, bandwidth ceiling, repetition testing, profiling workflow.
+  Trigger phrases: "measure performance", "profiling", "bandwidth ceiling", "profiling workflow",
+  "how fast is my code", "benchmark"
+argument-hint: "Describe what you want to measure or paste the timing code"
+---
+
 # Measuring Performance: Throughput, Latency, and Repetition Testing
 
 **Source:** Computer Enhance Course — Parts 2 & 3  
@@ -164,3 +173,14 @@ Compare against:
 ## Key Takeaway
 
 Measurement comes before optimization. The minimum of many repetitions is the number to trust — it reflects the system's peak capability without cold-start noise. Comparing that number against the hardware bandwidth ceiling tells you exactly how much room for improvement remains and which multiplier to apply next.
+
+---
+
+## Handoff Menu
+
+| Next Step | Trigger | Skill |
+|---|---|---|
+| Start with the right multiplier | "Five Multipliers", "where to start" | [five_multipliers.md](five_multipliers.md) |
+| Eliminate waste first (Multiplier 1) | "eliminate waste", "Python overhead" | [waste_and_instructions.md](waste_and_instructions.md) |
+| Apply the optimized handler | "implement handler" | `lifecycle-workflows/implement-handler` |
+| Write performance regression tests | "write tests" | `lifecycle-workflows/write-unit-tests` |

@@ -1,3 +1,12 @@
+---
+name: multithreading
+description: |
+  Multiplier 5 — separability, super-linear cache effect, GIL and ProcessPoolExecutor.
+  Trigger phrases: "multithreading", "ProcessPoolExecutor", "GIL", "Multiplier 5",
+  "parallel execution", "spread across cores"
+argument-hint: "Describe the associative operation or embarrassingly parallel workload to parallelize"
+---
+
 # Multithreading — Multiplier 5: Spreading Work Across Cores
 
 **Source:** Computer Enhance Course — Prologue  
@@ -132,3 +141,13 @@ total = sum(partials)
 ## Key Takeaway
 
 Multithreading is the only multiplier that requires **whole-program partitioning** by the programmer. Its potential magnitude is unique: on modern servers it is the same order as eliminating all interpreter waste. But it is also the multiplier most easily blocked by the wrong data access pattern — a DRAM bottleneck kills scaling regardless of core count.
+
+---
+
+## Handoff Menu
+
+| Next Step | Trigger | Skill |
+|---|---|---|
+| Check cache behavior first (Multiplier 4) | "cache miss", "memory hierarchy" | [memory_hierarchy_and_caching.md](memory_hierarchy_and_caching.md) |
+| Measure scaling efficiency | "benchmark", "bandwidth ceiling" | [measuring_performance.md](measuring_performance.md) |
+| Apply the fix to a handler | "implement handler" | `lifecycle-workflows/implement-handler` |

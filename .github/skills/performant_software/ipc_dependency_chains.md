@@ -1,3 +1,12 @@
+---
+name: ipc-dependency-chains
+description: |
+  Multiplier 2 — serial dependency chains, multiple-accumulator fix, loop overhead.
+  Trigger phrases: "IPC", "dependency chains", "instruction-level parallelism", "Multiplier 2",
+  "accumulator pattern", "serial dependency"
+argument-hint: "Paste the loop or accumulator code you want to parallelize"
+---
+
 # IPC — Multiplier 2: Instructions Per Clock and Dependency Chains
 
 **Source:** Computer Enhance Course — Prologue  
@@ -119,3 +128,14 @@ for value in arr:
 ## Key Takeaway
 
 The IPC multiplier is modest (~2–4×) because modern CPUs are already fairly aggressive at exploiting the ILP they can find. But serial dependency chains are invisible to tools that only measure time — the code *looks* correct and runs at "1 add per cycle," which sounds fast until you realize the hardware ceiling is 4+. The fix is a one-line restructure of the accumulator pattern.
+
+---
+
+## Handoff Menu
+
+| Next Step | Trigger | Skill |
+|---|---|---|
+| Check if SIMD gives more gain (Multiplier 3) | "SIMD", "vectorize" | [simd_vectorization.md](simd_vectorization.md) |
+| Check if cache is the real bottleneck (Multiplier 4) | "cache miss", "memory hierarchy" | [memory_hierarchy_and_caching.md](memory_hierarchy_and_caching.md) |
+| Measure before and after | "benchmark" | [measuring_performance.md](measuring_performance.md) |
+| Apply the fix to a handler | "implement handler" | `lifecycle-workflows/implement-handler` |

@@ -1,87 +1,98 @@
-# SKILLS_INDEX — <!-- TODO: Project Name -->
+# SKILLS_INDEX — Power Trend Algo 1
 
-Master index of all behavioral-invariant skill files. These files define the contracts
-that tests enforce. Consult them before modifying any handler.
+Master index of all skills. Load by trigger phrase — do not pre-load all skills at startup.
+
+**Development pipeline:**
+```
+implement-handler → write-unit-tests → run-backtest-analysis → create-pr
+```
+Debugging: `debugging → apply-fix → create-pr`
 
 ---
 
-## lifecycle/
+## Tier 1 — Lifecycle Workflow Skills
 
-| File | Status | Description |
+| Skill | Trigger Phrases | Status | File |
+|---|---|---|---|
+| `implement-handler` | "implement handler", "scaffold handler", "build handler" | ✅ Populated | [SKILL.md](lifecycle-workflows/implement-handler/SKILL.md) |
+| `write-unit-tests` | "write tests", "unit tests for", "test coverage" | ✅ Populated | [SKILL.md](lifecycle-workflows/write-unit-tests/SKILL.md) |
+| `run-backtest-analysis` | "analyze backtest", "interpret results", "Sharpe ratio" | ✅ Populated | [SKILL.md](lifecycle-workflows/run-backtest-analysis/SKILL.md) |
+| `create-pr` | "create PR", "open pull request", "ready to merge" | ✅ Populated | [SKILL.md](lifecycle-workflows/create-pr/SKILL.md) |
+
+---
+
+## Tier 2 — Handler Domain Skills
+
+### trading/ — Power Trend Strategy Rules
+
+| Skill | Trigger Phrases | Status | File |
+|---|---|---|---|
+| `regime-filter-rules` | "regime filter", "power trend state", "entries allowed", "QQQ gate" | ✅ Populated | [SKILL.md](trading/regime-filter-rules/SKILL.md) |
+| `entry-rules` | "entry rules", "entry trigger", "pyramid add", "when to enter" | ✅ Populated | [SKILL.md](trading/entry-rules/SKILL.md) |
+| `exit-rules` | "exit rules", "exit logic", "when to exit", "SMA breakdown" | ✅ Populated | [SKILL.md](trading/exit-rules/SKILL.md) |
+| `pyramiding-rules` | "pyramiding", "leg sizing", "add-on entry", "position sizing" | ✅ Populated | [SKILL.md](trading/pyramiding-rules/SKILL.md) |
+| `risk-rules` | "risk management", "drawdown gate", "account drawdown", "HWM" | ✅ Populated | [SKILL.md](trading/risk-rules/SKILL.md) |
+
+### debugging/
+
+| Skill | Trigger Phrases | Status | File |
+|---|---|---|---|
+| `debugging` | "why isn't it trading", "diagnose", "silent failure", "no orders" | ✅ Populated | [SKILL.md](debugging/SKILL.md) |
+| — | *(loaded by debugging skill)* | 📚 Reference | [why_didnt_my_algo_trade.md](debugging/reference/why_didnt_my_algo_trade.md) |
+| — | *(loaded by debugging skill)* | 📚 Reference | [silent_failure_modes.md](debugging/reference/silent_failure_modes.md) |
+
+### performant_software/
+
+| Skill | Trigger Phrases | Status | File |
+|---|---|---|---|
+| `five-multipliers` | "optimize", "performance framework", "Five Multipliers" | ✅ Populated | [five_multipliers.md](performant_software/five_multipliers.md) |
+| `waste-and-instructions` | "reduce instructions", "eliminate waste", "Python overhead" | ✅ Populated | [waste_and_instructions.md](performant_software/waste_and_instructions.md) |
+| `ipc-dependency-chains` | "IPC", "dependency chains", "instruction-level parallelism" | ✅ Populated | [ipc_dependency_chains.md](performant_software/ipc_dependency_chains.md) |
+| `simd-vectorization` | "SIMD", "vectorize", "NumPy optimization" | ✅ Populated | [simd_vectorization.md](performant_software/simd_vectorization.md) |
+| `memory-caching` | "cache efficiency", "memory hierarchy", "L1/L2 cache" | ✅ Populated | [memory_hierarchy_and_caching.md](performant_software/memory_hierarchy_and_caching.md) |
+| `multithreading` | "multithreading", "ProcessPoolExecutor", "GIL" | ✅ Populated | [multithreading.md](performant_software/multithreading.md) |
+| `measuring-performance` | "measure performance", "profiling", "bandwidth ceiling" | ✅ Populated | [measuring_performance.md](performant_software/measuring_performance.md) |
+
+---
+
+## _shared/references/ — Cross-Cutting Reference Files
+
+Consumed JIT by multiple skills — not direct invocation targets. Say the trigger phrase to load.
+
+| File | Say... | File |
 |---|---|---|
-| [warmup_and_readiness.md](lifecycle/warmup_and_readiness.md) | ✅ Populated | Handler init order, daily schedule phases, fill reconciliation |
-| [algo_lifecycle_rules.md](lifecycle/algo_lifecycle_rules.md) | ✅ Populated | initialize(), on_data(), on_order_event(), scheduled events, warm-up guard |
+| Config thresholds | "read config thresholds" | [config-thresholds.md](_shared/references/config-thresholds.md) |
+| Architecture rules | "read architecture rules" | [architecture-rules.md](_shared/references/architecture-rules.md) |
+| Handler responsibilities | "read handler responsibilities" | [handler-responsibilities.md](_shared/references/handler-responsibilities.md) |
 
-## indicators/
+---
 
-| File | Status | Description |
-|---|---|---|
-| [indicator_caching_rules.md](indicators/indicator_caching_rules.md) | ✅ Populated | Cache key structure, EMA seeding, ATR computation invariants |
-| [multi_timeframe_indicators.md](indicators/multi_timeframe_indicators.md) | ✅ Populated | Native vs manual computation, consolidators, multi-symbol management |
-| [indicator_readiness_gates.md](indicators/indicator_readiness_gates.md) | ✅ Populated | IsReady behaviour, set_warm_up, history injection, min bar requirements |
+## Not In Scope
 
-## data/
-
-| File | Status | Description |
-|---|---|---|
-| [data_alignment_invariants.md](data/data_alignment_invariants.md) | ✅ Populated | Dual-format support, column naming, chronological ordering |
-| [consolidation_rules.md](data/consolidation_rules.md) | ✅ Populated | TradeBar/QuoteBar consolidators, DataNormalizationMode, history alignment |
-
-## options/
-
-| File | Status | Description |
-|---|---|---|
-| [option_chain_filtering.md](options/option_chain_filtering.md) | ✅ Populated | Contract selection flow, OI gate, IV analytics, delta extraction |
-
-## trading/
-
-<!-- TODO: Add strategy-specific trading skill files -->
-
-| File | Status | Description |
-|---|---|---|
-| | 📋 Stub | Create files for your strategy's validation rules |
-| | 📋 Stub | Create files for your position management state machine |
-
-## debugging/
-
-| File | Status | Description |
-|---|---|---|
-| [why_didnt_my_algo_trade.md](debugging/why_didnt_my_algo_trade.md) | ✅ Populated | Phase 1/2 gate checklist, order rejection causes, data issues |
-| [silent_failure_modes.md](debugging/silent_failure_modes.md) | ✅ Populated | Cache, empty dict, options chain, scheduling, fill reconciliation |
-
-## backtesting/
-
-| File | Status | Description |
-|---|---|---|
-| [results_interpretation.md](backtesting/results_interpretation.md) | ✅ Populated | Runtime statistics, key metrics (Sharpe/PSR/drawdown), charts |
-| [overfitting_prevention.md](backtesting/overfitting_prevention.md) | ✅ Populated | Hypothesis-driven research, parameter detection, backtest count limits |
-| [deployment_constraints.md](backtesting/deployment_constraints.md) | ✅ Populated | Node specs, RAM/log/order/chart quotas, runtime limits |
-| [debugging_backtests.md](backtesting/debugging_backtests.md) | ✅ Populated | QC debugger workflow, breakpoints, variable inspection |
-
-## performant_software/
-
-| File | Status | Description |
-|---|---|---|
-| [five_multipliers.md](performant_software/five_multipliers.md) | ✅ Populated | Framework overview — the two levers and five multipliers; correct order of attack |
-| [waste_and_instructions.md](performant_software/waste_and_instructions.md) | ✅ Populated | Multiplier 1 — eliminating unnecessary instructions; Python interpreter overhead; builtins and typed arrays |
-| [ipc_dependency_chains.md](performant_software/ipc_dependency_chains.md) | ✅ Populated | Multiplier 2 — serial dependency chains; multiple-accumulator fix; loop overhead |
-| [simd_vectorization.md](performant_software/simd_vectorization.md) | ✅ Populated | Multiplier 3 — SIMD lanes; NumPy as on-ramp; what kills vectorization |
-| [memory_hierarchy_and_caching.md](performant_software/memory_hierarchy_and_caching.md) | ✅ Populated | Multiplier 4 — cache tiers; sequential access; struct-of-arrays; chunking |
-| [multithreading.md](performant_software/multithreading.md) | ✅ Populated | Multiplier 5 — separability; super-linear cache effect; GIL and ProcessPoolExecutor |
-| [measuring_performance.md](performant_software/measuring_performance.md) | ✅ Populated | Cross-cutting — latency vs throughput; bandwidth ceiling; repetition testing; profiling workflow |
+| Domain | Reason |
+|---|---|
+| `options/` — option_chain_filtering.md | Power Trend is equity-only; file is a template carryover |
+| `lifecycle/`, `indicators/`, `data/`, `backtesting/` | Referenced in prior version of this index but files do not exist on disk — create if needed for future work |
 
 ---
 
 ## Legend
 
-- ✅ **Populated** — content derived from actual handler source; authoritative
-- 📋 **Stub** — headings in place; populate as you implement handlers
+- ✅ **Populated** — content is current and authoritative
+- 📚 **Reference** — supporting reference document; not directly invocable as a skill
+- 📋 **Stub** — registered but file not yet created
 
 ---
 
-## Adding a New Skill File
+## Adding a New Skill
 
-1. Create the file in the appropriate subdirectory
-2. Add it to this index with status and description
-3. Reference any `config.py` constants by their exact name
-4. Link the source handler(s) in the file header
+1. Create `.github/skills/<tier>/<skill-name>/SKILL.md` with:
+   - YAML frontmatter (`name`, `description` with trigger phrases, `argument-hint`)
+   - Philosophy + hard boundaries
+   - 4–6 phased workflow steps
+   - Handoff Menu table
+   - Reference Files section
+2. Register it in this index with tier, trigger phrases, and status
+3. Add a dispatch row to `.github/copilot-instructions.md`
+
+All three steps are required — an unregistered skill is invisible to the AI.

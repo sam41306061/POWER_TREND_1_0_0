@@ -1,3 +1,12 @@
+---
+name: five-multipliers
+description: |
+  Framework overview for performance-aware programming: the two levers and five multipliers.
+  Trigger phrases: "optimize", "performance framework", "Five Multipliers", "performance audit",
+  "slow", "where to start optimizing"
+argument-hint: "Describe the hot path or function you want to optimize"
+---
+
 # The Five Multipliers of Performance
 
 **Source:** Computer Enhance Course (Performance-Aware Programming)  
@@ -77,3 +86,13 @@ Work through the multipliers in order. Each one assumes the previous has been ad
 | [memory_hierarchy_and_caching.md](memory_hierarchy_and_caching.md) | 4 — Caching |
 | [multithreading.md](multithreading.md) | 5 — Multithreading |
 | [measuring_performance.md](measuring_performance.md) | Cross-cutting — Measurement |
+
+---
+
+## Handoff Menu
+
+| Next Step | Trigger | Skill |
+|---|---|---|
+| Start with Multiplier 1 | "eliminate waste" | [waste_and_instructions.md](waste_and_instructions.md) |
+| Measure before optimizing | "measure performance" | [measuring_performance.md](measuring_performance.md) |
+| Apply optimization to a handler | "implement handler" | `lifecycle-workflows/implement-handler` |
