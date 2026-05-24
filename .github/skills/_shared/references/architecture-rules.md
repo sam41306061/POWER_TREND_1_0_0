@@ -73,3 +73,15 @@ if TYPE_CHECKING:
 ```
 
 The `TYPE_CHECKING` guard ensures LEAN stubs are never imported in a running LEAN environment.
+
+---
+
+## Platform Adapter Pattern
+
+To run handlers against a non-LEAN platform (Backtrader, VectorBT, paper-trading shells, etc.),
+wrap the platform API in an adapter that exposes the same `algorithm` interface handlers expect.
+The handler layer has zero platform imports — only `main.py` changes when swapping platforms.
+
+See `adapters/_example_adapter.py` for the adapter protocol and `docs/PLATFORM_ADAPTERS.md`
+for the full worked example including `Time`, `Portfolio`, `History`, `MarketOrder`, and
+`Log` / `Debug` / `Error` method mappings.

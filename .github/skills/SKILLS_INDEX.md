@@ -64,6 +64,7 @@ Consumed JIT by multiple skills — not direct invocation targets. Say the trigg
 | Config thresholds | "read config thresholds" | [config-thresholds.md](_shared/references/config-thresholds.md) |
 | Architecture rules | "read architecture rules" | [architecture-rules.md](_shared/references/architecture-rules.md) |
 | Handler responsibilities | "read handler responsibilities" | [handler-responsibilities.md](_shared/references/handler-responsibilities.md) |
+| RAG pipeline | "read RAG structure", "how does the RAG work", "inject context" | [AI_RAG_STRUCTURE.md](../../docs/AI_RAG_STRUCTURE.md) |
 
 ---
 
