@@ -75,4 +75,5 @@ URL_SECTIONS: dict[str, str] = {
     # -------------------------------------------------------------------------
     # "backtesting": f"{QC_DOCS_BASE}/cloud-platform/backtesting",
     # "brokerages": f"{QC_DOCS_BASE}/writing-algorithms/live-trading/brokerages",
+    "live_trading": f"{QC_DOCS_BASE}/writing-algorithms/live-trading",
 }

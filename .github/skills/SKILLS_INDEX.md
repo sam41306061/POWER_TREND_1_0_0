@@ -18,6 +18,7 @@ Debugging: `debugging → apply-fix → create-pr`
 | `write-unit-tests` | "write tests", "unit tests for", "test coverage" | ✅ Populated | [SKILL.md](lifecycle-workflows/write-unit-tests/SKILL.md) |
 | `run-backtest-analysis` | "analyze backtest", "interpret results", "Sharpe ratio" | ✅ Populated | [SKILL.md](lifecycle-workflows/run-backtest-analysis/SKILL.md) |
 | `create-pr` | "create PR", "open pull request", "ready to merge" | ✅ Populated | [SKILL.md](lifecycle-workflows/create-pr/SKILL.md) |
+| `go-live` | "go live", "deploy live", "paper trade", "production deploy", "live readiness" | ✅ Populated | [SKILL.md](lifecycle-workflows/go-live/SKILL.md) |
 
 ---
 
@@ -32,6 +33,7 @@ Debugging: `debugging → apply-fix → create-pr`
 | `exit-rules` | "exit rules", "exit logic", "when to exit", "SMA breakdown" | ✅ Populated | [SKILL.md](trading/exit-rules/SKILL.md) |
 | `pyramiding-rules` | "pyramiding", "leg sizing", "add-on entry", "position sizing" | ✅ Populated | [SKILL.md](trading/pyramiding-rules/SKILL.md) |
 | `risk-rules` | "risk management", "drawdown gate", "account drawdown", "HWM" | ✅ Populated | [SKILL.md](trading/risk-rules/SKILL.md) |
+| `operational-safeguards` | "state persistence", "object store", "restart reconciliation", "kill switch", "order lifecycle", "partial fills", "notify" | ✅ Populated | [SKILL.md](trading/operational-safeguards/SKILL.md) |
 
 ### debugging/
 

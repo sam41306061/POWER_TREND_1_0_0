@@ -22,6 +22,7 @@ Load a skill when the trigger phrase matches. Do **not** pre-load skills specula
 | `write-unit-tests` | "write tests", "unit tests for", "test coverage" | [SKILL.md](.github/skills/lifecycle-workflows/write-unit-tests/SKILL.md) |
 | `run-backtest-analysis` | "analyze backtest", "interpret backtest results", "Sharpe ratio" | [SKILL.md](.github/skills/lifecycle-workflows/run-backtest-analysis/SKILL.md) |
 | `create-pr` | "create PR", "open pull request", "ready to merge" | [SKILL.md](.github/skills/lifecycle-workflows/create-pr/SKILL.md) |
+| `go-live` | "go live", "deploy live", "paper trade", "production deploy", "live readiness" | [SKILL.md](.github/skills/lifecycle-workflows/go-live/SKILL.md) |
 
 ### Tier 2 — Handler Domain Skills
 
@@ -32,6 +33,7 @@ Load a skill when the trigger phrase matches. Do **not** pre-load skills specula
 | `exit-rules` | "exit rules", "exit logic", "when to exit", "SMA breakdown" | [SKILL.md](.github/skills/trading/exit-rules/SKILL.md) |
 | `pyramiding-rules` | "pyramiding", "leg sizing", "add-on entry", "position sizing" | [SKILL.md](.github/skills/trading/pyramiding-rules/SKILL.md) |
 | `risk-rules` | "risk management", "drawdown gate", "account drawdown", "HWM" | [SKILL.md](.github/skills/trading/risk-rules/SKILL.md) |
+| `operational-safeguards` | "state persistence", "object store", "restart reconciliation", "kill switch", "order lifecycle", "partial fills", "notify" | [SKILL.md](.github/skills/trading/operational-safeguards/SKILL.md) |
 | `debugging` | "why isn't it trading", "diagnose", "silent failure", "no orders" | [SKILL.md](.github/skills/debugging/SKILL.md) |
 | `performance` | "optimize", "slow", "performance audit", "Five Multipliers" | [SKILLS_INDEX.md](.github/skills/SKILLS_INDEX.md) |
 
