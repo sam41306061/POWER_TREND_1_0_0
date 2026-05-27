@@ -1,7 +1,7 @@
 # GitHub Copilot Instructions — Power Trend Algo 1
 
 **Strategy:** Daily long-only trend-following on US equities. QQQ regime gate (Power Trend
-classifier on EMA21/SMA50 counters). Top-200 universe by 20d dollar volume, monthly refresh.
+classifier on EMA21/SMA50 counters). Top-450 universe by 20d dollar volume, 14-day refresh.
 Equal-size pyramid adds up to `PYRAMID_MAX_ADDS`. See [STRATEGY_OVERVIEW.md](../STRATEGY_OVERVIEW.md)
 for the full spec and Gherkin contract.
 

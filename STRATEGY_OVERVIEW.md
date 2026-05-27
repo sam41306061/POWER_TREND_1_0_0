@@ -15,7 +15,7 @@ pyramid adds.
 
 **Position:** Long common stock (cash equity, no options, no leverage).
 
-**Universe:** Top **200** US equities by 20-day average dollar volume,
+**Universe:** Top **450** US equities by 20-day average dollar volume,
 filtered to `price ≥ $20` and `20d avg $ volume ≥ $50M`. Refreshed
 **every 2 weeks**.
 
@@ -56,7 +56,7 @@ the pipeline.
 
 | Handler | Responsibility |
 |---|---|
-| `handlers/universe_filter.py` | QC coarse-filter callback: liquidity floor → top-200 by 20d $-vol → 14-day cache. Force-includes QQQ. |
+| `handlers/universe_filter.py` | QC coarse-filter callback: liquidity floor → top-450 by 20d $-vol → 14-day cache. Force-includes QQQ. |
 | `handlers/data_handler.py` | Compute & cache per `(symbol, date)`: `close`, `open`, `high`, `low`, `prior_close`, `prior_low`, `EMA21`, `SMA50`, `SMA10`, `prior_EMA21`, `prior_SMA50`, `dollar_volume_20d`, `atr_14`, `atr_50`, `atr_stretch_low` (= `(low - EMA21) / atr_50`), `high_vs_ema21` (= `(EMA21 - high) / atr_50`), `high_vs_sma10` (= `(high - SMA10) / atr_50`), `is_blue_bar` (= `close >= open`). |
 | `handlers/regime_filter.py` | Power Trend rolling-counter state machine on QQQ only. Exposes `entries_allowed() -> bool` and `current_state -> {TREND_UP, NO_TREND, TREND_END}`. |
 | `handlers/entry_engine.py` | Per-stock initial + add-on entry rules; gated by `regime.entries_allowed()`. |
@@ -82,7 +82,7 @@ with the **Tier 2 domain** skill listed below. Master index:
 | `exit_engine.py` | [`exit-rules`](.github/skills/trading/exit-rules/SKILL.md) | `implement-handler`, `write-unit-tests` | `config-thresholds` |
 | `risk_manager.py` | [`risk-rules`](.github/skills/trading/risk-rules/SKILL.md) | `implement-handler`, `write-unit-tests` | `config-thresholds` |
 | `position_manager.py` | — | `implement-handler`, `write-unit-tests` | `handler-responsibilities` |
-| `main.py` | — | [`run-backtest-analysis`](.github/skills/lifecycle-workflows/run-backtest-analysis/SKILL.md), [`debugging`](.github/skills/debugging/SKILL.md) | `architecture-rules` (LEAN import boundary lives here), [`waste-and-instructions`](.github/skills/performant_software/waste_and_instructions.md), [`memory-caching`](.github/skills/performant_software/memory_hierarchy_and_caching.md) (daily loop over 200 symbols) |
+| `main.py` | — | [`run-backtest-analysis`](.github/skills/lifecycle-workflows/run-backtest-analysis/SKILL.md), [`debugging`](.github/skills/debugging/SKILL.md) | `architecture-rules` (LEAN import boundary lives here), [`waste-and-instructions`](.github/skills/performant_software/waste_and_instructions.md), [`memory-caching`](.github/skills/performant_software/memory_hierarchy_and_caching.md) (daily loop over 450 symbols) |
 
 ### Development Pipeline
 
@@ -102,7 +102,7 @@ See [`SKILLS_INDEX.md`](.github/skills/SKILLS_INDEX.md) for trigger phrases.
 
 ### Performance Engineering
 
-The daily `_evaluate()` callback iterates the full 200-symbol universe and recomputes
+The daily `_evaluate()` callback iterates the full 450-symbol universe and recomputes
 indicators every bar. Indicator math (`data_handler.py`) and the per-symbol loop
 (`main.py`) are the **two hot paths**. Apply the Five Multipliers framework in order
 before any micro-optimisation — measure first, then optimise.
@@ -363,7 +363,7 @@ future extension.
 ### Universe
 | Constant | Value |
 |---|---|
-| `UNIVERSE_TOP_N` | `200` |
+| `UNIVERSE_TOP_N` | `450` |
 | `UNIVERSE_REFRESH_DAYS` | `14` (every 2 weeks) |
 | `MIN_PRICE` | `20.0` |
 | `MIN_DOLLAR_VOLUME` | `50_000_000` |
@@ -412,7 +412,7 @@ in `tests/unit/` must enforce them.
 ```gherkin
 Given the algorithm runs on daily resolution
 And QQQ is subscribed as the regime symbol
-And the tradable universe is the top 200 US equities by 20-day average
+And the tradable universe is the top 450 US equities by 20-day average
     dollar volume, refreshed every 14 days, filtered to price >= $20 and
     20-day avg dollar volume >= $50M
 And the following indicators are computed daily per symbol:
@@ -670,7 +670,7 @@ Domain skills are cited where the phase touches a specific rule family.
 | ✅ 3 | Implement `regime_filter.py` (rolling counters, state machine, `entries_allowed()`). | [`regime-filter-rules`](.github/skills/trading/regime-filter-rules/SKILL.md) | [`architecture-rules`](.github/skills/_shared/references/architecture-rules.md) |
 | ✅ 4 | Implement `entry_engine.py` + `pyramiding_manager.py`; extend `position_manager.py` with multi-leg tracking. | [`entry-rules`](.github/skills/trading/entry-rules/SKILL.md), [`pyramiding-rules`](.github/skills/trading/pyramiding-rules/SKILL.md) | `config-thresholds` |
 | ✅ 5 | Implement `exit_engine.py` + `risk_manager.py` (account DD gate, stretch-trim partial). | [`exit-rules`](.github/skills/trading/exit-rules/SKILL.md), [`risk-rules`](.github/skills/trading/risk-rules/SKILL.md) | `config-thresholds` |
-| ✅ 6 | Rewrite `main.py` (single daily `_evaluate()` callback; no two-phase split; no options). | — | [`architecture-rules`](.github/skills/_shared/references/architecture-rules.md) (LEAN import boundary), [`waste-and-instructions`](.github/skills/performant_software/waste_and_instructions.md), [`memory-caching`](.github/skills/performant_software/memory_hierarchy_and_caching.md) (200-symbol daily loop), [`debugging`](.github/skills/debugging/SKILL.md) (fallback) |
+| ✅ 6 | Rewrite `main.py` (single daily `_evaluate()` callback; no two-phase split; no options). | — | [`architecture-rules`](.github/skills/_shared/references/architecture-rules.md) (LEAN import boundary), [`waste-and-instructions`](.github/skills/performant_software/waste_and_instructions.md), [`memory-caching`](.github/skills/performant_software/memory_hierarchy_and_caching.md) (450-symbol daily loop), [`debugging`](.github/skills/debugging/SKILL.md) (fallback) |
 | 7 | 20-year backtest + walk-forward writeup; lite-mode comparison runs. | — | [`run-backtest-analysis`](.github/skills/lifecycle-workflows/run-backtest-analysis/SKILL.md), [`measuring-performance`](.github/skills/performant_software/measuring_performance.md), [`multithreading`](.github/skills/performant_software/multithreading.md) (parallelise the 5 lite-mode runs via `ProcessPoolExecutor`), [`performance_assessment`](.github/skills/performance_assessment.md), [`create-pr`](.github/skills/lifecycle-workflows/create-pr/SKILL.md), [`debugging`](.github/skills/debugging/SKILL.md) if no trades fire |
 
 ---

@@ -19,7 +19,7 @@ UNIVERSE_CSV_PATH: Final[str] = "universe/candidates.csv"
 # Dynamic filtering thresholds (used when universe is filtered programmatically)
 MIN_MARKET_CAP: Final[float] = 10_000_000_000  # $10B minimum market cap
 MIN_AVG_VOLUME: Final[int] = 1_000_000  # Minimum 1M average daily volume
-MAX_UNIVERSE_SIZE: Final[int] = 500  # Maximum number of stocks in universe
+UNIVERSE_TOP_N: Final[int] = 450  # Top-N stocks by 20d avg dollar volume (see STRATEGY_OVERVIEW.md)
 
 # ==============================================================================
 # EVENT TIMING

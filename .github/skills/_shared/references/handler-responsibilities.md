@@ -8,7 +8,7 @@ overlap; before modifying routing logic in `main.py`
 
 | Handler Class | File | Responsibility |
 |---|---|---|
-| `DynamicUniverseSelector` | `universe_filter.py` | QC coarse-filter callback: liquidity floor → top-200 by 20d $-vol → monthly cache. Force-includes QQQ. |
+| `DynamicUniverseSelector` | `universe_filter.py` | QC coarse-filter callback: liquidity floor → top-450 by 20d $-vol → 14-day cache. Force-includes QQQ. |
 | `DataHandler` | `data_handler.py` | Compute + cache per `(symbol, date)`: `close`, `open`, `low`, `prior_close`, `prior_low`, `EMA21`, `SMA50`, `prior_EMA21`, `prior_SMA50`, `dollar_volume_20d` |
 | `RegimeFilter` | `regime_filter.py` | Power Trend rolling-counter state machine on QQQ only; exposes `entries_allowed()` and `current_state`. |
 | `EntryEngine` | `entry_engine.py` | Per-stock initial + add-on (pyramid) entry rules; gated by `regime.entries_allowed()`. |
