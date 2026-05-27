@@ -105,6 +105,26 @@ class TimeValue(Enum):
     DAY = "day"
 
 
+class DataNormalizationMode(Enum):
+    """Data normalization enum (RAW, ADJUSTED, SPLIT_ADJUSTED, TOTAL_RETURN)."""
+    RAW = "raw"
+    ADJUSTED = "adjusted"
+    SPLIT_ADJUSTED = "split_adjusted"
+    TOTAL_RETURN = "total_return"
+
+
+class Market:
+    """Market venue identifier."""
+    USA = "usa"
+
+
+class _UniverseSettings:
+    """Stub for QCAlgorithm.universe_settings."""
+    def __init__(self):
+        self.resolution = Resolution.DAILY
+        self.data_normalization_mode = DataNormalizationMode.RAW
+
+
 # ============================================================================
 # SCHEDULING RULE BUILDERS
 # ============================================================================
@@ -456,6 +476,8 @@ class QCAlgorithm:
         self.object_store = ObjectStore()
         # OptionChainProvider: pre-market daily option universe provider
         self.OptionChainProvider = _OptionChainProvider(self)
+        # universe_settings: stub for resolution / data_normalization_mode.
+        self.universe_settings = _UniverseSettings()
 
     # --- Time (PascalCase alias mirrors live QC attribute) ---
 
@@ -678,6 +700,8 @@ __all__ = [
     "OrderDirection",
     "SecurityType",
     "TimeValue",
+    "DataNormalizationMode",
+    "Market",
     "TradeBar",
     "QuoteBar",
     "OrderEvent",
@@ -694,4 +718,5 @@ __all__ = [
     "_Greeks",
     "_GreeksUniverse",
     "_OptionChainProvider",
+    "_UniverseSettings",
 ]

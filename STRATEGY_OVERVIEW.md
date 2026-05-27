@@ -15,7 +15,7 @@ pyramid adds.
 
 **Position:** Long common stock (cash equity, no options, no leverage).
 
-**Universe:** Top **200** US equities by 20-day average dollar volume,
+**Universe:** Top **500** US equities by 20-day average dollar volume,
 filtered to `price ≥ $20` and `20d avg $ volume ≥ $50M`. Refreshed
 **every 2 weeks**.
 
@@ -56,12 +56,12 @@ the pipeline.
 
 | Handler | Responsibility |
 |---|---|
-| `handlers/universe_filter.py` | QC coarse-filter callback: liquidity floor → top-200 by 20d $-vol → 14-day cache. Force-includes QQQ. |
+| `handlers/universe_filter.py` | QC coarse-filter callback: liquidity floor → top-500 by 20d $-vol → 14-day cache. Force-includes QQQ. |
 | `handlers/data_handler.py` | Compute & cache per `(symbol, date)`: `close`, `open`, `high`, `low`, `prior_close`, `prior_low`, `EMA21`, `SMA50`, `SMA10`, `prior_EMA21`, `prior_SMA50`, `dollar_volume_20d`, `atr_14`, `atr_50`, `atr_stretch_low` (= `(low - EMA21) / atr_50`), `high_vs_ema21` (= `(EMA21 - high) / atr_50`), `high_vs_sma10` (= `(high - SMA10) / atr_50`), `is_blue_bar` (= `close >= open`). |
-| `handlers/regime_filter.py` | Power Trend rolling-counter state machine on QQQ only. Exposes `entries_allowed() -> bool` and `current_state -> {TREND_UP, NO_TREND, TREND_END}`. |
+| `handlers/regime_filter.py` | Power Trend rolling-counter state machine on QQQ only. Exposes `entries_allowed() -> bool` and `current_state -> {TREND_UP, TREND_PRESSURE, TREND_END, NO_TREND}`. |
 | `handlers/entry_engine.py` | Per-stock initial + add-on entry rules; gated by `regime.entries_allowed()`. |
 | `handlers/pyramiding_manager.py` | Equal-size leg sizing; caps adds at `PYRAMID_MAX_ADDS`. |
-| `handlers/exit_engine.py` | Per-stock priority-ordered exits: SMA breakdown, EMA cross, weakness, stop loss, account drawdown. |
+| `handlers/exit_engine.py` | Per-stock priority-ordered exits: account drawdown, stop loss, target profit, SMA breakdown, EMA cross. |
 | `handlers/risk_manager.py` | Tracks high-water-mark equity; suspends new entries when account drawdown > `MAX_ACCOUNT_DRAWDOWN_PCT`. |
 | `handlers/position_manager.py` | Multi-leg avg-cost tracking: `legs`, `total_quantity`, `avg_entry_price`, `leg_count`, `last_leg_date`. |
 | `handlers/setup_checker.py`, `technical_validator.py`, `instrument_selector.py`, `option_analytics.py` | **Delete** — not used by Power Trend. |
@@ -246,22 +246,23 @@ Equal-size legs:
 shares_per_leg = floor( INITIAL_LEG_SIZE_PCT * portfolio_value / current_price )
 ```
 
-Maximum total per position = `INITIAL_LEG_SIZE_PCT * (1 + PYRAMID_MAX_ADDS)` of portfolio value (e.g., 25% × 4 = 100% in a max-size single name — gated in practice by `MAX_POSITIONS_OPEN`).
+Maximum total per position = `INITIAL_LEG_SIZE_PCT * (1 + PYRAMID_MAX_ADDS)` of portfolio value (e.g., 0.02 × 4 = 0.08 in a max-size single name — gated in practice by `MAX_POSITIONS_OPEN`).
 
 ---
 
 ## Exit Rules (per stock, priority order)
 
 The stretch-trim partial (Priority 0) is checked first each bar. If it fires,
-full-exit rules (Priorities 1–4) are **skipped for that bar**.
+full-exit rules (Priorities 1–5) are **skipped for that bar**.
 
 | Priority | Type | Rule | Exit reason |
-|---|---|---|---|
+|---|---|---|
 | 0 | **Partial** | `high_vs_sma10 ≥ WEBBY_RSI_STRETCH_LEVEL (3.0)` → sell `PARTIAL_EXIT_TRIM_FRACTION` (50%) of shares | `EXIT_REASON_STRETCH_TRIM` |
 | 1 | Full | Account drawdown ≥ `MAX_ACCOUNT_DRAWDOWN_PCT` (15%) | `EXIT_REASON_DRAWDOWN` |
 | 2 | Full | Stop loss: `current_price ≤ avg_entry_price * (1 - STOP_LOSS_PCT)` | `EXIT_REASON_STOP_LOSS` |
-| 3 | Full | Daily `close < SMA50` | `EXIT_REASON_SMA_BREAKDOWN` |
-| 4 | Full | EMA21 crosses below SMA50 | `EXIT_REASON_EMA_CROSS` |
+| 3 | Full | Target profit: `current_price ≥ avg_entry_price * (1 + TARGET_PROFIT_PCT)` | `EXIT_REASON_TARGET_PROFIT` |
+| 4 | Full | Daily `close < SMA50` | `EXIT_REASON_SMA_BREAKDOWN` |
+| 5 | Full | EMA21 crosses below SMA50 | `EXIT_REASON_EMA_CROSS` |
 
 After a stretch-trim the remaining shares continue to be held under normal
 full-exit management on subsequent bars.
@@ -303,7 +304,7 @@ future extension.
 ### Universe
 | Constant | Value |
 |---|---|
-| `UNIVERSE_TOP_N` | `200` |
+| `UNIVERSE_TOP_N` | `500` |
 | `UNIVERSE_REFRESH_DAYS` | `14` (every 2 weeks) |
 | `MIN_PRICE` | `20.0` |
 | `MIN_DOLLAR_VOLUME` | `50_000_000` |
@@ -316,13 +317,14 @@ future extension.
 | `STOCK_SMA_PERIOD` | `50` |
 | `STOCK_SMA10_PERIOD` | `10` |
 | `PYRAMID_MAX_ADDS` | `3` |
-| `INITIAL_LEG_SIZE_PCT` | `0.25` |
+| `INITIAL_LEG_SIZE_PCT` | `0.02` |
 
 ### Risk / exits
 | Constant | Value |
 |---|---|
-| `MAX_POSITIONS_OPEN` | `10` |
+| `MAX_POSITIONS_OPEN` | `4` |
 | `STOP_LOSS_PCT` | `0.07` |
+| `TARGET_PROFIT_PCT` | `0.75` |
 | `MAX_ACCOUNT_DRAWDOWN_PCT` | `0.15` |
 | `PARTIAL_EXIT_TRIM_FRACTION` | `0.50` |
 
@@ -338,7 +340,7 @@ future extension.
 - `UNIVERSE_CSV_PATH` (universe is dynamic).
 
 ### New exit-reason constants
-`EXIT_REASON_SMA_BREAKDOWN`, `EXIT_REASON_EMA_CROSS`, `EXIT_REASON_DRAWDOWN`, `EXIT_REASON_STRETCH_TRIM`.
+`EXIT_REASON_SMA_BREAKDOWN`, `EXIT_REASON_EMA_CROSS`, `EXIT_REASON_DRAWDOWN`, `EXIT_REASON_STRETCH_TRIM`, `EXIT_REASON_STOP_LOSS`, `EXIT_REASON_TARGET_PROFIT`.
 
 ---
 
@@ -352,7 +354,7 @@ in `tests/unit/` must enforce them.
 ```gherkin
 Given the algorithm runs on daily resolution
 And QQQ is subscribed as the regime symbol
-And the tradable universe is the top 200 US equities by 20-day average
+And the tradable universe is the top 500 US equities by 20-day average
     dollar volume, refreshed every 14 days, filtered to price >= $20 and
     20-day avg dollar volume >= $50M
 And the following indicators are computed daily per symbol:
@@ -508,8 +510,9 @@ When any of the following triggers in priority order:
   | Priority | Trigger |
   | 1 | account drawdown >= MAX_ACCOUNT_DRAWDOWN_PCT |
   | 2 | current_price <= avg_entry_price * (1 - STOP_LOSS_PCT) |
-  | 3 | today's close < today's SMA50 for X |
-  | 4 | today's EMA21 < today's SMA50 for X |
+  | 3 | current_price >= avg_entry_price * (1 + TARGET_PROFIT_PCT) |
+  | 4 | today's close < today's SMA50 for X |
+  | 5 | today's EMA21 < today's SMA50 for X |
 
 Then close the entire X position with the corresponding exit reason
 ```

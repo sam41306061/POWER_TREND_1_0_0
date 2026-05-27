@@ -1,18 +1,21 @@
 """
-handlers/position_manager.py — Position State Machine & Exit Logic
+handlers/position_manager.py — Multi-leg position tracking with avg-cost.
 
-Responsibility:
-  Track open positions, evaluate exit conditions, manage trade lifecycle.
+Tracks per-symbol Trade records with:
+  legs[]             — list of {entry_date, entry_price, quantity}
+  total_quantity     — sum of leg quantities still open
+  avg_entry_price    — volume-weighted across open legs
+  leg_count          — count of legs added (pyramid depth)
+  last_leg_date      — date of most recent add (for new-pullback gating)
 
-State Machine:
-  PENDING → OPEN → CLOSED
-
-Contract:
-  add_trade(...)                 Record a new filled entry
-  close_trade(...)               Record a closed position
-  check_exit_conditions(...)     Evaluate exit rules in priority order
-  can_add_position() → bool      Under MAX_POSITIONS_OPEN limit?
-  has_position_for_underlying()  Duplicate check by underlying symbol
+Public API:
+  add_leg(symbol, price, qty, date)
+  reduce_position(symbol, qty, price, reason)   — partial exit (stretch-trim)
+  close_trade(symbol, price, reason)            — full exit
+  get_trade(symbol) -> Trade | None
+  has_position(symbol) -> bool
+  active_trades -> dict[symbol_str, Trade]
+  open_count -> int
 """
 
 from dataclasses import dataclass, field
@@ -23,161 +26,208 @@ import config
 
 
 @dataclass
-class TradeRecord:
-    """Internal position record for tracking open/closed trades."""
-
-    symbol: str  # Underlying equity symbol
-    instrument_symbol: str  # Actual traded symbol (option contract, etc.)
-    entry_price: float
+class TradeLeg:
     entry_date: date
-    trade_type: str  # Strategy identifier (e.g., "SETUP", "BREAKOUT")
+    entry_price: float
     quantity: int
-    total_cost: float
-    target_delta: float = 0.0
 
-    # Mutable state (updated during lifetime)
+
+@dataclass
+class Trade:
+    """Multi-leg open position with avg-cost accounting."""
+
+    symbol: str
+    legs: list = field(default_factory=list)
+    total_quantity: int = 0
+    avg_entry_price: float = 0.0
+    leg_count: int = 0
+    last_leg_date: Optional[date] = None
     last_known_price: float = 0.0
-    current_delta: float = 0.0
-    exit_price: float = 0.0
-    exit_date: Optional[date] = None
-    exit_reason: str = ""
     status: str = "OPEN"  # OPEN → CLOSED
+
+    def _recompute(self) -> None:
+        qty = sum(leg.quantity for leg in self.legs)
+        if qty <= 0:
+            self.total_quantity = 0
+            self.avg_entry_price = 0.0
+            return
+        cost = sum(leg.quantity * leg.entry_price for leg in self.legs)
+        self.total_quantity = qty
+        self.avg_entry_price = cost / qty
+
+
+@dataclass
+class ClosedTrade:
+    symbol: str
+    avg_entry_price: float
+    exit_price: float
+    quantity: int
+    exit_reason: str
+    entry_date: date
+    exit_date: date
+    pnl: float
 
 
 class PositionManager:
-    """Track positions and evaluate exit conditions."""
+    """Multi-leg position book with avg-cost tracking."""
 
     def __init__(self, algorithm):
         self._algo = algorithm
-        self._trades: dict[str, TradeRecord] = {}  # {instrument_symbol: TradeRecord}
-        self._closed_trades: list[TradeRecord] = []
+        self._trades: dict[str, Trade] = {}
+        self._closed: list[ClosedTrade] = []
+
+    # ---- Accessors ----------------------------------------------------
 
     @property
-    def active_trades(self) -> dict[str, TradeRecord]:
-        """Return dict of currently open trades."""
+    def active_trades(self) -> dict[str, Trade]:
         return self._trades
 
+    @property
+    def open_count(self) -> int:
+        return len(self._trades)
+
+    def has_position(self, symbol) -> bool:
+        return str(symbol) in self._trades
+
+    def get_trade(self, symbol) -> Optional[Trade]:
+        return self._trades.get(str(symbol))
+
     def can_add_position(self) -> bool:
-        """Check whether a new position can be added (under limit)."""
-        return len(self._trades) < config.MAX_POSITIONS_OPEN
+        return self.open_count < config.MAX_POSITIONS_OPEN
 
-    def has_position_for_underlying(self, symbol: str) -> bool:
-        """Check if there's already an open position for this underlying."""
-        return any(t.symbol == symbol for t in self._trades.values())
+    # ---- Mutations ----------------------------------------------------
 
-    def add_trade(
-        self,
-        symbol: str,
-        instrument_symbol: str,
-        fill_price: float,
-        quantity: int,
-        trade_type: str,
-        entry_date: date,
-        target_delta: float = 0.0,
-        **kwargs,
-    ) -> TradeRecord:
-        """
-        Record a new filled entry.
-
-        Args:
-            symbol: Underlying equity symbol string
-            instrument_symbol: Actual traded instrument symbol string
-            fill_price: Fill price per unit
-            quantity: Number of contracts/shares filled
-            trade_type: Strategy identifier string
-            entry_date: Date of entry
-            target_delta: Target delta (for options)
-            **kwargs: Additional fields stored on the trade record
-
-        Returns:
-            The created TradeRecord
-        """
-        trade = TradeRecord(
-            symbol=symbol,
-            instrument_symbol=instrument_symbol,
-            entry_price=fill_price,
-            entry_date=entry_date,
-            trade_type=trade_type,
-            quantity=quantity,
-            total_cost=fill_price * quantity * 100,  # Options are 100-multiplier
-            target_delta=target_delta,
-            last_known_price=fill_price,
+    def add_leg(self, symbol, price: float, quantity: int, leg_date: date) -> Trade:
+        """Append a new leg; create the Trade if absent. Returns the Trade."""
+        sym = str(symbol)
+        trade = self._trades.get(sym)
+        if trade is None:
+            trade = Trade(symbol=sym)
+            self._trades[sym] = trade
+        trade.legs.append(
+            TradeLeg(entry_date=leg_date, entry_price=price, quantity=quantity)
         )
-        self._trades[instrument_symbol] = trade
-        self._algo.debug(f"[POSITION] Opened {instrument_symbol} qty={quantity} @ {fill_price}")
+        trade.leg_count += 1
+        trade.last_leg_date = leg_date
+        trade.last_known_price = price
+        trade._recompute()
+        self._algo.debug(
+            f"[POS] add_leg {sym} #{trade.leg_count} qty={quantity} @ {price:.2f} "
+            f"avg={trade.avg_entry_price:.2f} total={trade.total_quantity}"
+        )
         return trade
 
-    def close_trade(
-        self, instrument_symbol: str, exit_price: float, reason: str
-    ) -> dict | None:
+    def reduce_position(
+        self, symbol, quantity: int, price: float, reason: str
+    ) -> Optional[dict]:
         """
-        Record a closed position.
+        Partial exit. Reduces shares proportionally across legs (preserves
+        avg_entry_price). Returns a fill summary dict or None if no position.
+        """
+        sym = str(symbol)
+        trade = self._trades.get(sym)
+        if trade is None or quantity <= 0:
+            return None
+        sell_qty = min(quantity, trade.total_quantity)
+        if sell_qty <= 0:
+            return None
 
-        Returns:
-            dict with trade summary {pnl, reason, ...} or None if not found.
-        """
-        trade = self._trades.pop(instrument_symbol, None)
+        # Reduce each leg proportionally; integer rounding handled by tracking
+        # the remaining "sell_qty" budget across legs.
+        remaining = sell_qty
+        scale = sell_qty / trade.total_quantity
+        new_legs = []
+        for leg in trade.legs:
+            reduce_by = int(round(leg.quantity * scale))
+            reduce_by = min(reduce_by, leg.quantity, remaining)
+            remaining -= reduce_by
+            kept = leg.quantity - reduce_by
+            if kept > 0:
+                new_legs.append(
+                    TradeLeg(
+                        entry_date=leg.entry_date,
+                        entry_price=leg.entry_price,
+                        quantity=kept,
+                    )
+                )
+        # Distribute any leftover (rounding error) starting from largest leg.
+        if remaining > 0:
+            new_legs.sort(key=lambda lg: lg.quantity, reverse=True)
+            for leg in new_legs:
+                take = min(remaining, leg.quantity)
+                leg.quantity -= take
+                remaining -= take
+                if remaining == 0:
+                    break
+            new_legs = [lg for lg in new_legs if lg.quantity > 0]
+
+        trade.legs = new_legs
+        trade._recompute()
+        trade.last_known_price = price
+
+        pnl = (price - trade.avg_entry_price) * sell_qty if trade.avg_entry_price else 0.0
+        self._algo.debug(
+            f"[POS] reduce {sym} sell_qty={sell_qty} @ {price:.2f} reason={reason} "
+            f"remaining={trade.total_quantity}"
+        )
+
+        # If reduction took position to zero, promote to closed.
+        if trade.total_quantity == 0:
+            self._trades.pop(sym, None)
+            self._closed.append(
+                ClosedTrade(
+                    symbol=sym,
+                    avg_entry_price=trade.avg_entry_price,
+                    exit_price=price,
+                    quantity=sell_qty,
+                    exit_reason=reason,
+                    entry_date=trade.legs[0].entry_date if trade.legs else self._algo.time.date(),
+                    exit_date=self._algo.time.date(),
+                    pnl=pnl,
+                )
+            )
+
+        return {
+            "symbol": sym,
+            "sold_quantity": sell_qty,
+            "remaining_quantity": trade.total_quantity,
+            "price": price,
+            "reason": reason,
+            "pnl": pnl,
+        }
+
+    def close_trade(self, symbol, price: float, reason: str) -> Optional[dict]:
+        """Full exit at *price*. Returns a summary dict or None if no position."""
+        sym = str(symbol)
+        trade = self._trades.pop(sym, None)
         if trade is None:
             return None
 
-        trade.exit_price = exit_price
-        trade.exit_date = self._algo.time.date()
-        trade.exit_reason = reason
-        trade.status = "CLOSED"
-
-        pnl = (exit_price - trade.entry_price) * trade.quantity * 100
-        self._closed_trades.append(trade)
-
+        qty = trade.total_quantity
+        pnl = (price - trade.avg_entry_price) * qty
+        entry_date = trade.legs[0].entry_date if trade.legs else self._algo.time.date()
+        exit_date = self._algo.time.date()
+        self._closed.append(
+            ClosedTrade(
+                symbol=sym,
+                avg_entry_price=trade.avg_entry_price,
+                exit_price=price,
+                quantity=qty,
+                exit_reason=reason,
+                entry_date=entry_date,
+                exit_date=exit_date,
+                pnl=pnl,
+            )
+        )
+        self._algo.debug(
+            f"[POS] close {sym} qty={qty} @ {price:.2f} reason={reason} pnl={pnl:.2f}"
+        )
         return {
-            "symbol": trade.symbol,
-            "instrument": instrument_symbol,
-            "pnl": pnl,
+            "symbol": sym,
+            "quantity": qty,
+            "price": price,
             "reason": reason,
-            "entry_price": trade.entry_price,
-            "exit_price": exit_price,
-            "holding_days": (trade.exit_date - trade.entry_date).days,
+            "pnl": pnl,
+            "avg_entry_price": trade.avg_entry_price,
+            "holding_days": (exit_date - entry_date).days,
         }
-
-    def check_exit_conditions(
-        self, instrument_symbol: str, current_price: float, **kwargs
-    ) -> tuple[bool, str]:
-        """
-        Evaluate exit conditions in priority order.
-
-        TODO: Implement your exit logic. Priority ordering example:
-          1. Event proximity (mandatory exit before catalyst)
-          2. Stop loss
-          3. Profit target
-          4. Time limit
-          5. Delta/Greeks threshold (for options)
-
-        Returns:
-            (should_exit: bool, reason: str)
-        """
-        trade = self._trades.get(instrument_symbol)
-        if trade is None:
-            return False, ""
-
-        # Stop loss
-        if current_price > 0 and trade.entry_price > 0:
-            loss_pct = 1.0 - (current_price / trade.entry_price)
-            if loss_pct >= config.STOP_LOSS_PCT:
-                return True, config.EXIT_REASON_STOP_LOSS
-
-        # Profit target
-        if current_price > 0 and trade.entry_price > 0:
-            gain_pct = (current_price / trade.entry_price) - 1.0
-            if gain_pct >= config.PROFIT_TARGET_PCT:
-                return True, config.EXIT_REASON_PROFIT_TARGET
-
-        # Time limit
-        today = self._algo.time.date()
-        holding_days = (today - trade.entry_date).days
-        if holding_days >= config.MAX_HOLDING_DAYS:
-            return True, config.EXIT_REASON_TIME_LIMIT
-
-        # TODO: Add additional exit conditions:
-        # - Event proximity exit
-        # - Delta/Greeks thresholds (for options)
-
-        return False, ""

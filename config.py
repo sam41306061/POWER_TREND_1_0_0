@@ -1,138 +1,98 @@
 """
-config.py — Single source of truth for all strategy parameters.
+config.py — Single source of truth for Power Trend Algo 1 parameters.
 
-All strategy thresholds belong here as Final-typed constants.
-Never hardcode numeric values in handlers — import from this module.
+All strategy thresholds are Final-typed constants. Handlers must import
+from this module; never hardcode numeric values in handlers.
 
-TODO: Replace all placeholder values with your strategy's parameters.
+See STRATEGY_OVERVIEW.md for the rationale behind each value.
 """
 
-from typing import Final, List
+from typing import Final
 
 # ==============================================================================
-# UNIVERSE SELECTION
+# REGIME (QQQ Power Trend state machine)
 # ==============================================================================
 
-# Path to static candidate list (CSV with a 'symbol' column)
-UNIVERSE_CSV_PATH: Final[str] = "universe/candidates.csv"
+REGIME_SYMBOL: Final[str] = "QQQ"
+REGIME_EMA_PERIOD: Final[int] = 21
+REGIME_SMA_PERIOD: Final[int] = 50
+LOW_ABOVE_EMA_DAYS: Final[int] = 10  # Rule 1: days low > EMA21
+EMA_ABOVE_SMA_DAYS: Final[int] = 5  # Rule 2: days EMA21 > SMA50
+SMA_SLOPE_LOOKBACK: Final[int] = 1  # Rule 3: SMA50 rising vs N days ago
 
-# Dynamic filtering thresholds (used when universe is filtered programmatically)
-MIN_MARKET_CAP: Final[float] = 10_000_000_000  # $10B minimum market cap
-MIN_AVG_VOLUME: Final[int] = 1_000_000  # Minimum 1M average daily volume
-MAX_UNIVERSE_SIZE: Final[int] = 500  # Maximum number of stocks in universe
-
-# ==============================================================================
-# EVENT TIMING
-#
-# Define the event window your strategy trades around.
-# Examples:
-#   - Event-based: 7–30 days before target event
-#   - Dividends: 5–20 days before ex-dividend date
-#   - Macro: 1–5 days before FOMC announcement
-#   - Technical: N/A (set to large window or remove)
-# ==============================================================================
-
-MIN_DAYS_TO_EVENT: Final[int] = 7  # Minimum days before target event
-MAX_DAYS_TO_EVENT: Final[int] = 30  # Maximum days before target event
+# Lite-mode toggles (Webster's personal relaxations). Strict defaults = all True.
+REQUIRE_SMA50_RISING: Final[bool] = True
+REQUIRE_ACTIVATION_UPDAY: Final[bool] = True
+ENABLE_TREND_PRESSURE: Final[bool] = True
 
 # ==============================================================================
-# INDICATOR PERIODS
-#
-# Define the technical indicator periods your strategy uses.
-# Add or remove indicators as needed.
+# VOLATILITY (ATR + Webby RSI)
 # ==============================================================================
 
-SMA_LONG_PERIOD: Final[int] = 50  # Long-term simple moving average
-EMA_SHORT_PERIOD: Final[int] = 8  # Short-term exponential moving average
-EMA_MID_PERIOD: Final[int] = 21  # Medium-term exponential moving average
-EMA_LONG_PERIOD: Final[int] = 34  # Long-term exponential moving average
-ATR_PERIOD: Final[int] = 14  # Average true range period
+ATR_PERIOD: Final[int] = 14  # Stop-loss sizing window
+WEBBY_RSI_ATR_PERIOD: Final[int] = 50  # Webby RSI normalisation window
+WEBBY_RSI_STRETCH_LEVEL: Final[float] = 3.0  # high_vs_sma10 trim trigger (ATRs)
 
 # ==============================================================================
-# ENTRY CRITERIA
-#
-# Define the gates/filters that must pass before entering a position.
+# UNIVERSE SELECTION (dynamic, no static CSV)
 # ==============================================================================
 
-PRICE_ABOVE_SMA_REQUIRED: Final[bool] = True  # Require price above long SMA
-MAX_ATR_EXTENSION: Final[float] = 2.0  # Max ATR multiple above mean (avoid chasing)
-ENTRY_ZONE_EMAS: Final[List[int]] = [8, 21, 34]  # EMAs defining the entry zone
-ENTRY_ZONE_TOLERANCE_PCT: Final[float] = 2.0  # Max % distance from entry EMA
+UNIVERSE_TOP_N: Final[int] = 500  # Top N by 20d $-volume
+UNIVERSE_REFRESH_DAYS: Final[int] = 14  # Re-rank every 2 weeks
+MIN_PRICE: Final[float] = 20.0  # $/share floor
+MIN_DOLLAR_VOLUME: Final[float] = 50_000_000  # 20d avg $-vol floor
+DOLLAR_VOLUME_LOOKBACK: Final[int] = 20  # Days used for $-vol average
 
 # ==============================================================================
-# MARKET REGIME
-#
-# Define the broad market filter (e.g., SPY trend check).
+# PER-STOCK INDICATORS
 # ==============================================================================
 
-MARKET_REGIME_EMA: Final[int] = 21  # EMA period for regime filter
-MARKET_REGIME_SMA: Final[int] = 50  # SMA period for regime filter
-RESTRICT_TRADES_IN_DOWNTREND: Final[bool] = True  # Only trade in uptrend
+STOCK_EMA_PERIOD: Final[int] = 21
+STOCK_SMA_PERIOD: Final[int] = 50
+STOCK_SMA10_PERIOD: Final[int] = 10  # For Webby RSI high_vs_sma10
 
 # ==============================================================================
-# OPTIONS SELECTION (if trading options — otherwise remove this section)
+# ENTRY / PYRAMIDING
 # ==============================================================================
 
-TARGET_DELTA: Final[float] = 0.30  # Target delta for option selection
-DELTA_TOLERANCE: Final[float] = 0.05  # Acceptable deviation from target delta
-MIN_OPEN_INTEREST_MULTIPLIER: Final[int] = 100  # Min OI = multiplier * contracts
-
-# IV analytics
-IV_ELEVATED_THRESHOLD_PCT: Final[float] = 150.0  # IV elevated if >= 150% of rolling avg
-IV_ROLLING_AVG_DAYS: Final[int] = 30  # Rolling IV average window (trading days)
-
-# Options math
-TRADING_DAYS_PER_YEAR: Final[int] = 252
+PYRAMID_MAX_ADDS: Final[int] = 3  # Max ADDITIONAL legs on top of initial
+INITIAL_LEG_SIZE_PCT: Final[float] = 0.02  # 2% of portfolio per leg
 
 # ==============================================================================
-# POSITION SIZING
+# RISK / EXITS
 # ==============================================================================
 
-MAX_POSITIONS_OPEN: Final[int] = 10  # Maximum concurrent positions
-FIXED_CONTRACTS: Final[int] = 10  # Fixed number of contracts per position
-POSITION_RISK_PCT: Final[float] = 0.02  # Risk 2% of portfolio per position
+MAX_POSITIONS_OPEN: Final[int] = 4
+STOP_LOSS_PCT: Final[float] = 0.07  # 7% from avg entry
+TARGET_PROFIT_PCT: Final[float] = 0.75  # 75% from avg entry
+MAX_ACCOUNT_DRAWDOWN_PCT: Final[float] = 0.15  # Suspend new entries beyond 15% DD
+PARTIAL_EXIT_TRIM_FRACTION: Final[float] = 0.50  # 50% trim on stretch
 
 # ==============================================================================
-# EXIT RULES
-#
-# Define your exit conditions. Adapt to your strategy:
-#   - Stop loss levels
-#   - Profit targets
-#   - Time-based exits
-#   - Event-proximity exits
+# SCHEDULING
 # ==============================================================================
 
-STOP_LOSS_PCT: Final[float] = 0.50  # 50% stop loss
-PROFIT_TARGET_PCT: Final[float] = 1.00  # 100% profit target (disable with large value)
-MAX_HOLDING_DAYS: Final[int] = 30  # Maximum days to hold a position
+DAILY_EVAL_TIME: Final[str] = "09:35"  # Single daily callback after open
 
 # ==============================================================================
-# TIMING & SCHEDULING
+# EXIT REASONS
 # ==============================================================================
 
-SCAN_SCHEDULE_TIME: Final[str] = "09:35"  # Daily universe scan time
-ENTRY_TRIGGER_TIME: Final[str] = "10:00"  # Entry signal check time
-EXIT_CHECK_TIMES: Final[List[str]] = ["10:00", "14:00", "15:30"]  # Intraday exit checks
-
-# ==============================================================================
-# NAMED CONSTANTS — EXIT REASONS
-# ==============================================================================
-
+EXIT_REASON_DRAWDOWN: Final[str] = "ACCOUNT_DRAWDOWN"
 EXIT_REASON_STOP_LOSS: Final[str] = "STOP_LOSS"
-EXIT_REASON_PROFIT_TARGET: Final[str] = "PROFIT_TARGET"
-EXIT_REASON_TIME_LIMIT: Final[str] = "TIME_LIMIT"
-EXIT_REASON_EVENT_PROXIMITY: Final[str] = "EVENT_PROXIMITY"
-EXIT_REASON_MANUAL: Final[str] = "MANUAL"
-EXIT_REASON_ERROR: Final[str] = "ERROR"
+EXIT_REASON_TARGET_PROFIT: Final[str] = "TARGET_PROFIT"
+EXIT_REASON_SMA_BREAKDOWN: Final[str] = "SMA_BREAKDOWN"
+EXIT_REASON_EMA_CROSS: Final[str] = "EMA_CROSS"
+EXIT_REASON_STRETCH_TRIM: Final[str] = "STRETCH_TRIM"
 
 # ==============================================================================
-# NAMED CONSTANTS — MARKET REGIME
+# REGIME STATE LABELS
 # ==============================================================================
 
-MARKET_REGIME_UPTREND: Final[str] = "UPTREND"
-MARKET_REGIME_DOWNTREND: Final[str] = "DOWNTREND"
-MARKET_REGIME_NEUTRAL: Final[str] = "NEUTRAL"
-MARKET_REGIME_UNKNOWN: Final[str] = "UNKNOWN"
+REGIME_NO_TREND: Final[str] = "NO_TREND"
+REGIME_TREND_UP: Final[str] = "TREND_UP"
+REGIME_TREND_PRESSURE: Final[str] = "TREND_PRESSURE"
+REGIME_TREND_END: Final[str] = "TREND_END"
 
 # ==============================================================================
 # VALIDATION
@@ -140,27 +100,23 @@ MARKET_REGIME_UNKNOWN: Final[str] = "UNKNOWN"
 
 
 def validate_config() -> None:
-    """Validate configuration parameters for logical consistency."""
-    assert MIN_DAYS_TO_EVENT < MAX_DAYS_TO_EVENT, (
-        "MIN_DAYS_TO_EVENT must be less than MAX_DAYS_TO_EVENT"
-    )
-
-    assert 0.0 < TARGET_DELTA < 1.0, "TARGET_DELTA must be between 0.0 and 1.0"
-
-    assert MAX_POSITIONS_OPEN > 0, "MAX_POSITIONS_OPEN must be positive"
-
-    assert FIXED_CONTRACTS > 0, "FIXED_CONTRACTS must be positive"
-
-    assert 0.0 < POSITION_RISK_PCT < 1.0, (
-        "POSITION_RISK_PCT must be between 0.0 and 1.0"
-    )
-
-    assert len(ENTRY_ZONE_EMAS) > 0, "ENTRY_ZONE_EMAS must contain at least one period"
-
-    assert all(period > 0 for period in ENTRY_ZONE_EMAS), (
-        "All ENTRY_ZONE_EMAS periods must be positive"
-    )
+    """Validate config invariants."""
+    assert LOW_ABOVE_EMA_DAYS > 0
+    assert EMA_ABOVE_SMA_DAYS > 0
+    assert REGIME_EMA_PERIOD < REGIME_SMA_PERIOD
+    assert ATR_PERIOD > 0 and WEBBY_RSI_ATR_PERIOD > 0
+    assert WEBBY_RSI_STRETCH_LEVEL > 0
+    assert UNIVERSE_TOP_N > 0
+    assert UNIVERSE_REFRESH_DAYS > 0
+    assert MIN_PRICE > 0 and MIN_DOLLAR_VOLUME > 0
+    assert DOLLAR_VOLUME_LOOKBACK > 0
+    assert PYRAMID_MAX_ADDS >= 0
+    assert 0.0 < INITIAL_LEG_SIZE_PCT < 1.0
+    assert MAX_POSITIONS_OPEN > 0
+    assert 0.0 < STOP_LOSS_PCT < 1.0
+    assert TARGET_PROFIT_PCT > 0
+    assert 0.0 < MAX_ACCOUNT_DRAWDOWN_PCT < 1.0
+    assert 0.0 < PARTIAL_EXIT_TRIM_FRACTION <= 1.0
 
 
-# Run validation on import
 validate_config()

@@ -109,33 +109,22 @@ def mock_history():
 @pytest.fixture
 def mock_trade_record():
     """
-    Factory fixture: create a mock TradeRecord.
-    
+    Factory fixture: create a single-leg open Trade via PositionManager.add_leg.
+
     Usage:
-        trade = mock_trade_record(symbol="AAPL", entry_price=150.0, quantity=5)
+        trade = mock_trade_record(symbol="AAPL", entry_price=150.0, quantity=10)
     """
-    def _mock_trade(symbol: str = "AAPL", instrument_symbol: str = None,
-                   entry_price: float = 150.0, quantity: int = 5,
-                   trade_type: str = "DEFAULT_SETUP",
-                   entry_date=None, target_delta: float = 0.30):  # matches config.TARGET_DELTA
-        from handlers.position_manager import TradeRecord
-        
-        if instrument_symbol is None:
-            instrument_symbol = f"{symbol}_C_150_20250117"  # Fake option symbol
+    def _mock_trade(symbol: str = "AAPL", entry_price: float = 150.0,
+                   quantity: int = 10, entry_date=None, algorithm=None):
+        from handlers.position_manager import PositionManager
+        from type_stubs import QCAlgorithm
+        if algorithm is None:
+            algorithm = QCAlgorithm()
         if entry_date is None:
             entry_date = datetime.now().date()
-        
-        return TradeRecord(
-            symbol=symbol,
-            instrument_symbol=instrument_symbol,
-            entry_price=entry_price,
-            entry_date=entry_date,
-            trade_type=trade_type,
-            quantity=quantity,
-            total_cost=entry_price * quantity * 100,  # Options are 100-multiplier
-            target_delta=target_delta,
-        )
-    
+        pm = PositionManager(algorithm)
+        return pm.add_leg(symbol, entry_price, quantity, entry_date)
+
     return _mock_trade
 
 
