@@ -33,32 +33,43 @@ none of which a backtest exercises. This skill enforces a phased ramp, never a f
 Verify these are addressed in `main.py` and `config.py` BEFORE any deploy attempt.
 If any is missing, route to `trading/operational-safeguards`.
 
-| Item | File | Why |
-|---|---|---|
-| `set_brokerage_model(...)` explicitly set | [main.py](main.py) `initialize()` | Default model varies; live must be explicit |
-| `set_cash` / `set_start_date` / `set_end_date` wrapped in `if not self.live_mode:` | [main.py](main.py) | Live reads cash from broker |
-| State persistence via `self.object_store` | new `handlers/state_store.py` | QC has no automatic state mgmt |
-| Restart reconciliation against `self.portfolio` | new `_reconcile_on_start()` | Live restarts; book may diverge |
-| `on_order_event` handles INVALID / CANCELED / PARTIALLY_FILLED | [main.py](main.py) | Live brokers reject; backtests don't |
-| Pending-order stale GC (drop entries > 1 trading day old) | [main.py](main.py) `_evaluate()` | Yesterday's pending blocks today's cap |
-| `self.notify.email` on drawdown trip / reconciliation mismatch / kill switch | [main.py](main.py) | Operational visibility |
-| Kill-switch read from `self.object_store` at top of `_evaluate()` | [main.py](main.py) | Pause without redeploy |
+The **Paper soak** column marks items required for a QC Paper Trading soak (Phase 3).
+The **Real broker** column marks items required only when moving to Interactive
+Brokers / Alpaca / etc. for real-money launch (Phase 4+).
+
+| Item | File | Paper soak | Real broker | Why |
+|---|---|:---:|:---:|---|
+| State persistence via `self.object_store` (`handlers/state_store.py`) | [main.py](main.py) | ✅ | ✅ | QC restarts paper and live nodes; in-memory state is wiped |
+| Restart reconciliation against `self.portfolio` | [main.py](main.py) `_rehydrate_state()` | ✅ | ✅ | Broker is source of truth; drop stale rehydrated positions |
+| `set_brokerage_model(...)` explicitly set | [main.py](main.py) `initialize()` | ⬜ | ✅ | QC Paper auto-applies; real brokers must be explicit |
+| `set_cash` / `set_start_date` / `set_end_date` wrapped in `if not self.live_mode:` | [main.py](main.py) | ⬜ | ✅ | No-op in QC live mode; tidy-up only |
+| `on_order_event` handles INVALID / CANCELED / PARTIALLY_FILLED | [main.py](main.py) | ⬜ | ✅ | QC Paper simulator behaves like backtest; real brokers reject |
+| Pending-order stale GC (drop entries > 1 trading day old) | [main.py](main.py) `_evaluate()` | ⬜ | ✅ | Backstop for the row above |
+| `self.notify.email` on drawdown trip / reconciliation mismatch / kill switch | [main.py](main.py) | ⬜ | ✅ | QC UI surfaces this for paper; live needs out-of-band alerts |
+| Kill-switch read from `self.object_store` at top of `_evaluate()` | [main.py](main.py) | ⬜ | ✅ | QC UI stop is sufficient for paper; live wants no-redeploy pause |
 
 ---
 
 ## Phase 2 — Brokerage Selection
 
-Default target: **Interactive Brokers** (`BrokerageName.INTERACTIVE_BROKERS_BROKERAGE`,
-`AccountType.MARGIN`).
+**Phase 3 soak target: QuantConnect Paper Trading** (`BrokerageName.QUANT_CONNECT_BROKERAGE`).
+This is QC's internal simulator — no external broker account, no credentials, no
+TWS / OAuth dance. Selectable from the QC deploy wizard's brokerage dropdown.
+Use this for the full 4-week soak in Phase 3.
 
-Confirm before proceeding:
-- Account tier supports the asset class (US equities — IB Pro is standard)
+**Phase 4+ live launch target: Interactive Brokers**
+(`BrokerageName.INTERACTIVE_BROKERS_BROKERAGE`, `AccountType.MARGIN`).
+Only required when moving from paper to real money.
+
+Confirm before promoting from QC Paper to IB:
+- IB account tier supports the asset class (US equities — IB Pro is standard)
 - Margin account type matches `MAX_POSITIONS_OPEN × INITIAL_LEG_SIZE_PCT × (1 + PYRAMID_MAX_ADDS)`
   expected deployment (≤ 32% gross → no leverage needed)
 - 2FA reset/recovery codes captured
-- Paper-trading IB account provisioned and credentials added to QC
+- IB credentials added to QC
 
-Alternatives only with explicit user approval: Alpaca, Tradier, Coinbase (crypto — out of scope here).
+Alternatives to IB for real-money launch (with explicit user approval):
+Alpaca, Tradier. Coinbase (crypto — out of scope here).
 
 Reference: query the RAG for brokerage-specific notes
 ```
@@ -69,25 +80,29 @@ poetry run python rag/inject_context.py --query "interactive brokers authenticat
 
 ## Phase 3 — Paper-Trade Soak (minimum 4 weeks)
 
-Deploy to a QC paper-trading node with the **same code path** as live (brokerage model =
-IB Paper). Track these every trading day:
+Deploy to a **QC Paper Trading** node (brokerage = `QUANT_CONNECT_BROKERAGE`,
+selected from the QC deploy wizard — no external account required). The algo
+relies on `handlers/state_store.py` to persist position book, HWM, and regime
+counters across forced redeploys.
+
+Track these every trading day:
 
 - [ ] Algorithm warmed up on restart and resumed without manual intervention
 - [ ] Daily `_evaluate()` callback fires at `DAILY_EVAL_TIME` (09:35 ET)
-- [ ] Order events are routed: every submitted entry/trim/exit resolves to a fill,
-      invalid, or canceled status (no leaked `_pending_orders`)
 - [ ] Open position count never exceeds `MAX_POSITIONS_OPEN`
 - [ ] Pyramid leg count per symbol never exceeds `PYRAMID_MAX_ADDS + 1`
 - [ ] HWM and drawdown gate persist across at least one **forced redeploy**
+      (state_store rehydration must restore `active_trades`, `hwm`, and regime
+      state from ObjectStore)
 - [ ] Reconciliation: paper equity curve tracks the parallel OOS backtest within ±5%
       over the soak window
 - [ ] At least one full universe refresh (`UNIVERSE_REFRESH_DAYS = 14`) completes cleanly
-- [ ] Email/webhook notifications received for at least one synthetic drawdown event
 
-**Blockers (must fix before live launch):**
-- Any silent `_pending_orders` leak
+**Blockers (must fix before promoting to real-broker live launch):**
 - Any `Insufficient buying power` log (the Feb-2021 backtest bug class)
 - Any open-position count > `MAX_POSITIONS_OPEN`
+- State rehydration failure after a forced redeploy (stuck broker positions the
+  algo no longer tracks, or duplicate orders on restart)
 - Reconciliation drift > 5% with no identifiable cause (data, fees, slippage)
 
 QC OOS reconciliation note: *"If your algorithm is perfectly reconciled, it has an

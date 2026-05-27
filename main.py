@@ -28,6 +28,7 @@ from handlers.position_manager import PositionManager
 from handlers.pyramiding_manager import PyramidingManager
 from handlers.entry_engine import EntryEngine
 from handlers.exit_engine import ExitEngine
+from handlers.state_store import StateStore
 
 
 def _parse_time(hhmm: str):
@@ -68,6 +69,7 @@ class PowerTrendAlgorithm(QCAlgorithm):
         self._pyramiding = PyramidingManager(self)
         self._entry = EntryEngine(self)
         self._exit = ExitEngine(self)
+        self._state_store = StateStore(self)
 
         # ---- Dynamic universe ----
         self.add_universe(self._universe.coarse_filter)
@@ -84,6 +86,37 @@ class PowerTrendAlgorithm(QCAlgorithm):
             self.date_rules.every_day(self._qqq_symbol),
             self.time_rules.at(hour, minute),
             self._evaluate,
+        )
+
+        # ---- Restart rehydration (live only) ----
+        if getattr(self, "live_mode", False):
+            self._rehydrate_state()
+
+    def _rehydrate_state(self) -> None:
+        """Restore handler state from ObjectStore on live-node restart."""
+        payload = self._state_store.load()
+        if payload is None:
+            self.log("[STATE] no prior snapshot found; cold start")
+            return
+        # Build broker_quantities map so positions the broker no longer holds
+        # are dropped (the broker is the source of truth).
+        broker_qty: dict = {}
+        for sym in payload.get("positions", {}).keys():
+            try:
+                holding = self.portfolio[sym]
+                broker_qty[sym] = int(holding.quantity) if holding is not None else 0
+            except Exception:  # noqa: BLE001
+                broker_qty[sym] = 0
+        summary = self._state_store.rehydrate(
+            payload,
+            position_manager=self._positions,
+            risk_manager=self._risk,
+            regime_filter=self._regime,
+            broker_quantities=broker_qty,
+        )
+        self.log(
+            f"[STATE] rehydrated positions={summary['positions_restored']} "
+            f"hwm={summary['hwm']:.2f} regime={summary['regime_state']}"
         )
 
     # ====================================================================
@@ -125,6 +158,9 @@ class PowerTrendAlgorithm(QCAlgorithm):
                 sym, fill_price, meta.get("reason", "EXIT")
             )
             self.log(f"[FILL EXIT] {sym} qty={fill_qty} @ {fill_price:.2f}")
+
+        # Persist after any position mutation so a restart sees the latest book.
+        self._state_store.save(self._positions, self._risk, self._regime)
 
     # ====================================================================
     # DAILY EVALUATION
@@ -180,21 +216,9 @@ class PowerTrendAlgorithm(QCAlgorithm):
         portfolio_value = float(self.portfolio.total_portfolio_value)
         regime_str = config.REGIME_SYMBOL
 
-        # Count entries already submitted today that have not yet filled.
-        # Required because QC market orders fill on the NEXT bar, so
-        # position_manager.open_count still reads 0 while orders are in-flight.
-        pending_entry_count = sum(
-            1 for m in self._pending_orders.values() if m["type"] == "entry"
-        )
-        pending_entry_symbols = {
-            m["symbol"] for m in self._pending_orders.values() if m["type"] == "entry"
-        }
-
         for sym_str in list(self._active_universe):
             if sym_str == regime_str or sym_str.startswith(regime_str + " "):
                 continue
-            if sym_str in pending_entry_symbols:
-                continue  # never double-submit the same symbol in one loop
             security = self.securities.get(sym_str)
             if security is None or security.price <= 0:
                 continue
@@ -217,14 +241,9 @@ class PowerTrendAlgorithm(QCAlgorithm):
                 if qty <= 0:
                     continue
                 self._submit_entry(security.symbol, qty)
-                pending_entry_symbols.add(sym_str)
             else:
-                # Initial entry path. Enforce position cap inclusive of
-                # in-flight orders submitted earlier this evaluation.
-                if (
-                    self._positions.open_count + pending_entry_count
-                    >= config.MAX_POSITIONS_OPEN
-                ):
+                # Initial entry path.
+                if not self._positions.can_add_position():
                     break  # capacity full — stop scanning
                 if not self._entry.check_initial(indicators):
                     continue
@@ -234,8 +253,9 @@ class PowerTrendAlgorithm(QCAlgorithm):
                 if qty <= 0:
                     continue
                 self._submit_entry(security.symbol, qty)
-                pending_entry_count += 1
-                pending_entry_symbols.add(sym_str)
+
+        # ---- 5. Persist daily snapshot (regime counters + HWM) ----
+        self._state_store.save(self._positions, self._risk, self._regime)
 
     # ====================================================================
     # ORDER HELPERS
