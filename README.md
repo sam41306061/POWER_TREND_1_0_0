@@ -61,7 +61,7 @@ See [docs/FILE_MAP.md](docs/FILE_MAP.md) for detailed module responsibilities.
 - **RAG pipeline** — Query QC docs directly: `poetry run python rag/inject_context.py --query "..."`
 
 ### Documentation Templates
-- [STRATEGY_OVERVIEW.md](docs/STRATEGY_OVERVIEW.md) — Strategy thesis and system flow
+- [STRATEGY_OVERVIEW.md](STRATEGY_OVERVIEW.md) — Strategy thesis and system flow
 - [FILE_MAP.md](docs/FILE_MAP.md) — Module map and data flow
 - [DEVELOPMENT_GUIDE.md](docs/DEVELOPMENT_GUIDE.md) — Build sequence and conventions
 - [IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md) — Phase-by-phase plan

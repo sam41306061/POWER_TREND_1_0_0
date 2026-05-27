@@ -114,4 +114,4 @@ Required keys: `close`, `open`, `EMA21`, `SMA50`, `low`, `prior_SMA50`, `is_blue
 ## Reference Files
 
 - [Config thresholds](_shared/references/config-thresholds.md)
-- [Full strategy spec](docs/STRATEGY_OVERVIEW.md)
+- [Full strategy spec](../../../../STRATEGY_OVERVIEW.md)

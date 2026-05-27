@@ -102,4 +102,4 @@ class EntryEngine:
 ## Reference Files
 
 - [Config thresholds](_shared/references/config-thresholds.md)
-- [Full strategy spec](docs/STRATEGY_OVERVIEW.md)
+- [Full strategy spec](../../../../STRATEGY_OVERVIEW.md)

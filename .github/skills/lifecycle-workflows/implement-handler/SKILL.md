@@ -111,5 +111,5 @@ Implement handler methods following these rules:
 - [Architecture rules](_shared/references/architecture-rules.md)
 - [Handler responsibilities](_shared/references/handler-responsibilities.md)
 - [Config thresholds](_shared/references/config-thresholds.md)
-- [Full strategy spec](docs/STRATEGY_OVERVIEW.md)
+- [Full strategy spec](../../../../STRATEGY_OVERVIEW.md)
 - `type_stubs.py`

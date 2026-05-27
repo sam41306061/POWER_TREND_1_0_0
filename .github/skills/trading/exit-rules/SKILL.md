@@ -100,4 +100,4 @@ Return reason values: `EXIT_REASON_DRAWDOWN`, `EXIT_REASON_STOP_LOSS`,
 ## Reference Files
 
 - [Config thresholds](_shared/references/config-thresholds.md)
-- [Full strategy spec](docs/STRATEGY_OVERVIEW.md)
+- [Full strategy spec](../../../../STRATEGY_OVERVIEW.md)

@@ -14,7 +14,7 @@ skill files, reference docs, strategy spec — is loaded on demand only.
 | One Tier 1 lifecycle SKILL.md | ~2–3k | When lifecycle workflow is invoked |
 | One Tier 2 trading domain SKILL.md | ~1–2k | When trading rule is invoked |
 | One `_shared/references/` file | ~400–700 | When any skill references it |
-| `docs/STRATEGY_OVERVIEW.md` | ~6k | Only when full strategy spec needed |
+| `STRATEGY_OVERVIEW.md` | ~6k | Only when full strategy spec needed |
 | `docs/RAG_CONTEXT.md` (generated) | ~4–8k | After running `inject_context.py` |
 | **Typical working session** | **~8–15k** | **~50k+ tokens available for work** |
 
@@ -83,7 +83,7 @@ Then say: `"read docs/RAG_CONTEXT.md and answer: <your question>"`
 | Anti-Pattern | Why It Hurts | Better Approach |
 |---|---|---|
 | "Read all the skill files" | Fills context window before any work begins | Use a trigger phrase to load one skill at a time |
-| Loading `docs/STRATEGY_OVERVIEW.md` proactively | ~6k tokens for content that may not be needed | Load only when you need the Gherkin contract |
+| Loading `STRATEGY_OVERVIEW.md` proactively | ~6k tokens for content that may not be needed | Load only when you need the Gherkin contract |
 | Running `inject_context.py` for every question | ~4–8k tokens, slow | Only run before QC API-specific questions |
 | Pasting entire LEAN log files | Fills context; AI loses track of the question | Paste the 20–30 relevant lines and describe the symptom |
 | Skipping the dispatch table and asking freeform | Skills not invoked; AI reasons from general knowledge | Use trigger phrases to load the authoritative skill |

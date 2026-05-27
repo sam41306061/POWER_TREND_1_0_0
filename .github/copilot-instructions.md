@@ -2,7 +2,7 @@
 
 **Strategy:** Daily long-only trend-following on US equities. QQQ regime gate (Power Trend
 classifier on EMA21/SMA50 counters). Top-200 universe by 20d dollar volume, monthly refresh.
-Equal-size pyramid adds up to `PYRAMID_MAX_ADDS`. See [docs/STRATEGY_OVERVIEW.md](docs/STRATEGY_OVERVIEW.md)
+Equal-size pyramid adds up to `PYRAMID_MAX_ADDS`. See [STRATEGY_OVERVIEW.md](../STRATEGY_OVERVIEW.md)
 for the full spec and Gherkin contract.
 
 **Architecture rule:** `main.py` is the *only* file that imports the LEAN SDK. All handlers
@@ -56,5 +56,5 @@ All handoffs require user confirmation — no auto-chaining.
 | Config constants + values | "read config thresholds" | [config-thresholds.md](.github/skills/_shared/references/config-thresholds.md) |
 | Architecture + coding rules | "read architecture rules" | [architecture-rules.md](.github/skills/_shared/references/architecture-rules.md) |
 | QC API reference | Run `poetry run python rag/inject_context.py --query "<topic>" --top-k 5` | `docs/RAG_CONTEXT.md` |
-| Full strategy spec | "read strategy overview" | [docs/STRATEGY_OVERVIEW.md](docs/STRATEGY_OVERVIEW.md) |
+| Full strategy spec | "read strategy overview" | [STRATEGY_OVERVIEW.md](../STRATEGY_OVERVIEW.md) |
 | All skills | "show skills index" | [SKILLS_INDEX.md](.github/skills/SKILLS_INDEX.md) |

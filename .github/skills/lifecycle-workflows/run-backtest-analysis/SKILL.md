@@ -90,4 +90,4 @@ Route to the correct domain skill based on the symptom:
 ## Reference Files
 
 - [Config thresholds](_shared/references/config-thresholds.md)
-- [Full strategy spec + Gherkin contract](docs/STRATEGY_OVERVIEW.md)
+- [Full strategy spec + Gherkin contract](../../../../STRATEGY_OVERVIEW.md)
