@@ -1,19 +1,17 @@
 """
-handlers/position_manager.py — Position State Machine & Exit Logic
+handlers/position_manager.py — Multi-Leg Position Tracking
 
-Responsibility:
-  Track open positions, evaluate exit conditions, manage trade lifecycle.
+Equity-only (no options multiplier). Each open position is a `TradeRecord`
+composed of one or more equal-size `Leg`s added by the pyramiding manager.
 
-State Machine:
-  PENDING → OPEN → CLOSED
-
-Contract:
-  add_trade(...)                 Record a new filled entry
-  close_trade(...)               Record a closed position
-  check_exit_conditions(...)     Evaluate exit rules in priority order
-  can_add_position() → bool      Under MAX_POSITIONS_OPEN limit?
-  has_position_for_underlying()  Duplicate check by underlying symbol
+Lifecycle:
+    open_position(...)            # First leg
+    add_leg(...)                  # Subsequent pyramid adds
+    reduce_position(...)          # Partial trim (e.g. stretch-trim)
+    close_position(...)           # Full exit
 """
+
+from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date
@@ -22,162 +20,253 @@ from typing import Optional
 import config
 
 
+# ----------------------------------------------------------------------
+# Symbol identity helper
+# ----------------------------------------------------------------------
+
+
+def _symbol_key(symbol) -> str:
+    """Return canonical ticker string for use as a dict key.
+
+    QC `Symbol` instances are not reliably hash-equal across universe
+    refreshes for the same underlying ticker. Always normalise to the
+    upper-cased ticker (``Symbol.value`` on QC, first whitespace token
+    on plain-string test doubles). See architecture-rules.md
+    "Symbol Identity".
+    """
+    val = getattr(symbol, "value", None)
+    if val is not None:
+        return str(val).upper()
+    return str(symbol).split()[0].upper()
+
+
+# ----------------------------------------------------------------------
+# Data classes
+# ----------------------------------------------------------------------
+
+
+@dataclass
+class Leg:
+    """A single pyramid leg fill."""
+
+    entry_price: float
+    quantity: int
+    entry_date: date
+
+
 @dataclass
 class TradeRecord:
-    """Internal position record for tracking open/closed trades."""
+    """Aggregate open (or closed) position composed of one or more legs."""
 
-    symbol: str  # Underlying equity symbol
-    instrument_symbol: str  # Actual traded symbol (option contract, etc.)
-    entry_price: float
-    entry_date: date
-    trade_type: str  # Strategy identifier (e.g., "SETUP", "BREAKOUT")
-    quantity: int
-    total_cost: float
-    target_delta: float = 0.0
-
-    # Mutable state (updated during lifetime)
+    symbol: object                 # QC Symbol (or str in tests)
+    legs: list[Leg] = field(default_factory=list)
+    # Mutable state
     last_known_price: float = 0.0
-    current_delta: float = 0.0
     exit_price: float = 0.0
     exit_date: Optional[date] = None
     exit_reason: str = ""
-    status: str = "OPEN"  # OPEN → CLOSED
+    status: str = "OPEN"           # OPEN -> CLOSED
+    # Realised partial-exit P/L (accumulates as we trim)
+    realized_pnl: float = 0.0
+
+    # ----- Derived properties -----
+    @property
+    def total_quantity(self) -> int:
+        return sum(l.quantity for l in self.legs)
+
+    @property
+    def leg_count(self) -> int:
+        return len(self.legs)
+
+    @property
+    def avg_entry_price(self) -> float:
+        qty = self.total_quantity
+        if qty <= 0:
+            return 0.0
+        cost = sum(l.entry_price * l.quantity for l in self.legs)
+        return cost / qty
+
+    @property
+    def last_leg_date(self) -> Optional[date]:
+        if not self.legs:
+            return None
+        return max(l.entry_date for l in self.legs)
+
+    @property
+    def entry_date(self) -> Optional[date]:
+        if not self.legs:
+            return None
+        return min(l.entry_date for l in self.legs)
+
+
+# ----------------------------------------------------------------------
+# Manager
+# ----------------------------------------------------------------------
 
 
 class PositionManager:
-    """Track positions and evaluate exit conditions."""
+    """Track open positions and lifecycle transitions."""
 
     def __init__(self, algorithm):
         self._algo = algorithm
-        self._trades: dict[str, TradeRecord] = {}  # {instrument_symbol: TradeRecord}
+        # Keyed on canonical ticker string (see _symbol_key) — NOT raw QC Symbol
+        # objects, which can differ across universe refreshes for the same ticker.
+        self._trades: dict[str, TradeRecord] = {}
         self._closed_trades: list[TradeRecord] = []
 
+    # ------------------------------------------------------------------
+    # Queries
+    # ------------------------------------------------------------------
     @property
     def active_trades(self) -> dict[str, TradeRecord]:
-        """Return dict of currently open trades."""
         return self._trades
 
+    @property
+    def closed_trades(self) -> list[TradeRecord]:
+        return list(self._closed_trades)
+
+    def has_position(self, symbol) -> bool:
+        return _symbol_key(symbol) in self._trades
+
     def can_add_position(self) -> bool:
-        """Check whether a new position can be added (under limit)."""
         return len(self._trades) < config.MAX_POSITIONS_OPEN
 
-    def has_position_for_underlying(self, symbol: str) -> bool:
-        """Check if there's already an open position for this underlying."""
-        return any(t.symbol == symbol for t in self._trades.values())
+    def get(self, symbol) -> Optional[TradeRecord]:
+        return self._trades.get(_symbol_key(symbol))
 
-    def add_trade(
-        self,
-        symbol: str,
-        instrument_symbol: str,
-        fill_price: float,
-        quantity: int,
-        trade_type: str,
-        entry_date: date,
-        target_delta: float = 0.0,
-        **kwargs,
+    # ------------------------------------------------------------------
+    # Mutations
+    # ------------------------------------------------------------------
+    def open_position(
+        self, symbol, fill_price: float, quantity: int, entry_date: date
     ) -> TradeRecord:
-        """
-        Record a new filled entry.
-
-        Args:
-            symbol: Underlying equity symbol string
-            instrument_symbol: Actual traded instrument symbol string
-            fill_price: Fill price per unit
-            quantity: Number of contracts/shares filled
-            trade_type: Strategy identifier string
-            entry_date: Date of entry
-            target_delta: Target delta (for options)
-            **kwargs: Additional fields stored on the trade record
-
-        Returns:
-            The created TradeRecord
-        """
-        trade = TradeRecord(
-            symbol=symbol,
-            instrument_symbol=instrument_symbol,
-            entry_price=fill_price,
-            entry_date=entry_date,
-            trade_type=trade_type,
-            quantity=quantity,
-            total_cost=fill_price * quantity * 100,  # Options are 100-multiplier
-            target_delta=target_delta,
-            last_known_price=fill_price,
+        """Create a new position with its first leg."""
+        key = _symbol_key(symbol)
+        if key in self._trades:
+            raise ValueError(f"Position already open for {symbol}")
+        trade = TradeRecord(symbol=symbol, last_known_price=fill_price)
+        trade.legs.append(
+            Leg(entry_price=fill_price, quantity=quantity, entry_date=entry_date)
         )
-        self._trades[instrument_symbol] = trade
-        self._algo.debug(f"[POSITION] Opened {instrument_symbol} qty={quantity} @ {fill_price}")
+        self._trades[key] = trade
+        self._algo.debug(
+            f"[POSITION] OPEN {symbol} leg=1 qty={quantity} @ {fill_price:.2f}"
+        )
         return trade
 
-    def close_trade(
-        self, instrument_symbol: str, exit_price: float, reason: str
-    ) -> dict | None:
-        """
-        Record a closed position.
+    def add_leg(
+        self, symbol, fill_price: float, quantity: int, entry_date: date
+    ) -> TradeRecord:
+        """Append a pyramid leg to an existing position."""
+        trade = self._trades.get(_symbol_key(symbol))
+        if trade is None:
+            raise ValueError(f"No open position for {symbol}")
+        if trade.leg_count >= 1 + config.PYRAMID_MAX_ADDS:
+            raise ValueError(
+                f"{symbol} already at max legs ({trade.leg_count})"
+            )
+        trade.legs.append(
+            Leg(entry_price=fill_price, quantity=quantity, entry_date=entry_date)
+        )
+        trade.last_known_price = fill_price
+        self._algo.debug(
+            f"[POSITION] ADD {symbol} leg={trade.leg_count} qty={quantity} "
+            f"@ {fill_price:.2f} avg={trade.avg_entry_price:.2f}"
+        )
+        return trade
 
-        Returns:
-            dict with trade summary {pnl, reason, ...} or None if not found.
+    def reduce_position(
+        self,
+        symbol,
+        sell_quantity: int,
+        sell_price: float,
+        reason: str,
+    ) -> Optional[dict]:
         """
-        trade = self._trades.pop(instrument_symbol, None)
+        Partial exit. Reduces legs FIFO and records realised P/L.
+        Returns trim summary or None if no position.
+        """
+        trade = self._trades.get(_symbol_key(symbol))
+        if trade is None or sell_quantity <= 0:
+            return None
+
+        remaining = sell_quantity
+        realised = 0.0
+        # FIFO consume legs
+        new_legs: list[Leg] = []
+        for leg in trade.legs:
+            if remaining <= 0:
+                new_legs.append(leg)
+                continue
+            if leg.quantity <= remaining:
+                realised += (sell_price - leg.entry_price) * leg.quantity
+                remaining -= leg.quantity
+            else:
+                realised += (sell_price - leg.entry_price) * remaining
+                new_legs.append(
+                    Leg(
+                        entry_price=leg.entry_price,
+                        quantity=leg.quantity - remaining,
+                        entry_date=leg.entry_date,
+                    )
+                )
+                remaining = 0
+        trade.legs = new_legs
+        trade.realized_pnl += realised
+        trade.last_known_price = sell_price
+
+        sold_qty = sell_quantity - remaining
+        self._algo.debug(
+            f"[POSITION] TRIM {symbol} -{sold_qty} @ {sell_price:.2f} "
+            f"reason={reason} realised={realised:+.2f}"
+        )
+
+        if trade.total_quantity <= 0:
+            return self.close_position(symbol, sell_price, reason)
+
+        return {
+            "symbol": symbol,
+            "trim_quantity": sold_qty,
+            "trim_price": sell_price,
+            "reason": reason,
+            "realized_pnl": realised,
+            "remaining_quantity": trade.total_quantity,
+        }
+
+    def close_position(
+        self, symbol, exit_price: float, reason: str
+    ) -> Optional[dict]:
+        """Fully close a position and move it to closed history."""
+        trade = self._trades.pop(_symbol_key(symbol), None)
         if trade is None:
             return None
+
+        qty = trade.total_quantity
+        realised_final = (exit_price - trade.avg_entry_price) * qty
+        total_realised = trade.realized_pnl + realised_final
 
         trade.exit_price = exit_price
         trade.exit_date = self._algo.time.date()
         trade.exit_reason = reason
         trade.status = "CLOSED"
-
-        pnl = (exit_price - trade.entry_price) * trade.quantity * 100
+        trade.realized_pnl = total_realised
         self._closed_trades.append(trade)
 
+        holding_days = 0
+        if trade.entry_date and trade.exit_date:
+            holding_days = (trade.exit_date - trade.entry_date).days
+
+        self._algo.debug(
+            f"[POSITION] CLOSE {symbol} qty={qty} @ {exit_price:.2f} "
+            f"reason={reason} pnl={total_realised:+.2f}"
+        )
         return {
-            "symbol": trade.symbol,
-            "instrument": instrument_symbol,
-            "pnl": pnl,
-            "reason": reason,
-            "entry_price": trade.entry_price,
+            "symbol": symbol,
             "exit_price": exit_price,
-            "holding_days": (trade.exit_date - trade.entry_date).days,
+            "exit_quantity": qty,
+            "reason": reason,
+            "pnl": total_realised,
+            "avg_entry_price": trade.avg_entry_price,
+            "holding_days": holding_days,
+            "leg_count": trade.leg_count,
         }
-
-    def check_exit_conditions(
-        self, instrument_symbol: str, current_price: float, **kwargs
-    ) -> tuple[bool, str]:
-        """
-        Evaluate exit conditions in priority order.
-
-        TODO: Implement your exit logic. Priority ordering example:
-          1. Event proximity (mandatory exit before catalyst)
-          2. Stop loss
-          3. Profit target
-          4. Time limit
-          5. Delta/Greeks threshold (for options)
-
-        Returns:
-            (should_exit: bool, reason: str)
-        """
-        trade = self._trades.get(instrument_symbol)
-        if trade is None:
-            return False, ""
-
-        # Stop loss
-        if current_price > 0 and trade.entry_price > 0:
-            loss_pct = 1.0 - (current_price / trade.entry_price)
-            if loss_pct >= config.STOP_LOSS_PCT:
-                return True, config.EXIT_REASON_STOP_LOSS
-
-        # Profit target
-        if current_price > 0 and trade.entry_price > 0:
-            gain_pct = (current_price / trade.entry_price) - 1.0
-            if gain_pct >= config.PROFIT_TARGET_PCT:
-                return True, config.EXIT_REASON_PROFIT_TARGET
-
-        # Time limit
-        today = self._algo.time.date()
-        holding_days = (today - trade.entry_date).days
-        if holding_days >= config.MAX_HOLDING_DAYS:
-            return True, config.EXIT_REASON_TIME_LIMIT
-
-        # TODO: Add additional exit conditions:
-        # - Event proximity exit
-        # - Delta/Greeks thresholds (for options)
-
-        return False, ""

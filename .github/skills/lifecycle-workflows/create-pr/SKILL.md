@@ -32,6 +32,33 @@ If on `main`, stop: create a feature branch first with `git checkout -b feat/<de
 
 ---
 
+## Phase 0 — Spec / Config / Skills Sync
+
+**Run this first**, before any other quality check. A bare-number drift between the spec,
+`config.py`, and the skill docs is a silent failure that the test suite cannot catch.
+
+```bash
+# Numbers in skill docs must match config.py
+for name in MAX_POSITIONS_OPEN PYRAMID_MAX_ADDS INITIAL_LEG_SIZE_PCT STOP_LOSS_PCT \
+            MAX_ACCOUNT_DRAWDOWN_PCT REGIME_EMA_PERIOD REGIME_SMA_PERIOD; do
+  echo "=== $name ==="
+  grep -rn "$name" config.py STRATEGY_OVERVIEW.md .github/skills/
+done
+```
+
+Stop and fix if:
+- A value appears in `STRATEGY_OVERVIEW.md` but a different value in `config.py`
+- A value in `_shared/references/config-thresholds.md` is stale vs. `config.py`
+- A per-skill SKILL.md cites a literal number that no longer matches `config.py`
+
+Then verify aggregate exposure:
+
+```bash
+poetry run python -c "import config; config.validate_config(); print('OK')"
+```
+
+---
+
 ## Phase 2 — Run the Quality Gate (all 4 must pass)
 
 Fix each failure before moving to the next check.

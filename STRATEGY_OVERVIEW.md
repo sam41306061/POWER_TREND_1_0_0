@@ -302,7 +302,7 @@ Equal-size legs:
 shares_per_leg = floor( INITIAL_LEG_SIZE_PCT * portfolio_value / current_price )
 ```
 
-Maximum total per position = `INITIAL_LEG_SIZE_PCT * (1 + PYRAMID_MAX_ADDS)` of portfolio value (e.g., 25% × 4 = 100% in a max-size single name — gated in practice by `MAX_POSITIONS_OPEN`).
+Maximum total per position = `INITIAL_LEG_SIZE_PCT * (1 + PYRAMID_MAX_ADDS)` of portfolio value (e.g., 2% × 4 = 8% in a max-size single name). Aggregate cap = `MAX_POSITIONS_OPEN × (1+PYRAMID_MAX_ADDS) × INITIAL_LEG_SIZE_PCT = 4 × 4 × 0.02 = 32%` of portfolio under the most aggressive deployment — enforced by `validate_config()`'s aggregate-exposure assertion.
 
 ---
 
@@ -376,12 +376,12 @@ future extension.
 | `STOCK_SMA_PERIOD` | `50` |
 | `STOCK_SMA10_PERIOD` | `10` |
 | `PYRAMID_MAX_ADDS` | `3` |
-| `INITIAL_LEG_SIZE_PCT` | `0.25` |
+| `INITIAL_LEG_SIZE_PCT` | `0.02` |
 
 ### Risk / exits
 | Constant | Value |
 |---|---|
-| `MAX_POSITIONS_OPEN` | `10` |
+| `MAX_POSITIONS_OPEN` | `4` |
 | `STOP_LOSS_PCT` | `0.07` |
 | `MAX_ACCOUNT_DRAWDOWN_PCT` | `0.15` |
 | `PARTIAL_EXIT_TRIM_FRACTION` | `0.50` |

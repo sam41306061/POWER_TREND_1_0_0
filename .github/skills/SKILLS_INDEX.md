@@ -17,7 +17,7 @@ Debugging: `debugging → apply-fix → create-pr`
 | `implement-handler` | "implement handler", "scaffold handler", "build handler" | ✅ Populated | [SKILL.md](lifecycle-workflows/implement-handler/SKILL.md) |
 | `write-unit-tests` | "write tests", "unit tests for", "test coverage" | ✅ Populated | [SKILL.md](lifecycle-workflows/write-unit-tests/SKILL.md) |
 | `run-backtest-analysis` | "analyze backtest", "interpret results", "Sharpe ratio" | ✅ Populated | [SKILL.md](lifecycle-workflows/run-backtest-analysis/SKILL.md) |
-| `create-pr` | "create PR", "open pull request", "ready to merge" | ✅ Populated | [SKILL.md](lifecycle-workflows/create-pr/SKILL.md) |
+| `create-pr` | "create PR", "open pull request", "ready to merge", "spec/config/skills sync" | ✅ Populated | [SKILL.md](lifecycle-workflows/create-pr/SKILL.md) |
 
 ---
 
@@ -28,7 +28,7 @@ Debugging: `debugging → apply-fix → create-pr`
 | Skill | Trigger Phrases | Status | File |
 |---|---|---|---|
 | `regime-filter-rules` | "regime filter", "power trend state", "entries allowed", "QQQ gate" | ✅ Populated | [SKILL.md](trading/regime-filter-rules/SKILL.md) |
-| `entry-rules` | "entry rules", "entry trigger", "pyramid add", "when to enter" | ✅ Populated | [SKILL.md](trading/entry-rules/SKILL.md) |
+| `entry-rules` | "entry rules", "entry trigger", "pyramid add", "when to enter", "position cap", "capacity guard" | ✅ Populated | [SKILL.md](trading/entry-rules/SKILL.md) |
 | `exit-rules` | "exit rules", "exit logic", "when to exit", "SMA breakdown" | ✅ Populated | [SKILL.md](trading/exit-rules/SKILL.md) |
 | `pyramiding-rules` | "pyramiding", "leg sizing", "add-on entry", "position sizing" | ✅ Populated | [SKILL.md](trading/pyramiding-rules/SKILL.md) |
 | `risk-rules` | "risk management", "drawdown gate", "account drawdown", "HWM" | ✅ Populated | [SKILL.md](trading/risk-rules/SKILL.md) |
@@ -37,7 +37,7 @@ Debugging: `debugging → apply-fix → create-pr`
 
 | Skill | Trigger Phrases | Status | File |
 |---|---|---|---|
-| `debugging` | "why isn't it trading", "diagnose", "silent failure", "no orders" | ✅ Populated | [SKILL.md](debugging/SKILL.md) |
+| `debugging` | "why isn't it trading", "diagnose", "silent failure", "no orders", "symbol identity", "spec drift" | ✅ Populated | [SKILL.md](debugging/SKILL.md) |
 | — | *(loaded by debugging skill)* | 📚 Reference | [why_didnt_my_algo_trade.md](debugging/reference/why_didnt_my_algo_trade.md) |
 | — | *(loaded by debugging skill)* | 📚 Reference | [silent_failure_modes.md](debugging/reference/silent_failure_modes.md) |
 

@@ -52,7 +52,7 @@ Run at `ENTRY_TRIGGER_CHECK_TIME` (`10:00`). Symbol must still be valid:
 
 - [ ] **`check_entry_trigger()` returns `False`** — price has moved out of the EMA entry
   zone between scan and trigger check. This is expected behavior — not a bug.
-- [ ] **Max positions reached** — `len(position_manager._trades) >= MAX_POSITIONS_OPEN (10)`.
+- [ ] **Max positions reached** — `len(position_manager._trades) >= MAX_POSITIONS_OPEN (4)`.
   Closed trades do not count; check `_trades` dict directly.
 - [ ] **`instrument_selector.select_instrument()` returns `None`** — OI gate failed
   (`OpenInterest < 1000` = `MIN_OPEN_INTEREST_MULTIPLIER * FIXED_CONTRACTS`), no valid

@@ -84,6 +84,16 @@ not `PyramidingManager`. Call `PositionManager.add_leg()` after a fill is confir
 
 ---
 
+## Common Failure Modes
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Add-ons never fire even though indicators look right | `pyramiding_manager.can_add_leg(trade, ind)` reads `trade.leg_count` but trade is fetched via stale Symbol key, returning `None` → silently skipped | Re-key `PositionManager._trades` on canonical ticker. See `architecture-rules.md` "Symbol Identity" |
+| Margin calls / "Insufficient buying power" warnings | `MAX_POSITIONS_OPEN × (1+PYRAMID_MAX_ADDS) × INITIAL_LEG_SIZE_PCT > 1.0` | `validate_config()` aggregate-exposure assertion enforces this; never weaken the assertion to silence it |
+| All adds at one price (no pyramiding effect) | Add-on date guard relies on `trade.legs[-1].entry_date`; if symbol identity is broken, the same "first leg" is rewritten daily | Same as Symbol Identity row |
+
+---
+
 ## Handoff Menu
 
 | Next Step | Trigger | Skill |

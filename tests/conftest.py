@@ -109,33 +109,25 @@ def mock_history():
 @pytest.fixture
 def mock_trade_record():
     """
-    Factory fixture: create a mock TradeRecord.
-    
+    Factory fixture: create a mock multi-leg TradeRecord with one leg.
+
     Usage:
         trade = mock_trade_record(symbol="AAPL", entry_price=150.0, quantity=5)
     """
-    def _mock_trade(symbol: str = "AAPL", instrument_symbol: str = None,
-                   entry_price: float = 150.0, quantity: int = 5,
-                   trade_type: str = "DEFAULT_SETUP",
-                   entry_date=None, target_delta: float = 0.30):  # matches config.TARGET_DELTA
-        from handlers.position_manager import TradeRecord
-        
-        if instrument_symbol is None:
-            instrument_symbol = f"{symbol}_C_150_20250117"  # Fake option symbol
+    def _mock_trade(symbol: str = "AAPL",
+                    entry_price: float = 150.0, quantity: int = 5,
+                    entry_date=None):
+        from handlers.position_manager import TradeRecord, Leg
+
         if entry_date is None:
             entry_date = datetime.now().date()
-        
-        return TradeRecord(
-            symbol=symbol,
-            instrument_symbol=instrument_symbol,
-            entry_price=entry_price,
-            entry_date=entry_date,
-            trade_type=trade_type,
-            quantity=quantity,
-            total_cost=entry_price * quantity * 100,  # Options are 100-multiplier
-            target_delta=target_delta,
+
+        trade = TradeRecord(symbol=symbol, last_known_price=entry_price)
+        trade.legs.append(
+            Leg(entry_price=entry_price, quantity=quantity, entry_date=entry_date)
         )
-    
+        return trade
+
     return _mock_trade
 
 
@@ -167,24 +159,33 @@ def mock_instrument():
 @pytest.fixture
 def mock_indicators():
     """
-    Factory fixture: create a mock indicator dict.
-    
-    Usage:
-        indicators = mock_indicators(price=155.0, sma_50=150.0, ema_21=151.0, atr_14=2.5)
+    Factory fixture: build a per-symbol indicator dict matching
+    DataHandler.get_indicators() output. Keyword args override defaults.
     """
-    def _mock_ind(price: float = 155.0,
-                 sma_50: float = 150.0, ema_8: float = 154.0,
-                 ema_21: float = 153.0, ema_34: float = 151.5,
-                 atr_14: float = 2.5, atr_mean: float = 2.3):
-        return {
-            "price": price,
-            "sma_50": sma_50,
-            "ema_8": ema_8,
-            "ema_21": ema_21,
-            "ema_34": ema_34,
-            "atr_14": atr_14,
-            "atr_mean": atr_mean,
+    def _mock_ind(**overrides):
+        base = {
+            "close": 155.0,
+            "open": 154.0,
+            "high": 156.0,
+            "low": 153.5,
+            "prior_close": 153.0,
+            "prior_low": 151.0,
+            "ema21": 152.0,
+            "sma50": 149.0,
+            "sma10": 150.5,
+            "prior_ema21": 151.5,
+            "prior_sma50": 148.5,
+            "sma50_n_days_ago": 148.0,
+            "dollar_volume_20d": 200_000_000.0,
+            "atr14": 2.5,
+            "atr50": 2.4,
+            "atr_stretch_low": 0.625,
+            "high_vs_ema21": -1.667,
+            "high_vs_sma10": 2.292,
+            "is_blue_bar": True,
         }
+        base.update(overrides)
+        return base
 
     return _mock_ind
 

@@ -37,6 +37,25 @@ Paste or load the QC backtest statistics. Minimum required metrics:
 
 ---
 
+## Phase 1.5 — Sanity Checks (BEFORE scoring)
+
+Stop and surface a blocker if **any** of these fire — the result is unreliable noise, not
+edge:
+
+| Check | Threshold | Why |
+|---|---|---|
+| **Order count vs. expected** | `total_orders > MAX_POSITIONS_OPEN × trading_days × (1+PYRAMID_MAX_ADDS) × 1.5` | Capacity guard is broken; entries spamming each day. See `architecture-rules.md` "Decisions vs. Settled State" |
+| **"Insufficient buying power" in logs** | any occurrence | Aggregate exposure cap violated, or async-order capacity bug |
+| **Beta to benchmark** | `\|beta\| > 1.3` or close to leverage cap | Strategy is just leveraged drift, not stock selection — review sizing constants |
+| **Win rate + net profit sign mismatch** | win rate < 20% AND net profit > 0 | Almost certainly a beta-driven survivorship effect, not a tradable edge |
+| **Duplicate tickers in trade log** | same `Symbol.value` appearing in adjacent rows daily | `PositionManager` keyed on raw Symbol object. See "Symbol Identity" |
+| **Daily order count spike on first regime-up day** | day-1 orders > `MAX_POSITIONS_OPEN` | Same capacity bug as row 1 |
+
+If any check fires: do not proceed to Phase 2. Route to `debugging` and fix the root cause
+before re-running.
+
+---
+
 ## Phase 2 — Score Against Benchmarks
 
 | Metric | Target | Concern | Action if Concern |

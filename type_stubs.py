@@ -616,13 +616,22 @@ class QCAlgorithm:
         self.securities[sym_str] = sec
         return sec
 
-    def set_warm_up(self, n_bars: int) -> None:
+    def set_warm_up(self, n_bars: int, resolution=None) -> None:
         """
         Set warm-up period. Controls the is_warming_up flag during replay.
         Stub records the value but does not replay data — DataHandler tests
         use history injection instead.
         """
         self._warm_up_bars = n_bars
+
+    @property
+    def universe_settings(self):
+        """Stub QC `universe_settings` — exposes mutable `resolution` attribute."""
+        if not hasattr(self, "_universe_settings"):
+            self._universe_settings = type(
+                "UniverseSettings", (), {"resolution": Resolution.DAILY}
+            )()
+        return self._universe_settings
 
     def warm_up_indicator(self, symbol, indicator) -> None:
         """

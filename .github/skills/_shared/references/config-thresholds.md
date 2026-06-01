@@ -21,7 +21,7 @@ in handlers or tests — always import by name.
 | Liquidity floor — 20d $-volume | ≥ $50M | `MIN_DOLLAR_VOLUME` | `universe_filter.py` |
 | Pyramid cap | 3 adds | `PYRAMID_MAX_ADDS` | `entry_engine.py`, `pyramiding_manager.py` |
 | Per-leg sizing | 2% of portfolio | `INITIAL_LEG_SIZE_PCT` | `pyramiding_manager.py` |
-| Max open positions | 10 | `MAX_POSITIONS_OPEN` | `entry_engine.py` |
+| Max open positions | 4 | `MAX_POSITIONS_OPEN` | `entry_engine.py` |
 | Stop loss (per position) | 7% | `STOP_LOSS_PCT` | `exit_engine.py` |
 | Account drawdown gate | 15% | `MAX_ACCOUNT_DRAWDOWN_PCT` | `risk_manager.py` |
 | Daily evaluation time | 09:35 ET | `DAILY_EVAL_TIME` | `main.py` scheduled event |

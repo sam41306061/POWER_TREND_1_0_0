@@ -1,0 +1,800 @@
+Launching analysis for a6feea830836e7594cef273bbac58262 with LEAN Engine v2.5.0.0.17750
+2020-10-06 00:00:00 Algorithm starting warm up...
+2020-10-06 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2020-10-06
+2021-01-01 00:00:00 [INIT] PowerTrendAlgo ready. universe_top_n=500 daily_eval=09:35
+2020-10-20 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2020-10-20
+2020-11-03 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2020-11-03
+2020-11-03 00:00:00 Processing algorithm warm-up request 32%...
+2020-11-17 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2020-11-17
+2020-11-19 16:00:00 Processing algorithm warm-up request 51%...
+2020-12-01 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2020-12-01
+2020-12-15 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2020-12-15
+2020-12-15 00:00:00 Processing algorithm warm-up request 81%...
+2020-12-29 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2020-12-29
+2021-01-01 00:00:00 Algorithm finished warming up.
+2021-01-04 09:35:00 [EVAL 2021-01-04] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-05 09:35:00 [EVAL 2021-01-05] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-06 09:35:00 [EVAL 2021-01-06] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-07 09:35:00 [EVAL 2021-01-07] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-08 09:35:00 [EVAL 2021-01-08] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-11 09:35:00 [EVAL 2021-01-11] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-12 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-01-12
+2021-01-12 09:35:00 [EVAL 2021-01-12] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-13 09:35:00 [EVAL 2021-01-13] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-14 09:35:00 [EVAL 2021-01-14] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-15 09:35:00 [EVAL 2021-01-15] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-19 09:35:00 [EVAL 2021-01-19] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-20 09:35:00 [EVAL 2021-01-20] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-21 09:35:00 [EVAL 2021-01-21] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-22 09:35:00 [EVAL 2021-01-22] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-25 09:35:00 [EVAL 2021-01-25] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-26 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-01-26
+2021-01-26 09:35:00 [EVAL 2021-01-26] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-27 09:35:00 [EVAL 2021-01-27] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-28 09:35:00 [EVAL 2021-01-28] regime=NO_TREND hwm=100000 dd=0.00%
+2021-01-29 09:35:00 [EVAL 2021-01-29] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-01 09:35:00 [EVAL 2021-02-01] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-02 09:35:00 [EVAL 2021-02-02] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-03 09:35:00 [EVAL 2021-02-03] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-04 09:35:00 [EVAL 2021-02-04] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-05 09:35:00 [EVAL 2021-02-05] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-08 09:35:00 [EVAL 2021-02-08] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-09 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-02-09
+2021-02-09 09:35:00 [EVAL 2021-02-09] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-10 09:35:00 [EVAL 2021-02-10] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-11 09:35:00 [EVAL 2021-02-11] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-12 09:35:00 [EVAL 2021-02-12] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-16 09:35:00 [EVAL 2021-02-16] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-17 09:35:00 [EVAL 2021-02-17] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-18 09:35:00 [EVAL 2021-02-18] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-19 09:35:00 [EVAL 2021-02-19] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-22 09:35:00 [EVAL 2021-02-22] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-23 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-02-23
+2021-02-23 09:35:00 [EVAL 2021-02-23] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-24 09:35:00 [EVAL 2021-02-24] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-25 09:35:00 [EVAL 2021-02-25] regime=NO_TREND hwm=100000 dd=0.00%
+2021-02-26 09:35:00 [EVAL 2021-02-26] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-01 09:35:00 [EVAL 2021-03-01] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-02 09:35:00 [EVAL 2021-03-02] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-03 09:35:00 [EVAL 2021-03-03] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-04 09:35:00 [EVAL 2021-03-04] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-05 09:35:00 [EVAL 2021-03-05] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-08 09:35:00 [EVAL 2021-03-08] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-09 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-03-09
+2021-03-09 09:35:00 [EVAL 2021-03-09] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-10 09:35:00 [EVAL 2021-03-10] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-11 09:35:00 [EVAL 2021-03-11] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-12 09:35:00 [EVAL 2021-03-12] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-15 09:35:00 [EVAL 2021-03-15] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-16 09:35:00 [EVAL 2021-03-16] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-17 09:35:00 [EVAL 2021-03-17] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-18 09:35:00 [EVAL 2021-03-18] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-19 09:35:00 [EVAL 2021-03-19] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-22 09:35:00 [EVAL 2021-03-22] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-23 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-03-23
+2021-03-23 09:35:00 [EVAL 2021-03-23] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-24 09:35:00 [EVAL 2021-03-24] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-25 09:35:00 [EVAL 2021-03-25] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-26 09:35:00 [EVAL 2021-03-26] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-29 09:35:00 [EVAL 2021-03-29] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-30 09:35:00 [EVAL 2021-03-30] regime=NO_TREND hwm=100000 dd=0.00%
+2021-03-31 09:35:00 [EVAL 2021-03-31] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-01 09:35:00 [EVAL 2021-04-01] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-05 09:35:00 [EVAL 2021-04-05] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-06 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-04-06
+2021-04-06 09:35:00 [EVAL 2021-04-06] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-07 09:35:00 [EVAL 2021-04-07] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-08 09:35:00 [EVAL 2021-04-08] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-09 09:35:00 [EVAL 2021-04-09] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-12 09:35:00 [EVAL 2021-04-12] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-13 09:35:00 [EVAL 2021-04-13] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-14 09:35:00 [EVAL 2021-04-14] regime=NO_TREND hwm=100000 dd=0.00%
+2021-04-15 09:35:00 [EVAL 2021-04-15] regime=NO_TREND hwm=100000 dd=0.00%
+Warning: when performing history requests, the start date will be adjusted if there are numerical precision errors in the factor files.
+Warning: when performing history requests, the start date will be adjusted if it is before the first known date for the symbol.
+2021-04-16 09:35:00 [REGIME] NO_TREND -> TREND_UP (low_above_ema21=10d, ema21_above_sma50=6d)
+2021-04-16 09:35:00 [EVAL 2021-04-16] regime=TREND_UP hwm=100000 dd=0.00%
+2021-04-16 09:35:00 Order Error: ids: [105], Insufficient buying power to complete orders (Value:[1981.4013]), Reason: Id: 105, Initial Margin: 991.700662888, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [106], Insufficient buying power to complete orders (Value:[1823.6688]), Reason: Id: 106, Initial Margin: 912.834377524, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [107], Insufficient buying power to complete orders (Value:[1884.8067]), Reason: Id: 107, Initial Margin: 943.40336545, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [108], Insufficient buying power to complete orders (Value:[1873.0052]), Reason: Id: 108, Initial Margin: 937.50259942, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [109], Insufficient buying power to complete orders (Value:[1952.4909]), Reason: Id: 109, Initial Margin: 977.245425875, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [110], Insufficient buying power to complete orders (Value:[1953.4592]), Reason: Id: 110, Initial Margin: 977.729584056, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [111], Insufficient buying power to complete orders (Value:[1965.2336]), Reason: Id: 111, Initial Margin: 983.61677514, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [112], Insufficient buying power to complete orders (Value:[1963.9558]), Reason: Id: 112, Initial Margin: 982.977918454, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [113], Insufficient buying power to complete orders (Value:[1963.9833]), Reason: Id: 113, Initial Margin: 982.99163755, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [114], Insufficient buying power to complete orders (Value:[1952.5911]), Reason: Id: 114, Initial Margin: 977.295539912, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [115], Insufficient buying power to complete orders (Value:[1985.2082]), Reason: Id: 115, Initial Margin: 993.604094832, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [116], Insufficient buying power to complete orders (Value:[1966.7341]), Reason: Id: 116, Initial Margin: 984.3670315, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [117], Insufficient buying power to complete orders (Value:[1946.4073]), Reason: Id: 117, Initial Margin: 974.203666894, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [118], Insufficient buying power to complete orders (Value:[1980.6245]), Reason: Id: 118, Initial Margin: 991.3122585025, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [119], Insufficient buying power to complete orders (Value:[1962.4290]), Reason: Id: 119, Initial Margin: 982.214500357, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [120], Insufficient buying power to complete orders (Value:[1972.8287]), Reason: Id: 120, Initial Margin: 987.41433212, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [121], Insufficient buying power to complete orders (Value:[1930.6634]), Reason: Id: 121, Initial Margin: 966.3317128, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [122], Insufficient buying power to complete orders (Value:[1977.3263]), Reason: Id: 122, Initial Margin: 989.663167282, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [123], Insufficient buying power to complete orders (Value:[1939.8041]), Reason: Id: 123, Initial Margin: 970.902054478, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [124], Insufficient buying power to complete orders (Value:[1988.7184]), Reason: Id: 124, Initial Margin: 995.35922218, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [125], Insufficient buying power to complete orders (Value:[1837.8555]), Reason: Id: 125, Initial Margin: 919.927735594, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [126], Insufficient buying power to complete orders (Value:[1848.6156]), Reason: Id: 126, Initial Margin: 925.3078029955, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [127], Insufficient buying power to complete orders (Value:[1961.2479]), Reason: Id: 127, Initial Margin: 981.6239726493603388, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [128], Insufficient buying power to complete orders (Value:[1852.29]), Reason: Id: 128, Initial Margin: 927.145, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [129], Insufficient buying power to complete orders (Value:[1918.6128]), Reason: Id: 129, Initial Margin: 960.3063946497068128, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [130], Insufficient buying power to complete orders (Value:[1707.24]), Reason: Id: 130, Initial Margin: 854.62, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [131], Insufficient buying power to complete orders (Value:[1913.8135]), Reason: Id: 131, Initial Margin: 957.90672532, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [132], Insufficient buying power to complete orders (Value:[1985.2673]), Reason: Id: 132, Initial Margin: 993.633666724, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [133], Insufficient buying power to complete orders (Value:[1969.6297]), Reason: Id: 133, Initial Margin: 985.81484134, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [134], Insufficient buying power to complete orders (Value:[1950.5511]), Reason: Id: 134, Initial Margin: 976.275530032, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [135], Insufficient buying power to complete orders (Value:[1857.8165]), Reason: Id: 135, Initial Margin: 929.908241811, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [136], Insufficient buying power to complete orders (Value:[1966.4765]), Reason: Id: 136, Initial Margin: 984.23827098, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [137], Insufficient buying power to complete orders (Value:[1999.0677]), Reason: Id: 137, Initial Margin: 1000.53386056, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [138], Insufficient buying power to complete orders (Value:[1996.2569]), Reason: Id: 138, Initial Margin: 999.128439325, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [139], Insufficient buying power to complete orders (Value:[1927.17]), Reason: Id: 139, Initial Margin: 964.585, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [140], Insufficient buying power to complete orders (Value:[1988.6325]), Reason: Id: 140, Initial Margin: 995.316244705, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [141], Insufficient buying power to complete orders (Value:[1592.73]), Reason: Id: 141, Initial Margin: 797.365, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [142], Insufficient buying power to complete orders (Value:[1836.4414]), Reason: Id: 142, Initial Margin: 919.2206916025, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [143], Insufficient buying power to complete orders (Value:[1978.1883]), Reason: Id: 143, Initial Margin: 990.094166416, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [144], Insufficient buying power to complete orders (Value:[1813.7499]), Reason: Id: 144, Initial Margin: 907.874930924, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [145], Insufficient buying power to complete orders (Value:[1970.9427]), Reason: Id: 145, Initial Margin: 986.471336422, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [146], Insufficient buying power to complete orders (Value:[1290.89]), Reason: Id: 146, Initial Margin: 646.445, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [147], Insufficient buying power to complete orders (Value:[1523.55]), Reason: Id: 147, Initial Margin: 762.775, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [148], Insufficient buying power to complete orders (Value:[1990.3561]), Reason: Id: 148, Initial Margin: 996.178027558, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [149], Insufficient buying power to complete orders (Value:[1922.3276]), Reason: Id: 149, Initial Margin: 962.163808255, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [150], Insufficient buying power to complete orders (Value:[1906]), Reason: Id: 150, Initial Margin: 954, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [151], Insufficient buying power to complete orders (Value:[1747.38]), Reason: Id: 151, Initial Margin: 874.69, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [152], Insufficient buying power to complete orders (Value:[1994.1481]), Reason: Id: 152, Initial Margin: 998.0740552925845, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [153], Insufficient buying power to complete orders (Value:[1928.5025]), Reason: Id: 153, Initial Margin: 965.251242304, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [154], Insufficient buying power to complete orders (Value:[1977.3]), Reason: Id: 154, Initial Margin: 989.65, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 Order Error: ids: [155], Insufficient buying power to complete orders (Value:[1840.7242]), Reason: Id: 155, Initial Margin: 921.36212362, Free Margin: 610.4414101646323497.
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AAPL R735QTJ8XC9X qty=15
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AMZN R735QTJ8XC9X qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MSFT R735QTJ8XC9X qty=8
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] GOOG T1AZ164W5VTX qty=17
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] GOOCV VP83T1ZUHROL qty=17
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] NVDA RHM8UTD8DT2D qty=124
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] V U12VRGLO8PR9 qty=9
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] WMT R735QTJ8XC9X qty=45
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] SQ W5OUXC7GJYAT qty=7
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ORCL R735QTJ8XC9X qty=27
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HD R735QTJ8XC9X qty=7
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ADBE R735QTJ8XC9X qty=3
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] UNH R735QTJ8XC9X qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] BRKB R735QTJ8XC9X qty=7
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] COST R735QTJ8XC9X qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] TWTR VLE97YS7S57P qty=27
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ABBV VCY032R250MD qty=22
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MA TIX2XDPLFR6T qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] UBER X4DDRW1HKLT1 qty=32
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] NOB R735QTJ8XC9X qty=53
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] SBUX R735QTJ8XC9X qty=19
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] TMO R735QTJ8XC9X qty=4
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] LOW R735QTJ8XC9X qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PFE R735QTJ8XC9X qty=69
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MRK R735QTJ8XC9X qty=32
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FCX R735QTJ8XC9X qty=56
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] INTU R735QTJ8XC9X qty=4
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FPL R735QTJ8XC9X qty=28
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] BMY R735QTJ8XC9X qty=37
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MDT R735QTJ8XC9X qty=18
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DHR R735QTJ8XC9X qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] LMT R735QTJ8XC9X qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FDX R735QTJ8XC9X qty=7
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] REGN R735QTJ8XC9X qty=4
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CVS R735QTJ8XC9X qty=31
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] BLK ROIDIDJRNXID qty=2
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FISV R735QTJ8XC9X qty=15
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ISRG RVIFYB6Z92LH qty=7
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] VRTX R735QTJ8XC9X qty=9
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AXP R735QTJ8XC9X qty=14
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AMB R735QTJ8XC9X qty=20
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PX R735QTJ8XC9X qty=7
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ABX R735QTJ8XC9X qty=100
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] UPS RPLRE46IQ3XH qty=14
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] NOC R735QTJ8XC9X qty=6
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DG UHLLRXJMGEP1 qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MHP R735QTJ8XC9X qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CEY S67FQV7Z62CL qty=14
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] TJX R735QTJ8XC9X qty=31
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ERTS R735QTJ8XC9X qty=14
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HUM R735QTJ8XC9X qty=4
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ATH S9AP9FK1TBHH qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] SYK R735QTJ8XC9X qty=8
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ORLY R735QTJ8XC9X qty=57
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] BDX R735QTJ8XC9X qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PM U1EP4KZP5ROL qty=27
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MPC UXVGRK71ZB6T qty=42
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FANG VAP9FER7V5GL qty=30
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MMM R735QTJ8XC9X qty=17
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PSA R735QTJ8XC9X qty=9
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CI R735QTJ8XC9X qty=8
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] EQIXD SKZ55CR4HH0L qty=3
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] LYFT X380ZYOECX2D qty=31
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ZEN R735QTJ8XC9X qty=44
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DPZ T0AJHPLNBYW5 qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CMG TFNWQ96IBZ39 qty=64
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] GLW R735QTJ8XC9X qty=49
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DUK R735QTJ8XC9X qty=24
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] NSP R735QTJ8XC9X qty=33
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] RH VB9XTDFRGZTX qty=3
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CARR XDDBUNE0QTLX qty=46
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MXB TXNSVRVKOEP1 qty=4
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] GPN S1VV43FB2UZP qty=9
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MMC R735QTJ8XC9X qty=16
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] RIGX RC0E7NDMP55X qty=21
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CSX R735QTJ8XC9X qty=64
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DELL X0QFBGE1E9GL qty=43
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] D R735QTJ8XC9X qty=31
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] EW RTKJ7O7ZTI79 qty=22
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] NSC R735QTJ8XC9X qty=8
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HCA UUS78ZUZC21X qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AZO R735QTJ8XC9X qty=1
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DPS U2F4O1IXZOMD qty=63
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] UW R735QTJ8XC9X qty=16
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HANS R735QTJ8XC9X qty=41
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ALXN R735QTJ8XC9X qty=12
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HWP R735QTJ8XC9X qty=71
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] WY R735QTJ8XC9X qty=63
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ALGN S1PYFJ8AMC11 qty=3
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PE R735QTJ8XC9X qty=73
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] BSX R735QTJ8XC9X qty=48
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CBG SZE1QMJ2T2LH qty=24
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PGR R735QTJ8XC9X qty=22
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HRS R735QTJ8XC9X qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AAP SA48O8J43YAT qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FTNT UHQJ0EDGU6HX qty=48
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HUBS VUL3FDOXHN51 qty=3
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PRU SAI0XJNH6IJP qty=26
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AES R735QTJ8XC9X qty=85
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] STX SKFG7HFQYDT1 qty=28
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] SRE RBYFBGNAJMUD qty=34
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ICE TDPZZM7IWEP1 qty=17
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] COH RYMOWYW7Z2W5 qty=49
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ANSS R735QTJ8XC9X qty=5
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] TRP R735QTJ8XC9X qty=57
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DNB R735QTJ8XC9X qty=6
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ZTS VDRJHVQ4FNFP qty=12
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ECL R735QTJ8XC9X qty=9
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] HCN R735QTJ8XC9X qty=29
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ROST R735QTJ8XC9X qty=16
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] JCI R735QTJ8XC9X qty=35
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] SO R735QTJ8XC9X qty=37
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] VRSK UGL68H0DMHR9 qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ODFL R735QTJ8XC9X qty=16
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] IFF R735QTJ8XC9X qty=16
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] DFS TTXW324M9SV9 qty=21
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] MRKT VRITCWQ0X55X qty=19
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] BLL R735QTJ8XC9X qty=23
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AEP R735QTJ8XC9X qty=27
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] STRL R735QTJ8XC9X qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] A RPTMYV3VC57P qty=15
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] GPS R735QTJ8XC9X qty=71
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ALL R735QTJ8XC9X qty=18
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CERN R735QTJ8XC9X qty=27
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] IR R735QTJ8XC9X qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AYI S9PGYU1KYMW5 qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] IP R735QTJ8XC9X qty=46
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] JAZZ TT3D85SDWEW5 qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ZMH S6ZZPKTVDY05 qty=12
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] TDY RQ5GBZHW9751 qty=4
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] EMN R735QTJ8XC9X qty=20
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] PWR R87J2NJ629UT qty=21
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] VMW TV48B2UVK8RP qty=15
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] LPX R735QTJ8XC9X qty=32
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CDW VHRARJ4RLSV9 qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ARE R735QTJ8XC9X qty=14
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] OMC R735QTJ8XC9X qty=30
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] BX TTO1M4GXI99H qty=30
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] Q VGF1UY7HUU05 qty=9
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] EXR T142WIKPMLPH qty=17
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FIC R735QTJ8XC9X qty=3
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] RNR R735QTJ8XC9X qty=11
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FE R735QTJ8XC9X qty=69
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] SBNY SX89F8MQRGX1 qty=8
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] CAH R735QTJ8XC9X qty=36
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] SAM R735QTJ8XC9X qty=1
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] ZBRA R735QTJ8XC9X qty=3
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] OKE R735QTJ8XC9X qty=51
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] NXST STY3S0QHKXNP qty=15
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] GART R735QTJ8XC9X qty=10
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] FLT USGI91RMTXET qty=6
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] NDAQ T63A9J5FJWX1 qty=40
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] AAS R735QTJ8XC9X qty=17
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] TRL R735QTJ8XC9X qty=18
+2021-04-16 09:35:00 [ORDER ENTRY INITIAL] WST R735QTJ8XC9X qty=6
+2021-04-19 09:35:00 [EVAL 2021-04-19] regime=TREND_UP hwm=100776 dd=0.00%
+2021-04-19 09:35:00 Order Error: ids: [157], Insufficient buying power to complete orders (Value:[1997.2388]), Reason: Id: 157, Initial Margin: 999.619389968, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [158], Insufficient buying power to complete orders (Value:[1992.2883]), Reason: Id: 158, Initial Margin: 997.144132645, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [159], Insufficient buying power to complete orders (Value:[1742.0308]), Reason: Id: 159, Initial Margin: 872.015392576, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [160], Insufficient buying power to complete orders (Value:[1575.24]), Reason: Id: 160, Initial Margin: 788.62, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [161], Insufficient buying power to complete orders (Value:[1821.4064]), Reason: Id: 161, Initial Margin: 911.703192223, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [162], Insufficient buying power to complete orders (Value:[1905.4]), Reason: Id: 162, Initial Margin: 953.7, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [163], Insufficient buying power to complete orders (Value:[1752.3530]), Reason: Id: 163, Initial Margin: 877.17651576, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [164], Insufficient buying power to complete orders (Value:[1945.1819]), Reason: Id: 164, Initial Margin: 973.59094774, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [165], Insufficient buying power to complete orders (Value:[1967.9336]), Reason: Id: 165, Initial Margin: 984.96680525, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [166], Insufficient buying power to complete orders (Value:[1978.3293]), Reason: Id: 166, Initial Margin: 990.164664835, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [167], Insufficient buying power to complete orders (Value:[1992.9628]), Reason: Id: 167, Initial Margin: 997.481384217, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [168], Insufficient buying power to complete orders (Value:[1888.5062]), Reason: Id: 168, Initial Margin: 945.253085125, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [169], Insufficient buying power to complete orders (Value:[2010.0484]), Reason: Id: 169, Initial Margin: 1006.024190646, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [170], Insufficient buying power to complete orders (Value:[1835.5738]), Reason: Id: 170, Initial Margin: 918.786879772, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [171], Insufficient buying power to complete orders (Value:[1957.8887]), Reason: Id: 171, Initial Margin: 979.9443526518533205, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [172], Insufficient buying power to complete orders (Value:[1918.8789]), Reason: Id: 172, Initial Margin: 960.439449475, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [173], Insufficient buying power to complete orders (Value:[1991.3023]), Reason: Id: 173, Initial Margin: 996.651147316, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [174], Insufficient buying power to complete orders (Value:[1994.9062]), Reason: Id: 174, Initial Margin: 998.453109439, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [175], Insufficient buying power to complete orders (Value:[1966.0177]), Reason: Id: 175, Initial Margin: 984.008843245, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [176], Insufficient buying power to complete orders (Value:[1963.3549]), Reason: Id: 176, Initial Margin: 982.6774584360298675, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [177], Insufficient buying power to complete orders (Value:[1993.9312]), Reason: Id: 177, Initial Margin: 997.96560264, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [178], Insufficient buying power to complete orders (Value:[1895.9965]), Reason: Id: 178, Initial Margin: 948.9982385335, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [179], Insufficient buying power to complete orders (Value:[1963.2054]), Reason: Id: 179, Initial Margin: 982.60271473, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [180], Insufficient buying power to complete orders (Value:[1933.1968]), Reason: Id: 180, Initial Margin: 967.598423083, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [181], Insufficient buying power to complete orders (Value:[1998.0915]), Reason: Id: 181, Initial Margin: 1000.045744156, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [182], Insufficient buying power to complete orders (Value:[1896.0587]), Reason: Id: 182, Initial Margin: 949.029337794, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [183], Insufficient buying power to complete orders (Value:[1999.3216]), Reason: Id: 183, Initial Margin: 1000.66079892, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [184], Insufficient buying power to complete orders (Value:[1782.9232]), Reason: Id: 184, Initial Margin: 892.461591398, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [185], Insufficient buying power to complete orders (Value:[2010.0768]), Reason: Id: 185, Initial Margin: 1006.038377575, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [186], Insufficient buying power to complete orders (Value:[1997.1286]), Reason: Id: 186, Initial Margin: 999.564288736, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [187], Insufficient buying power to complete orders (Value:[1764.5033]), Reason: Id: 187, Initial Margin: 883.251654655, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [188], Insufficient buying power to complete orders (Value:[1897.5562]), Reason: Id: 188, Initial Margin: 949.778089556, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [189], Insufficient buying power to complete orders (Value:[1741.6672]), Reason: Id: 189, Initial Margin: 871.833593806, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [190], Insufficient buying power to complete orders (Value:[1980.6090]), Reason: Id: 190, Initial Margin: 991.304495152, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [191], Insufficient buying power to complete orders (Value:[1840.9726]), Reason: Id: 191, Initial Margin: 921.4862857280693902, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [192], Insufficient buying power to complete orders (Value:[2003.1283]), Reason: Id: 192, Initial Margin: 1002.56413249, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [193], Insufficient buying power to complete orders (Value:[1985.2832]), Reason: Id: 193, Initial Margin: 993.641611388, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [194], Insufficient buying power to complete orders (Value:[1972.7721]), Reason: Id: 194, Initial Margin: 987.386042308, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [195], Insufficient buying power to complete orders (Value:[1981.7998]), Reason: Id: 195, Initial Margin: 991.8998952655, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [196], Insufficient buying power to complete orders (Value:[1903.5]), Reason: Id: 196, Initial Margin: 952.75, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [197], Insufficient buying power to complete orders (Value:[1789.0739]), Reason: Id: 197, Initial Margin: 895.536954736, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [198], Insufficient buying power to complete orders (Value:[2011.2438]), Reason: Id: 198, Initial Margin: 1006.6219205539153944, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [199], Insufficient buying power to complete orders (Value:[1960.5958]), Reason: Id: 199, Initial Margin: 981.29788657, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [200], Insufficient buying power to complete orders (Value:[1958.44]), Reason: Id: 200, Initial Margin: 980.22, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [201], Insufficient buying power to complete orders (Value:[1887.8352]), Reason: Id: 201, Initial Margin: 944.91758959, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [202], Insufficient buying power to complete orders (Value:[1967.2165]), Reason: Id: 202, Initial Margin: 984.608270137, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [203], Insufficient buying power to complete orders (Value:[1495.84]), Reason: Id: 203, Initial Margin: 748.92, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [204], Insufficient buying power to complete orders (Value:[2004.2373]), Reason: Id: 204, Initial Margin: 1003.1186403865, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [205], Insufficient buying power to complete orders (Value:[1989.7021]), Reason: Id: 205, Initial Margin: 995.8510715815, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [206], Insufficient buying power to complete orders (Value:[2012.485]), Reason: Id: 206, Initial Margin: 1007.2425, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [207], Insufficient buying power to complete orders (Value:[2015.4821]), Reason: Id: 207, Initial Margin: 1008.741029872, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [208], Insufficient buying power to complete orders (Value:[1985.8162]), Reason: Id: 208, Initial Margin: 993.908097384, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [209], Insufficient buying power to complete orders (Value:[1996.3468]), Reason: Id: 209, Initial Margin: 999.173416882976728, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [210], Insufficient buying power to complete orders (Value:[1978.3108]), Reason: Id: 210, Initial Margin: 990.15541816, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [211], Insufficient buying power to complete orders (Value:[1879.6935]), Reason: Id: 211, Initial Margin: 940.846733826, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [212], Insufficient buying power to complete orders (Value:[1876.28]), Reason: Id: 212, Initial Margin: 939.14, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [213], Insufficient buying power to complete orders (Value:[2015.4865]), Reason: Id: 213, Initial Margin: 1008.74326315, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [214], Insufficient buying power to complete orders (Value:[1940.9464]), Reason: Id: 214, Initial Margin: 971.47321, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [215], Insufficient buying power to complete orders (Value:[1966.2908]), Reason: Id: 215, Initial Margin: 984.14541864, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [216], Insufficient buying power to complete orders (Value:[2005.6567]), Reason: Id: 216, Initial Margin: 1003.828359143, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [217], Insufficient buying power to complete orders (Value:[1924.2429]), Reason: Id: 217, Initial Margin: 963.1214737445, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [218], Insufficient buying power to complete orders (Value:[1974.8597]), Reason: Id: 218, Initial Margin: 988.429829551, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [219], Insufficient buying power to complete orders (Value:[1843.6512]), Reason: Id: 219, Initial Margin: 922.8255928, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [220], Insufficient buying power to complete orders (Value:[1909.6413]), Reason: Id: 220, Initial Margin: 955.82064763, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [221], Insufficient buying power to complete orders (Value:[1940.0591]), Reason: Id: 221, Initial Margin: 971.029550017, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [222], Insufficient buying power to complete orders (Value:[1949.8211]), Reason: Id: 222, Initial Margin: 975.9105648, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [223], Insufficient buying power to complete orders (Value:[1900.6872]), Reason: Id: 223, Initial Margin: 951.34358827, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [224], Insufficient buying power to complete orders (Value:[1901.7811]), Reason: Id: 224, Initial Margin: 951.890556385, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [225], Insufficient buying power to complete orders (Value:[1966.1725]), Reason: Id: 225, Initial Margin: 984.086234328, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [226], Insufficient buying power to complete orders (Value:[1979.7917]), Reason: Id: 226, Initial Margin: 990.895867246, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [227], Insufficient buying power to complete orders (Value:[1974.2024]), Reason: Id: 227, Initial Margin: 988.101187534, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [228], Insufficient buying power to complete orders (Value:[2009.9709]), Reason: Id: 228, Initial Margin: 1005.985466124, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [229], Insufficient buying power to complete orders (Value:[1998.8347]), Reason: Id: 229, Initial Margin: 1000.417358602, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [230], Insufficient buying power to complete orders (Value:[2013.76]), Reason: Id: 230, Initial Margin: 1007.88, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [231], Insufficient buying power to complete orders (Value:[1704.5627]), Reason: Id: 231, Initial Margin: 853.2813554425, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [232], Insufficient buying power to complete orders (Value:[1961.1243]), Reason: Id: 232, Initial Margin: 981.562128121, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [233], Insufficient buying power to complete orders (Value:[1979.0796]), Reason: Id: 233, Initial Margin: 990.53982127, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [234], Insufficient buying power to complete orders (Value:[1986.4765]), Reason: Id: 234, Initial Margin: 994.23825208, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [235], Insufficient buying power to complete orders (Value:[1906.5856]), Reason: Id: 235, Initial Margin: 954.2928103875410752, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [236], Insufficient buying power to complete orders (Value:[1949.4949]), Reason: Id: 236, Initial Margin: 975.7474633, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [237], Insufficient buying power to complete orders (Value:[1949.5358]), Reason: Id: 237, Initial Margin: 975.76791724, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [238], Insufficient buying power to complete orders (Value:[2009.8012]), Reason: Id: 238, Initial Margin: 1005.900604165, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [239], Insufficient buying power to complete orders (Value:[1991.6297]), Reason: Id: 239, Initial Margin: 996.814854265, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [240], Insufficient buying power to complete orders (Value:[1853.4844]), Reason: Id: 240, Initial Margin: 927.742205224, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [241], Insufficient buying power to complete orders (Value:[1988.3045]), Reason: Id: 241, Initial Margin: 995.15224069, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [242], Insufficient buying power to complete orders (Value:[1985.8198]), Reason: Id: 242, Initial Margin: 993.9098914879177032, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [243], Insufficient buying power to complete orders (Value:[1857.9]), Reason: Id: 243, Initial Margin: 929.95, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [244], Insufficient buying power to complete orders (Value:[1884.4858]), Reason: Id: 244, Initial Margin: 943.24288543, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [245], Insufficient buying power to complete orders (Value:[1840.23]), Reason: Id: 245, Initial Margin: 921.115, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [246], Insufficient buying power to complete orders (Value:[2001.4597]), Reason: Id: 246, Initial Margin: 1001.729830037, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [247], Insufficient buying power to complete orders (Value:[1990.5348]), Reason: Id: 247, Initial Margin: 996.267410256, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [248], Insufficient buying power to complete orders (Value:[1982.6174]), Reason: Id: 248, Initial Margin: 992.30870335, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [249], Insufficient buying power to complete orders (Value:[1994.6468]), Reason: Id: 249, Initial Margin: 998.3233904725, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [250], Insufficient buying power to complete orders (Value:[1598.85]), Reason: Id: 250, Initial Margin: 800.425, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [251], Insufficient buying power to complete orders (Value:[1964.1992]), Reason: Id: 251, Initial Margin: 983.099594424, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [252], Insufficient buying power to complete orders (Value:[1985.1897]), Reason: Id: 252, Initial Margin: 993.594835486, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [253], Insufficient buying power to complete orders (Value:[1540.47]), Reason: Id: 253, Initial Margin: 771.235, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [254], Insufficient buying power to complete orders (Value:[1950.0108]), Reason: Id: 254, Initial Margin: 976.00537981, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [255], Insufficient buying power to complete orders (Value:[1919.8]), Reason: Id: 255, Initial Margin: 960.9, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [256], Insufficient buying power to complete orders (Value:[2005.1044]), Reason: Id: 256, Initial Margin: 1003.5522170305, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [257], Insufficient buying power to complete orders (Value:[1939.0328]), Reason: Id: 257, Initial Margin: 970.5163910565, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [258], Insufficient buying power to complete orders (Value:[1922.87]), Reason: Id: 258, Initial Margin: 962.435, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 Order Error: ids: [259], Insufficient buying power to complete orders (Value:[1857.7729]), Reason: Id: 259, Initial Margin: 929.886461668, Free Margin: 116.9688823264914043.
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AMZN R735QTJ8XC9X qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] MSFT R735QTJ8XC9X qty=8
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ORCL R735QTJ8XC9X qty=27
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] HD R735QTJ8XC9X qty=6
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ADBE R735QTJ8XC9X qty=3
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] GS RKEOGCOG6RFP qty=6
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] BRKB R735QTJ8XC9X qty=7
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] COST R735QTJ8XC9X qty=5
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PCLN RJG7T2VJICTH qty=20
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ABBV VCY032R250MD qty=22
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] NOB R735QTJ8XC9X qty=51
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] SBUX R735QTJ8XC9X qty=19
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] LOW R735QTJ8XC9X qty=10
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PFE R735QTJ8XC9X qty=68
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ACN S6HA7SVNXLYD qty=7
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] MRK R735QTJ8XC9X qty=31
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PCS TRX10524LYZP qty=15
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] FPL R735QTJ8XC9X qty=28
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] BMY R735QTJ8XC9X qty=37
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] DH R735QTJ8XC9X qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ALD R735QTJ8XC9X qty=10
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] REGN R735QTJ8XC9X qty=4
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ISRG RVIFYB6Z92LH qty=7
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] EBAY REC37LGZ79T1 qty=33
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AMT RBASL7V8PIZP qty=9
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] GILD R735QTJ8XC9X qty=36
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PX R735QTJ8XC9X qty=7
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] DG UHLLRXJMGEP1 qty=10
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] SHW R735QTJ8XC9X qty=7
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] TJX R735QTJ8XC9X qty=31
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] COF R735QTJ8XC9X qty=16
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ATH S9AP9FK1TBHH qty=5
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AUD R735QTJ8XC9X qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] EL R735QTJ8XC9X qty=6
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ORLY R735QTJ8XC9X qty=56
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] BDX R735QTJ8XC9X qty=10
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PM U1EP4KZP5ROL qty=27
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] MO R735QTJ8XC9X qty=56
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] DUK R735QTJ8XC9X qty=24
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] NSP R735QTJ8XC9X qty=33
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] RH VB9XTDFRGZTX qty=3
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] MXB TXNSVRVKOEP1 qty=4
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] DELL X0QFBGE1E9GL qty=43
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] D R735QTJ8XC9X qty=31
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] EW RTKJ7O7ZTI79 qty=22
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] HCA UUS78ZUZC21X qty=10
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] CBRNA R735QTJ8XC9X qty=9
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AZO R735QTJ8XC9X qty=1
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] DPS U2F4O1IXZOMD qty=63
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] MET RTMI3UYBZ0IT qty=37
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] HANS R735QTJ8XC9X qty=41
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] HWP R735QTJ8XC9X qty=71
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] WY R735QTJ8XC9X qty=62
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PE R735QTJ8XC9X qty=73
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] SPC R735QTJ8XC9X qty=14
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AAP SA48O8J43YAT qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] COHR R735QTJ8XC9X qty=7
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ALLY VPLW2D47KBXH qty=50
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PRU SAI0XJNH6IJP qty=25
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] STX SKFG7HFQYDT1 qty=28
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] SRE RBYFBGNAJMUD qty=34
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ICE TDPZZM7IWEP1 qty=17
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] EQR R735QTJ8XC9X qty=33
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] DNB R735QTJ8XC9X qty=6
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ZTS VDRJHVQ4FNFP qty=12
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] BRKS R735QTJ8XC9X qty=19
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] BAX R735QTJ8XC9X qty=25
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ECL R735QTJ8XC9X qty=9
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] SWK R735QTJ8XC9X qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ROST R735QTJ8XC9X qty=16
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] SO R735QTJ8XC9X qty=37
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] VRSK UGL68H0DMHR9 qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] PPL R735QTJ8XC9X qty=83
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] VICI WT7NDQSMCSBP qty=87
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] CNTE SAI0XJNH6IJP qty=31
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] MLM R735QTJ8XC9X qty=5
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] MRKT VRITCWQ0X55X qty=19
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AEP R735QTJ8XC9X qty=27
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] STRL R735QTJ8XC9X qty=10
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] LBDKV VVAP1T7BH9B9 qty=14
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] A RPTMYV3VC57P qty=15
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ALL R735QTJ8XC9X qty=18
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] CERN R735QTJ8XC9X qty=27
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AFL R735QTJ8XC9X qty=42
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] IR R735QTJ8XC9X qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] INVH WHQ3MH5Q7WX1 qty=70
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] IP R735QTJ8XC9X qty=46
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] JAZZ TT3D85SDWEW5 qty=11
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] VMW TV48B2UVK8RP qty=14
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ICLRY RAQ4796P3OMD qty=9
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AA WF7IHVI76I5H qty=59
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] LPX R735QTJ8XC9X qty=32
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ARE R735QTJ8XC9X qty=14
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] EXR T142WIKPMLPH qty=17
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] FIC R735QTJ8XC9X qty=3
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] TSN R735QTJ8XC9X qty=29
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] CAH R735QTJ8XC9X qty=36
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] ZBRA R735QTJ8XC9X qty=3
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] NXST STY3S0QHKXNP qty=15
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] GART R735QTJ8XC9X qty=10
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] NTAP R735QTJ8XC9X qty=29
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] AAS R735QTJ8XC9X qty=17
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] TRL R735QTJ8XC9X qty=17
+2021-04-19 09:35:00 [ORDER ENTRY INITIAL] WST R735QTJ8XC9X qty=6
+2021-04-20 00:00:00 [UNIVERSE] Refreshed: 500 symbols on 2021-04-20
+2021-04-20 09:35:00 [EVAL 2021-04-20] regime=TREND_UP hwm=100776 dd=0.93%
+2021-04-20 09:35:00 Order Error: ids: [260], Insufficient buying power to complete orders (Value:[1965.7089]), Reason: Id: 260, Initial Margin: 983.85445699, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [261], Insufficient buying power to complete orders (Value:[1930.3418]), Reason: Id: 261, Initial Margin: 966.1709112144, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [262], Insufficient buying power to complete orders (Value:[1941.1036]), Reason: Id: 262, Initial Margin: 971.551813788, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [263], Insufficient buying power to complete orders (Value:[1980.5851]), Reason: Id: 263, Initial Margin: 991.29256069, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [264], Insufficient buying power to complete orders (Value:[1954.6935]), Reason: Id: 264, Initial Margin: 978.346759087, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [265], Insufficient buying power to complete orders (Value:[1735.4998]), Reason: Id: 265, Initial Margin: 868.74988132, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [266], Insufficient buying power to complete orders (Value:[1979.2070]), Reason: Id: 266, Initial Margin: 990.603524833, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [267], Insufficient buying power to complete orders (Value:[1825.5567]), Reason: Id: 267, Initial Margin: 913.778353597, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [268], Insufficient buying power to complete orders (Value:[1969.6445]), Reason: Id: 268, Initial Margin: 985.822237234, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [269], Insufficient buying power to complete orders (Value:[1969.7166]), Reason: Id: 269, Initial Margin: 985.8582886975, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [270], Insufficient buying power to complete orders (Value:[1954.0741]), Reason: Id: 270, Initial Margin: 978.0370498, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [271], Insufficient buying power to complete orders (Value:[1983.1876]), Reason: Id: 271, Initial Margin: 992.5937788, Free Margin: 0.
+2021-04-20 09:35:00 VSNR R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [272], Insufficient buying power to complete orders (Value:[1945.1411]), Reason: Id: 272, Initial Margin: 973.57052512, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [273], Insufficient buying power to complete orders (Value:[1928.7418]), Reason: Id: 273, Initial Margin: 965.370900119, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [274], Insufficient buying power to complete orders (Value:[1985.64]), Reason: Id: 274, Initial Margin: 993.82, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [275], Insufficient buying power to complete orders (Value:[1979.4429]), Reason: Id: 275, Initial Margin: 990.721470618, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [276], Insufficient buying power to complete orders (Value:[1858.1116]), Reason: Id: 276, Initial Margin: 930.055793113334208, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [277], Insufficient buying power to complete orders (Value:[1948.8315]), Reason: Id: 277, Initial Margin: 975.415738375, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [278], Insufficient buying power to complete orders (Value:[1984.0128]), Reason: Id: 278, Initial Margin: 993.0064, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [279], Insufficient buying power to complete orders (Value:[1954.3774]), Reason: Id: 279, Initial Margin: 978.1887042775, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [280], Insufficient buying power to complete orders (Value:[1952.5845]), Reason: Id: 280, Initial Margin: 977.292247469, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [281], Insufficient buying power to complete orders (Value:[1959.3954]), Reason: Id: 281, Initial Margin: 980.697690188, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [282], Insufficient buying power to complete orders (Value:[1797.1891]), Reason: Id: 282, Initial Margin: 899.5945354165, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [283], Insufficient buying power to complete orders (Value:[1783.4815]), Reason: Id: 283, Initial Margin: 892.740757165, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [284], Insufficient buying power to complete orders (Value:[1892.7765]), Reason: Id: 284, Initial Margin: 947.3882386945, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [285], Insufficient buying power to complete orders (Value:[1439.3619]), Reason: Id: 285, Initial Margin: 720.68096809, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [286], Insufficient buying power to complete orders (Value:[1912.2029]), Reason: Id: 286, Initial Margin: 957.101473723, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [287], Insufficient buying power to complete orders (Value:[1906.5036]), Reason: Id: 287, Initial Margin: 954.2518095925, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [288], Insufficient buying power to complete orders (Value:[1981.6125]), Reason: Id: 288, Initial Margin: 991.806240875, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [289], Insufficient buying power to complete orders (Value:[1924.32]), Reason: Id: 289, Initial Margin: 963.16, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [290], Insufficient buying power to complete orders (Value:[1955.5146]), Reason: Id: 290, Initial Margin: 978.7572837730100328, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [291], Insufficient buying power to complete orders (Value:[1989.6252]), Reason: Id: 291, Initial Margin: 995.812577014, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [292], Insufficient buying power to complete orders (Value:[1675.1497]), Reason: Id: 292, Initial Margin: 838.574861968, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [293], Insufficient buying power to complete orders (Value:[1914.9955]), Reason: Id: 293, Initial Margin: 958.4977681, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [294], Insufficient buying power to complete orders (Value:[1836.3224]), Reason: Id: 294, Initial Margin: 919.161192928, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [295], Insufficient buying power to complete orders (Value:[1959.1225]), Reason: Id: 295, Initial Margin: 980.5612262019328048, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [296], Insufficient buying power to complete orders (Value:[1971.5139]), Reason: Id: 296, Initial Margin: 986.7569285135, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [297], Insufficient buying power to complete orders (Value:[1948.0341]), Reason: Id: 297, Initial Margin: 975.017047, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [298], Insufficient buying power to complete orders (Value:[1967.2428]), Reason: Id: 298, Initial Margin: 984.6213935275, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [299], Insufficient buying power to complete orders (Value:[1945.98]), Reason: Id: 299, Initial Margin: 973.99, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [300], Insufficient buying power to complete orders (Value:[1983.9941]), Reason: Id: 300, Initial Margin: 992.997058, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [301], Insufficient buying power to complete orders (Value:[1856.5249]), Reason: Id: 301, Initial Margin: 929.262442744, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [302], Insufficient buying power to complete orders (Value:[1968.2570]), Reason: Id: 302, Initial Margin: 985.1284936831407904, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [303], Insufficient buying power to complete orders (Value:[1972.5201]), Reason: Id: 303, Initial Margin: 987.26005016, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [304], Insufficient buying power to complete orders (Value:[1981.3146]), Reason: Id: 304, Initial Margin: 991.65731401, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [305], Insufficient buying power to complete orders (Value:[1874.6429]), Reason: Id: 305, Initial Margin: 938.32145434, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [306], Insufficient buying power to complete orders (Value:[1948.32]), Reason: Id: 306, Initial Margin: 975.16, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [307], Insufficient buying power to complete orders (Value:[1948.9201]), Reason: Id: 307, Initial Margin: 975.4600516, Free Margin: 0.
+2021-04-20 09:35:00 PBCP RH8GLI8VB8TH: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [308], Insufficient buying power to complete orders (Value:[1895.6875]), Reason: Id: 308, Initial Margin: 948.84376885, Free Margin: 0.
+2021-04-20 09:35:00 ROP R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 PPD XBT7DBJEDTGL: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [309], Insufficient buying power to complete orders (Value:[1504.3]), Reason: Id: 309, Initial Margin: 753.15, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [310], Insufficient buying power to complete orders (Value:[1960.0111]), Reason: Id: 310, Initial Margin: 981.0055444135, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [311], Insufficient buying power to complete orders (Value:[1950.5382]), Reason: Id: 311, Initial Margin: 976.2690857, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [312], Insufficient buying power to complete orders (Value:[1990.9087]), Reason: Id: 312, Initial Margin: 996.454329373, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [313], Insufficient buying power to complete orders (Value:[1837.1849]), Reason: Id: 313, Initial Margin: 919.5924297275, Free Margin: 0.
+2021-04-20 09:35:00 RP UP1FDD1J9MCL: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [314], Insufficient buying power to complete orders (Value:[1961.4]), Reason: Id: 314, Initial Margin: 981.7, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [315], Insufficient buying power to complete orders (Value:[1953.1284]), Reason: Id: 315, Initial Margin: 977.56421346, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [316], Insufficient buying power to complete orders (Value:[1927.2139]), Reason: Id: 316, Initial Margin: 964.6069647701089684, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [317], Insufficient buying power to complete orders (Value:[1942.5473]), Reason: Id: 317, Initial Margin: 972.273638062, Free Margin: 0.
+2021-04-20 09:35:00 OTISW XCXKP5JBIR1H: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [318], Insufficient buying power to complete orders (Value:[1961.37]), Reason: Id: 318, Initial Margin: 981.685, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [319], Insufficient buying power to complete orders (Value:[1995.7285]), Reason: Id: 319, Initial Margin: 998.864239372, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [320], Insufficient buying power to complete orders (Value:[1991.1093]), Reason: Id: 320, Initial Margin: 996.55465528, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [321], Insufficient buying power to complete orders (Value:[1962.24]), Reason: Id: 321, Initial Margin: 982.12, Free Margin: 0.
+2021-04-20 09:35:00 AEOS R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 EGOV RMDKN30LP2ZP: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [322], Insufficient buying power to complete orders (Value:[1978.944]), Reason: Id: 322, Initial Margin: 990.472, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [323], Insufficient buying power to complete orders (Value:[1863.1960]), Reason: Id: 323, Initial Margin: 932.59799515, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [324], Insufficient buying power to complete orders (Value:[1959.6197]), Reason: Id: 324, Initial Margin: 980.809871095, Free Margin: 0.
+2021-04-20 09:35:00 EPAM V3Y20BEIYSTH: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [325], Insufficient buying power to complete orders (Value:[1959.7462]), Reason: Id: 325, Initial Margin: 980.873084728, Free Margin: 0.
+2021-04-20 09:35:00 LKQX SSIWJ5PPLPB9: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [326], Insufficient buying power to complete orders (Value:[1993.9125]), Reason: Id: 326, Initial Margin: 997.9562484, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [327], Insufficient buying power to complete orders (Value:[1973.7246]), Reason: Id: 327, Initial Margin: 987.862316705696431, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [328], Insufficient buying power to complete orders (Value:[1978.9969]), Reason: Id: 328, Initial Margin: 990.498455713, Free Margin: 0.
+2021-04-20 09:35:00 DRE R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 WAL T9X4UMD29JDX: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [329], Insufficient buying power to complete orders (Value:[1909.6534]), Reason: Id: 329, Initial Margin: 955.8267178509953152, Free Margin: 0.
+2021-04-20 09:35:00 XRX R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 CACI R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [330], Insufficient buying power to complete orders (Value:[1864.3362]), Reason: Id: 330, Initial Margin: 933.168081812, Free Margin: 0.
+2021-04-20 09:35:00 CRL RVSAF8UO0M79: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [331], Insufficient buying power to complete orders (Value:[1976.9479]), Reason: Id: 331, Initial Margin: 989.4739266235, Free Margin: 0.
+2021-04-20 09:35:00 GDI WKGKBTQLVCYT: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 RSG RC0E7NDMP55X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [332], Insufficient buying power to complete orders (Value:[1980.7862]), Reason: Id: 332, Initial Margin: 991.3930924, Free Margin: 0.
+2021-04-20 09:35:00 AXTA VVIKMK4O3ALH: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [333], Insufficient buying power to complete orders (Value:[1902.0221]), Reason: Id: 333, Initial Margin: 952.011072216, Free Margin: 0.
+2021-04-20 09:35:00 COO R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [334], Insufficient buying power to complete orders (Value:[1992.1233]), Reason: Id: 334, Initial Margin: 997.061626176, Free Margin: 0.
+2021-04-20 09:35:00 Order Error: ids: [335], Insufficient buying power to complete orders (Value:[1993.1146]), Reason: Id: 335, Initial Margin: 997.55730622, Free Margin: 0.
+2021-04-20 09:35:00 CHKPF R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [336], Insufficient buying power to complete orders (Value:[1957.5506]), Reason: Id: 336, Initial Margin: 979.775324296, Free Margin: 0.
+2021-04-20 09:35:00 MTD R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 Order Error: ids: [337], Insufficient buying power to complete orders (Value:[1699.9567]), Reason: Id: 337, Initial Margin: 850.978350955, Free Margin: 0.
+2021-04-20 09:35:00 WRI R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 JKHY R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 AEM R735QTJ8XC9X: The security does not have an accurate price as it has not yet received a bar of data. Before placing a trade (or using set_holdings) warm up your algorithm with set_warmup, or use slice.contains(symbol) to confirm the Slice object has price before using the data. Data does not necessarily all arrive at the same time so your algorithm should confirm the data is ready before using it. In live trading this can mean you do not have an active subscription to the asset class you're trying to trade. If using custom data make sure you've set the 'Value' property.
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AAPL R735QTJ8XC9X qty=15
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] GOOG T1AZ164W5VTX qty=17
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] GOOCV VP83T1ZUHROL qty=17
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] NOB R735QTJ8XC9X qty=51
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] V U12VRGLO8PR9 qty=9
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] HD R735QTJ8XC9X qty=6
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] JNJ R735QTJ8XC9X qty=14
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] GS RKEOGCOG6RFP qty=6
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] PFE R735QTJ8XC9X qty=66
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CSCO R735QTJ8XC9X qty=43
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] KO R735QTJ8XC9X qty=42
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] PEP R735QTJ8XC9X qty=16
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] VSNR R735QTJ8XC9X qty=37
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] BMY R735QTJ8XC9X qty=36
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ABT R735QTJ8XC9X qty=17
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ALXN R735QTJ8XC9X qty=12
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] X R735QTJ8XC9X qty=89
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DHR R735QTJ8XC9X qty=10
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] MDT R735QTJ8XC9X qty=18
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CMG TFNWQ96IBZ39 qty=64
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AMGN R735QTJ8XC9X qty=9
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] VMW TV48B2UVK8RP qty=14
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] UTX R735QTJ8XC9X qty=28
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] UNP R735QTJ8XC9X qty=9
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ATH S9AP9FK1TBHH qty=5
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ISRG RVIFYB6Z92LH qty=7
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] BLK ROIDIDJRNXID qty=2
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] EXPE TB0IQCZTBPT1 qty=11
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] SWK R735QTJ8XC9X qty=11
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ABBV VCY032R250MD qty=22
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] RH VB9XTDFRGZTX qty=3
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DELL X0QFBGE1E9GL qty=41
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AA WF7IHVI76I5H qty=58
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] HUM R735QTJ8XC9X qty=4
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ZTS VDRJHVQ4FNFP qty=12
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DNB R735QTJ8XC9X qty=6
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] MMM R735QTJ8XC9X qty=17
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] PPG R735QTJ8XC9X qty=13
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AMB R735QTJ8XC9X qty=20
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] KHC W1YY4MGI5CH1 qty=61
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] Q VGF1UY7HUU05 qty=9
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] GIS R735QTJ8XC9X qty=39
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] TWRS RDBNO4XQDCV9 qty=13
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CSX R735QTJ8XC9X qty=64
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] STX SKFG7HFQYDT1 qty=28
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AEP R735QTJ8XC9X qty=27
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] IFF R735QTJ8XC9X qty=15
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] EW RTKJ7O7ZTI79 qty=22
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] BAX R735QTJ8XC9X qty=25
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] PBCP RH8GLI8VB8TH qty=82
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AUD R735QTJ8XC9X qty=11
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ROP R735QTJ8XC9X qty=4
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] PPD XBT7DBJEDTGL qty=43
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AZO R735QTJ8XC9X qty=1
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] KMB R735QTJ8XC9X qty=17
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] SYK R735QTJ8XC9X qty=8
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ALLY VPLW2D47KBXH qty=49
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] GD R735QTJ8XC9X qty=11
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] RP UP1FDD1J9MCL qty=22
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CNTE SAI0XJNH6IJP qty=30
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] PGR R735QTJ8XC9X qty=22
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ZMH S6ZZPKTVDY05 qty=12
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] EQIXD SKZ55CR4HH0L qty=3
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] OTISW XCXKP5JBIR1H qty=29
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] TRIP V2LT3QH97TYD qty=37
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AFL R735QTJ8XC9X qty=42
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ITW R735QTJ8XC9X qty=10
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] BSX R735QTJ8XC9X qty=48
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AEOS R735QTJ8XC9X qty=65
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] EGOV RMDKN30LP2ZP qty=58
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] FTNT UHQJ0EDGU6HX qty=48
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DPZ T0AJHPLNBYW5 qty=5
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] PSA R735QTJ8XC9X qty=9
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] EPAM V3Y20BEIYSTH qty=4
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ALL R735QTJ8XC9X qty=18
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] LKQX SSIWJ5PPLPB9 qty=50
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] FAST R735QTJ8XC9X qty=89
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] O R735QTJ8XC9X qty=39
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DPS U2F4O1IXZOMD qty=62
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DRE R735QTJ8XC9X qty=45
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] WAL T9X4UMD29JDX qty=21
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] LBDKV VVAP1T7BH9B9 qty=14
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] XRX R735QTJ8XC9X qty=107
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CACI R735QTJ8XC9X qty=7
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] VMC R735QTJ8XC9X qty=11
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CRL RVSAF8UO0M79 qty=6
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] INVH WHQ3MH5Q7WX1 qty=69
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] GDI WKGKBTQLVCYT qty=39
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] RSG RC0E7NDMP55X qty=20
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CAG R735QTJ8XC9X qty=68
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AXTA VVIKMK4O3ALH qty=63
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DGX R735QTJ8XC9X qty=16
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] COO R735QTJ8XC9X qty=20
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] DLR T38VRT3VLG85 qty=16
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ARE R735QTJ8XC9X qty=14
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] CHKPF R735QTJ8XC9X qty=16
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] ROK R735QTJ8XC9X qty=8
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] MTD R735QTJ8XC9X qty=1
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] MLM R735QTJ8XC9X qty=5
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] WRI R735QTJ8XC9X qty=68
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] JKHY R735QTJ8XC9X qty=13
+2021-04-20 09:35:00 [ORDER ENTRY INITIAL] AEM R735QTJ8XC9X qty=34
+2021-04-21 09:35:00 [EVAL 2021-04-21] regime=TREND_UP hwm=100776 dd=1.52%
+2021-04-21 09:35:00 Order Error: ids: [338], Insufficient buying power to complete orders (Value:[1978.2423]), Reason: Id: 338, Initial Margin: 990.121130832, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [339], Insufficient buying power to complete orders (Value:[1925.3039]), Reason: Id: 339, Initial Margin: 963.651931774, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [340], Insufficient buying power to complete orders (Value:[1880.6490]), Reason: Id: 340, Initial Margin: 941.324514012, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [341], Insufficient buying power to complete orders (Value:[1819.8278]), Reason: Id: 341, Initial Margin: 910.9139213625, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [342], Insufficient buying power to complete orders (Value:[1974.7026]), Reason: Id: 342, Initial Margin: 988.351313344, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [343], Insufficient buying power to complete orders (Value:[1960.2258]), Reason: Id: 343, Initial Margin: 981.112907179, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [344], Insufficient buying power to complete orders (Value:[1871.5690]), Reason: Id: 344, Initial Margin: 936.784517545, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [345], Insufficient buying power to complete orders (Value:[1957.0431]), Reason: Id: 345, Initial Margin: 979.521543811, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [346], Insufficient buying power to complete orders (Value:[1959.3738]), Reason: Id: 346, Initial Margin: 980.686894816, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [347], Insufficient buying power to complete orders (Value:[1956.8711]), Reason: Id: 347, Initial Margin: 979.435545884, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [348], Insufficient buying power to complete orders (Value:[1969.5010]), Reason: Id: 348, Initial Margin: 985.750479704, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [349], Insufficient buying power to complete orders (Value:[1951.5682]), Reason: Id: 349, Initial Margin: 976.784108, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [350], Insufficient buying power to complete orders (Value:[1831.94]), Reason: Id: 350, Initial Margin: 916.97, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [351], Insufficient buying power to complete orders (Value:[1981.2154]), Reason: Id: 351, Initial Margin: 991.607695742, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [352], Insufficient buying power to complete orders (Value:[1980.8406]), Reason: Id: 352, Initial Margin: 991.4203190655, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [353], Insufficient buying power to complete orders (Value:[1871.8703]), Reason: Id: 353, Initial Margin: 936.9351466165, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [354], Insufficient buying power to complete orders (Value:[1757.1272]), Reason: Id: 354, Initial Margin: 879.563595715, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [355], Insufficient buying power to complete orders (Value:[1982.0511]), Reason: Id: 355, Initial Margin: 992.0255365, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [356], Insufficient buying power to complete orders (Value:[1921.6344]), Reason: Id: 356, Initial Margin: 961.817187771201115, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [357], Insufficient buying power to complete orders (Value:[1978.5809]), Reason: Id: 357, Initial Margin: 990.290466955, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [358], Insufficient buying power to complete orders (Value:[1983.4502]), Reason: Id: 358, Initial Margin: 992.725085944, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [359], Insufficient buying power to complete orders (Value:[1793.9101]), Reason: Id: 359, Initial Margin: 897.95506597, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [360], Insufficient buying power to complete orders (Value:[1892.5898]), Reason: Id: 360, Initial Margin: 947.2949053705, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [361], Insufficient buying power to complete orders (Value:[1868.4]), Reason: Id: 361, Initial Margin: 935.2, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [362], Insufficient buying power to complete orders (Value:[1854.7485]), Reason: Id: 362, Initial Margin: 928.374250075, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [363], Insufficient buying power to complete orders (Value:[1897.9807]), Reason: Id: 363, Initial Margin: 949.990345975, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [364], Insufficient buying power to complete orders (Value:[1818.1300]), Reason: Id: 364, Initial Margin: 910.065008775, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [365], Insufficient buying power to complete orders (Value:[1846.0642]), Reason: Id: 365, Initial Margin: 924.03210727, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [366], Insufficient buying power to complete orders (Value:[1978.4975]), Reason: Id: 366, Initial Margin: 990.24873236, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [367], Insufficient buying power to complete orders (Value:[1500.8637]), Reason: Id: 367, Initial Margin: 751.431838366, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [368], Insufficient buying power to complete orders (Value:[1686.8779]), Reason: Id: 368, Initial Margin: 844.4389522, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [369], Insufficient buying power to complete orders (Value:[1852.0514]), Reason: Id: 369, Initial Margin: 927.025695972, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [370], Insufficient buying power to complete orders (Value:[1904.4704]), Reason: Id: 370, Initial Margin: 953.2351895055, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [371], Insufficient buying power to complete orders (Value:[1981.44]), Reason: Id: 371, Initial Margin: 991.72, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [372], Insufficient buying power to complete orders (Value:[1725.7167]), Reason: Id: 372, Initial Margin: 863.858365402, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [373], Insufficient buying power to complete orders (Value:[1925.1496]), Reason: Id: 373, Initial Margin: 963.5747989, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [374], Insufficient buying power to complete orders (Value:[1812.2576]), Reason: Id: 374, Initial Margin: 907.128818938, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [375], Insufficient buying power to complete orders (Value:[1852.8122]), Reason: Id: 375, Initial Margin: 927.40609264, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [376], Insufficient buying power to complete orders (Value:[1785.0607]), Reason: Id: 376, Initial Margin: 893.530330006, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [377], Insufficient buying power to complete orders (Value:[1964.6885]), Reason: Id: 377, Initial Margin: 983.3442344155, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [378], Insufficient buying power to complete orders (Value:[1949.8317]), Reason: Id: 378, Initial Margin: 975.9158569945, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [379], Insufficient buying power to complete orders (Value:[1981.8885]), Reason: Id: 379, Initial Margin: 991.94423232, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [380], Insufficient buying power to complete orders (Value:[1860.6]), Reason: Id: 380, Initial Margin: 931.3, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [381], Insufficient buying power to complete orders (Value:[1891.8491]), Reason: Id: 381, Initial Margin: 946.92457315, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [382], Insufficient buying power to complete orders (Value:[1910.1656]), Reason: Id: 382, Initial Margin: 956.08279762, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [383], Insufficient buying power to complete orders (Value:[1971.0860]), Reason: Id: 383, Initial Margin: 986.5429982035, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [384], Insufficient buying power to complete orders (Value:[1954.08]), Reason: Id: 384, Initial Margin: 978.04, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [385], Insufficient buying power to complete orders (Value:[1964.6579]), Reason: Id: 385, Initial Margin: 983.328956, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [386], Insufficient buying power to complete orders (Value:[1879.9472]), Reason: Id: 386, Initial Margin: 940.9735891, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [387], Insufficient buying power to complete orders (Value:[1974.4368]), Reason: Id: 387, Initial Margin: 988.21839832, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [388], Insufficient buying power to complete orders (Value:[1940.0005]), Reason: Id: 388, Initial Margin: 971.000253768, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [389], Insufficient buying power to complete orders (Value:[1971.86]), Reason: Id: 389, Initial Margin: 986.93, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [390], Insufficient buying power to complete orders (Value:[1961.3092]), Reason: Id: 390, Initial Margin: 981.6546081, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [391], Insufficient buying power to complete orders (Value:[1654.9831]), Reason: Id: 391, Initial Margin: 828.49155889, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [392], Insufficient buying power to complete orders (Value:[1944.18]), Reason: Id: 392, Initial Margin: 973.09, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [393], Insufficient buying power to complete orders (Value:[1514.11]), Reason: Id: 393, Initial Margin: 758.055, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [394], Insufficient buying power to complete orders (Value:[1926.4483]), Reason: Id: 394, Initial Margin: 964.22413459, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [395], Insufficient buying power to complete orders (Value:[1890.6583]), Reason: Id: 395, Initial Margin: 946.329146504, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [396], Insufficient buying power to complete orders (Value:[1962.3895]), Reason: Id: 396, Initial Margin: 982.194771284, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [397], Insufficient buying power to complete orders (Value:[1953.9701]), Reason: Id: 397, Initial Margin: 977.98502728, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [398], Insufficient buying power to complete orders (Value:[1839.7112]), Reason: Id: 398, Initial Margin: 920.855578444, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [399], Insufficient buying power to complete orders (Value:[1950.3]), Reason: Id: 399, Initial Margin: 976.15, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [400], Insufficient buying power to complete orders (Value:[1962.9]), Reason: Id: 400, Initial Margin: 982.45, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [401], Insufficient buying power to complete orders (Value:[1957.9886]), Reason: Id: 401, Initial Margin: 979.994283904, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [402], Insufficient buying power to complete orders (Value:[1902.1116]), Reason: Id: 402, Initial Margin: 952.0557856, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [403], Insufficient buying power to complete orders (Value:[1962.9639]), Reason: Id: 403, Initial Margin: 982.48195046, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [404], Insufficient buying power to complete orders (Value:[1871.3785]), Reason: Id: 404, Initial Margin: 936.6892511575, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [405], Insufficient buying power to complete orders (Value:[1883.26]), Reason: Id: 405, Initial Margin: 942.63, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [406], Insufficient buying power to complete orders (Value:[1916.4352]), Reason: Id: 406, Initial Margin: 959.21760615, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [407], Insufficient buying power to complete orders (Value:[1881.4376]), Reason: Id: 407, Initial Margin: 941.718777562, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [408], Insufficient buying power to complete orders (Value:[1941.5119]), Reason: Id: 408, Initial Margin: 971.7559644507774868, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [409], Insufficient buying power to complete orders (Value:[1926.0809]), Reason: Id: 409, Initial Margin: 964.040433925, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [410], Insufficient buying power to complete orders (Value:[1980.7774]), Reason: Id: 410, Initial Margin: 991.38870219324814, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [411], Insufficient buying power to complete orders (Value:[1966.7313]), Reason: Id: 411, Initial Margin: 984.365642116, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [412], Insufficient buying power to complete orders (Value:[1960.3695]), Reason: Id: 412, Initial Margin: 981.184771135, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [413], Insufficient buying power to complete orders (Value:[1962.6868]), Reason: Id: 413, Initial Margin: 982.3434097645, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [414], Insufficient buying power to complete orders (Value:[1970.9050]), Reason: Id: 414, Initial Margin: 986.4525145465, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [415], Insufficient buying power to complete orders (Value:[1975.5200]), Reason: Id: 415, Initial Margin: 988.760008144, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [416], Insufficient buying power to complete orders (Value:[1963.3446]), Reason: Id: 416, Initial Margin: 982.672290676, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [417], Insufficient buying power to complete orders (Value:[1974.24]), Reason: Id: 417, Initial Margin: 988.12, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [418], Insufficient buying power to complete orders (Value:[1596.81]), Reason: Id: 418, Initial Margin: 799.405, Free Margin: 0.
+2021-04-21 09:35:00 Order Error: ids: [419], Insufficient buying power to complete orders (Value:[1932.2429]), Reason: Id: 419, Initial Margin: 967.1214326225, Free Margin: 0.
+You currently have a maximum of 100kb of log data per backtest, and 100kb total max per day. Have you tried step-by-step debugging? See more at https://qnt.co/debugging or upgrade your organization type for more logs at https://www.quantconnect.com/pricing

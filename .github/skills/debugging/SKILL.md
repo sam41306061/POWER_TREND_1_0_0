@@ -79,7 +79,7 @@ Verify each condition in `EntryEngine` for your top candidates:
 - [ ] `EMA21 > SMA50` — confirm the bullish stack exists
 - [ ] Pullback condition met — `prior_close <= prior_EMA21`
 - [ ] Higher close — `close > prior_close`
-- [ ] `MAX_POSITIONS_OPEN` (10) not exceeded — count via `PositionManager`
+- [ ] `MAX_POSITIONS_OPEN` (4) not exceeded — count via `PositionManager`
 - [ ] No existing position at max legs — check `PyramidingManager.can_add(symbol)`
 
 ---
@@ -98,6 +98,39 @@ self._algorithm.debug(
 If `entries_suspended = True`:
 - Current equity has dropped ≥ `MAX_ACCOUNT_DRAWDOWN_PCT` (15%) below high-water mark
 - No entries will fire until equity recovers above the HWM gate threshold
+
+---
+
+## Phase 5 — Fill / Lifecycle Plumbing (NEW — catches silent state-loss bugs)
+
+If `[ORDER ENTRY ...]` log lines fire but the portfolio still misbehaves (re-entry
+spam, missing add-ons, runaway position count), the fill path is broken — orders
+are being submitted but `PositionManager._trades` is never written to. Run these
+log-count assertions:
+
+```bash
+# Counts must roughly match — every entry order should produce a POSITION OPEN/ADD
+grep -c "\[ORDER ENTRY INITIAL\]" logs.txt
+grep -c "\[POSITION\] OPEN"        logs.txt   # should be ≈ INITIAL count
+grep -c "\[ORDER ENTRY ADD_ON\]"   logs.txt
+grep -c "\[POSITION\] ADD"         logs.txt   # should be ≈ ADD_ON count
+
+# An untracked fill means QC liquidated behind our back (universe refresh)
+grep -c "\[FILL UNTRACKED\]"       logs.txt   # > 0 is a red flag
+
+# Total orders vs strategy orders — a large gap means auto-liquidation
+total=$(awk 'NR>1' orders.csv | wc -l)
+strat=$(grep -c "\[ORDER" logs.txt)
+echo "broker_orders=$total  strategy_orders=$strat  ratio=$(( total / (strat+1) ))"
+```
+
+| Pattern | Cause | Fix |
+|---|---|---|
+| `[ORDER ENTRY]` lines exist but **zero** `[POSITION] OPEN` lines | `on_order_event` status comparison wrong (e.g. `OrderStatus.FILLED` vs QC's `OrderStatus.Filled`) | Compare by `.name.lower() == "filled"`. See `main.py:on_order_event` |
+| `broker_orders >> strategy_orders` (10x+) | QC auto-liquidates symbols dropped from universe; bypasses `ExitEngine` | Override `on_securities_changed` to call `universe.retain_symbol()` for held positions. See `universe_filter.retain_symbol`/`release_symbol` |
+| `[FILL UNTRACKED]` lines present | Same as above, or stale order_id from a prior session | If recurring + held position: same retention fix. If transient: confirm `_pending_orders.pop` semantics |
+| Identical ticker re-enters daily | `_trades` keyed on raw `Symbol` (refresh yields fresh instance) | See `architecture-rules.md` "Symbol Identity" |
+| Beta close to leverage cap, win rate ≈ 50% | Algo behaving like a long-only random sampler of the universe — usually a combo of all the above bugs | Fix in order: Symbol identity → fill handling → auto-liq prevention → capacity guard |
 
 ---
 

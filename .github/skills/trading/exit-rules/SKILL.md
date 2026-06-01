@@ -86,6 +86,16 @@ Return reason values: `EXIT_REASON_DRAWDOWN`, `EXIT_REASON_STOP_LOSS`,
 
 ---
 
+## Common Failure Modes
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Position never exits despite obvious SMA breakdown | Iterating `active_trades.items()` and treating the key as the QC `Symbol`, but key is now a canonical ticker string — downstream `get_indicators(key)` resolves differently than at entry | Iterate `.values()` and use `trade.symbol` for indicator + order calls. See `architecture-rules.md` "Symbol Identity" |
+| Drawdown-trigger liquidation skips some symbols | Same as above for the drawdown branch | Same fix |
+| Trim partial fires every day forever | Stretch trim doesn't reset the `ATR50` baseline; condition stays True until price normalises | Expected — partial trims are by design path-dependent; verify against `STRATEGY_OVERVIEW.md` |
+
+---
+
 ## Handoff Menu
 
 | Next Step | Trigger | Skill |

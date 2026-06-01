@@ -85,6 +85,16 @@ class RiskManager:
 
 ---
 
+## Common Failure Modes
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| HWM resets each session | `update()` reads portfolio value before warm-up; HWM persisted as 0 | Skip HWM updates while `algorithm.is_warming_up` is True |
+| Drawdown gate never closes despite -20% equity curve | Gate read from cached value never refreshed; or called only inside an entry path that's already filtered out | Call `risk.update(portfolio_value)` first in every daily evaluation, before any gates |
+| 15% drawdown threshold tripped on intraday noise | Using mark-to-market intra-bar instead of EOD portfolio value | Reset HWM/DD using EOD `algo.portfolio.total_portfolio_value` only |
+
+---
+
 ## Handoff Menu
 
 | Next Step | Trigger | Skill |

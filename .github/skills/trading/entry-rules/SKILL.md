@@ -17,7 +17,7 @@ chasing breakouts and enters on low-risk pullback points within established tren
 
 **Hard boundaries:**
 - No entries unless `RegimeFilter.entries_allowed()` returns `True`
-- No entries if `MAX_POSITIONS_OPEN` (10) is already reached
+- No entries if `MAX_POSITIONS_OPEN` (4) is already reached
 - No add-on entries if the position already has `PYRAMID_MAX_ADDS` (3) legs
 - Entries are evaluated once per day at `DAILY_EVAL_TIME` (09:35 ET)
 
@@ -84,6 +84,17 @@ class EntryEngine:
 - Leg count at `PYRAMID_MAX_ADDS + 1` (4) → add-on returns `None`
 - Existing position, all conditions met, leg < 4 → returns `EntrySignal.ADD`
 - Add-on attempted on same day as last leg fill → returns `None` (date guard)
+
+---
+
+## Common Failure Modes
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Hundreds of orders on first allowed day; "Insufficient buying power" spam | Capacity guard reads `len(self._pos.active_trades)` which only updates inside async `on_order_event` | Track pending decisions in a local counter and break on `settled + pending >= MAX_POSITIONS_OPEN`. See `architecture-rules.md` "Decisions vs. Settled State" |
+| Same ticker re-enters every day despite an open position | `has_position(symbol)` keyed on raw QC `Symbol` object; universe refresh yields a fresh instance | Use the canonical `_symbol_key` helper in `PositionManager`. See "Symbol Identity" rule |
+| Beta ≈ leverage cap, CAR explains nothing about the edge | Aggregate exposure (`MAX_POSITIONS_OPEN × (1+PYRAMID_MAX_ADDS) × INITIAL_LEG_SIZE_PCT`) > 1.0 | `validate_config()` enforces this; ensure constants match `STRATEGY_OVERVIEW.md` |
+| Entries fire but never add legs | `add_leg` lookup misses because key was the at-entry `Symbol`, current symbol is a refresh | Same as Symbol Identity row |
 
 ---
 

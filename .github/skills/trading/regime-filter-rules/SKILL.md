@@ -100,6 +100,16 @@ Required keys: `close`, `open`, `EMA21`, `SMA50`, `low`, `prior_SMA50`, `is_blue
 
 ---
 
+## Common Failure Modes
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `entries_allowed()` always False even in a clear uptrend | QQQ history not populated yet (warm-up period); counters reset to 0 every call | Verify `algorithm.set_warm_up` covers `STOCK_SMA_PERIOD + SMA_SLOPE_LOOKBACK` days |
+| Counters increment past expected ceiling | Same bar processed twice (e.g., `on_data` + `schedule.on`) | Guard with `if self._last_processed == algo.time.date(): return` |
+| TREND_UP "stuck" through obvious breakdown | `current_state` never re-evaluated because regime filter only called from one path | Always call `update()` at the start of every daily evaluation, before entries/exits |
+
+---
+
 ## Handoff Menu
 
 | Next Step | Trigger | Skill |
